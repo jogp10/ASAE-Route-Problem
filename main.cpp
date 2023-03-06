@@ -2,13 +2,13 @@
 // Created by john on 20/01/22.
 //
 
-#include "develop/Menu.h"
+#include "src/Menu.h"
 
 
 int main(int argc, char* argv[]) {
 
-    STCP stcp;
-    Menu menu = Menu(stcp);
+    ASAE asae;
+    Menu menu = Menu(asae);
 
     return 0;
 }

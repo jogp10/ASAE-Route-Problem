@@ -6,13 +6,13 @@
 
 using namespace std;
 
-Menu::Menu(STCP stcp) {
-    this->stcp=std::move(stcp);
+Menu::Menu(ASAE asae) {
+    this->asae=std::move(asae);
 
     int choice = 0;
 
-    cout << "1) " << endl;
-    cout << "2) " << endl;
+    cout << "1) Simulated Annealing" << endl;
+    cout << "2) Hill Climbing" << endl;
     cout << "Choice: "; cin >> choice;
 
     switch(choice) {
@@ -31,7 +31,7 @@ Menu::Menu(STCP stcp) {
 void Menu::procedure() {
     int choice;
 
-    stcp.toRead();
+    asae.toRead();
 
     cout << "1) " << endl;
     cout << "2) " << endl;
@@ -39,88 +39,10 @@ void Menu::procedure() {
 
     switch(choice) {
         case 1:
-            procedureStops();
             break;
         case 2:
-            procedureStops();
             break;
         default:
             return;
     }
 }
-
-void Menu::procedureStops() {
-    string departure;
-    string arrival;
-
-    cout << "Choose your departure stop:" << endl;
-    cin >> departure;
-
-    cout << "Choose your arrival stop:" << endl;
-    cin >> arrival;
-
-    string choiceString = travelMode();
-
-    stcp.fromTo(departure, arrival, choiceString);
-}
-
-void Menu::procedureCoordinates() {
-    double depLat = 0, depLon = 0;
-    double arrLat = 0, arrLon = 0;
-
-
-    cout << "Choose your departure latitude: " << endl;
-    cin >> depLat;
-    cout << "Choose your departure longitude: " << endl;
-    cin >> depLon;
-
-    cout << "Choose your arrival latitude: " << endl;
-    cin >> arrLat;
-    cout << "Choose your arrival longitude: " << endl;
-    cin >> arrLon;
-
-    string start = stcp.auxDeparture(depLat, depLon);
-    string end = stcp.auxArrival(arrLat, arrLon);
-
-    string choiceString = travelMode();
-
-    stcp.fromTo(start, end, choiceString);
-}
-
-string Menu::travelMode() {
-    int choice = 1;
-
-    cout << "How do you want to travel?" << endl;
-    cout << "1) Shortest distance" << endl;
-    cout << "2) Less line changes" << endl;
-    cout << "3) Less stops" << endl;
-    cout << "4) Cheapest way (less zones)" << endl;
-
-    cout << "Option: "; cin >> choice;
-
-    string choiceString;
-
-    switch(choice) {
-        case 1:
-            choiceString = "shortest";
-            break;
-
-        case 2:
-            choiceString = "lessChanges";
-            break;
-
-        case 3:
-            choiceString = "lessStops";
-            break;
-
-        case 4:
-            choiceString = "lessZones";
-            break;
-
-        default:
-            choiceString = "shortest";
-    }
-
-    return choiceString;
-}
-

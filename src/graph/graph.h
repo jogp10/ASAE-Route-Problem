@@ -17,18 +17,21 @@ class Graph {
 
     struct Edge {
         int dest;   // Destination node
-        double weight; // An integer weight
+        float weight; // An integer weight
     };
 
     struct Node {
         list<Edge> adj; // The list of outgoing edges (to adjacent nodes)
-        double dist;
         int pred = 0;
         vector<string> predLines = {};
         bool visited;
+        float dist;
 
         int id;
-        string name;
+        string district;
+        string county;
+        string parish;
+        string address;
         float latitude;
         float longitude;
         int inspection_time;
@@ -55,7 +58,7 @@ public:
      * @param weight Distance between Origin and Destination
      * @param line Line wich i can get from Origin to Destination
      */
-    void addEdge(int src, int dest, double weight = 1.00);
+    void addEdge(int src, int dest, float weight = 1.00);
 
     /**
      * Set Node's updated with Stop's info
@@ -66,13 +69,13 @@ public:
      * @param Longitude Longitude of Stop
      * @param index Index in vector<Node> of Graph
      */
-    void setNode(int index, string name, float latitude, float longitude, float inspection_utility, int inspection_time, vector<int> opening_hours);
+    void setNode(int index, string address, float latitude, float longitude, float inspection_utility, int inspection_time, vector<int> opening_hours);
 
     /**
      * Get Map of nodes which belong to graph
      * @return map where key: code of stop, value: latitude, longitude
      */
-    map<int, pair<double, double>> getNodes();
+    map<int, pair<float, float>> getNodes();
 
     /**
      * Get Node
@@ -80,17 +83,6 @@ public:
      * @return Node
      */
     Node getNode(int at);
-
-    /**
-     * Get Distance between two points
-     * @param lat1 Latitude of point x
-     * @param long1 Longitude of point x
-     * @param lat2 Latitude of point y
-     * @param long2 Longitude of point y
-     * @return distance in km
-     * BIG O = 1
-     */
-    double static getDistance(double lat1, double long1, double lat2, double long2);
 
     /**
      * Dijkstra Path

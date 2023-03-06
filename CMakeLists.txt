@@ -1,17 +1,17 @@
 cmake_minimum_required(VERSION 3.20)
-project(STCPredeTransportes)
+project(ASAEinspectionRoute)
 
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(
-        STCPredeTransportes
+        ASAEinspectionRoute
         main.cpp
 
-        develop/graph/disjointSets.h develop/graph/minHeap.h
-        develop/graph/graph.cpp develop/graph/graph.h
+        src/graph/disjointSets.h src/graph/minHeap.h
+        src/graph/graph.cpp src/graph/graph.h
 
-        develop/Menu.cpp develop/Menu.h
-        develop/STCP.cpp develop/STCP.h
+        src/Menu.cpp src/Menu.h
+        src/ASAE.cpp src/ASAE.h
 )
 
 

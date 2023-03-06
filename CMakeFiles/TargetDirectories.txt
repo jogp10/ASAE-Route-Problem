@@ -1,0 +1,4 @@
+/home/john/Documents/ai/ia_t03g34_assignment1/CMakeFiles/ASAEinspectionRoute.dir
+/home/john/Documents/ai/ia_t03g34_assignment1/CMakeFiles/Doxygen.dir
+/home/john/Documents/ai/ia_t03g34_assignment1/CMakeFiles/edit_cache.dir
+/home/john/Documents/ai/ia_t03g34_assignment1/CMakeFiles/rebuild_cache.dir

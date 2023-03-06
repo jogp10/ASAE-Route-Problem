@@ -1,49 +1,23 @@
-#ifndef STCPREDETRANSPORTES_MENU_H
-#define STCPREDETRANSPORTES_MENU_H
+#ifndef ASAE_MENU_H
+#define ASAE_MENU_H
 
-#include "STCP.h"
+#include "ASAE.h"
 
 class Menu {
-    STCP stcp;
-
-    /**
-     * Travel Menu during daytime
-     */
-    void travelDay();
-
-    /**
-     * Travel Menu at nighttime
-     */
-    void travelNight();
+    ASAE asae;
 
     /**
      * Menu to choose between asking for stops or coordinates
      */
     void procedure();
 
-    /**
-     * Menu of Stops
-     */
-    void procedureStops();
-
-    /**
-     * Menu of Coordinates
-     */
-    void procedureCoordinates();
-
-    /**
-     * Preferred travel mode
-     * @return travel mode in string format
-     */
-    static string travelMode();
-
 public:
     /**
-     * STCP Menu
-     * @param stcp STCP, bus service provider
+     * ASAE Menu
+     * @param asae ASAE, bus service provider
      */
-    Menu(STCP stcp);
+    Menu(ASAE asae);
 };
 
 
-#endif //STCPREDETRANSPORTES_MENU_H
+#endif //ASAE_MENU_H

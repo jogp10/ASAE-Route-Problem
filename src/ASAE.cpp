@@ -2,9 +2,9 @@
 #include <map>
 #include <vector>
 
-#include "STCP.h"
+#include "ASAE.h"
 
-int STCP::numberOfLines(const string& myfile){
+int ASAE::numberOfLines(const string& myfile){
     int number_of_lines = 0;
 
     string line;
@@ -20,7 +20,7 @@ int STCP::numberOfLines(const string& myfile){
     return number_of_lines-1;
 }
 
-void STCP::readLines(const string& myFile) {
+void ASAE::readLines(const string& myFile) {
     int pos;
     string line, code, name;
     ifstream file(myFile);
@@ -54,7 +54,7 @@ void STCP::readLines(const string& myFile) {
     }
 }
 
-void STCP::readEdges(const string& code) {
+void ASAE::readEdges(const string& code) {
     for (int i = 0; i <= 1; i++) {
         string myfile = "../dataset/line_" + code + "_" + to_string(i) + ".csv";
         ifstream file(myfile);
@@ -62,8 +62,8 @@ void STCP::readEdges(const string& code) {
         if (file.is_open()) {
             int count = 1;
             string line, origin, dest;
-            double weight;
-            map<int, pair<double, double>> nodes = graph.getNodes();
+            float weight;
+            map<int, pair<float, float>> nodes = graph.getNodes();
 
             getline(file, line); // trash
             getline(file, origin); // departure node code
@@ -87,12 +87,12 @@ void STCP::readEdges(const string& code) {
     }
 }
 
-void STCP::readStops() {
+void ASAE::readEstablishments() {
     string line;
     string delimiter = ",";
     size_t pos;
     string token;
-    ifstream file("../dataset/stops.csv");
+    ifstream file("../dataset/establishments.csv");
     int count = 1;
 
     if(file.is_open()){
@@ -117,12 +117,12 @@ void STCP::readStops() {
     }
 }
 
-STCP::STCP() {
-    int nodes = numberOfLines("../dataset/stops.csv");
+ASAE::ASAE() {
+    int nodes = numberOfLines("../dataset/establishments.csv");
     Graph g(nodes, true);
     this->graph = g;
 
-    readStops();
+    readEstablishments();
 /*
     cout << lines.size() << " number of lines stored " << endl;
     cout << endl <<  stops.size() << " number of stops stored " << endl;
@@ -130,90 +130,29 @@ STCP::STCP() {
     */
 }
 
-void STCP::toRead() {
-    readLines("../dataset/lines.csv");
-    graph.createWalkEdges();
+void ASAE::toRead() {
+    readLines("../dataset/distances.csv");
 }
 
-void STCP::setTime(string time) { this->time = time; }
+void ASAE::setTime(int seconds, int minutes, int hours) { this->seconds = seconds; this->minutes = minutes; this->hours = hours;  }
 
-int STCP::convertCodeToIndex(const string& a) {
-    return stops.find(a)->second;
-}
+void ASAE::addTime(int seconds, int minutes, int hours) { 
+    this->seconds += seconds; 
+    this->minutes += minutes; 
+    this->hours += hours; 
 
-list<int> STCP::fromTo(const string& a, const string& b, const string& choice){
-    int origin = convertCodeToIndex(a);
-    int destino = convertCodeToIndex(b);
-
-    list<int> path = graph.dijkstra_path(origin, destino, choice);
-    int tmp = *path.begin();
-
-    cout << std::left;
-    cout << setw(29) << "Name" <<  "|" << setw(9) << "Code" << "|" << setw(9) << "Zone" << "|" << setw(14) << "Travel Dist" << "|" << endl;
-
-    for(int i: path){
-        if(graph.getNode(tmp).zone!=graph.getNode(i).zone) {
-            if(choice=="lessZones")
-                cout << endl << "zone change" << endl;
-            cout << endl;
-        }
-        cout << setw(30) << graph.getNode(i).name << setw(10) <<  graph.getNode(i).code << setw(10) <<  graph.getNode(i).zone;
-        cout << setw(15) <<  graph.getNode(i).dist; // for testing
-        for(const auto& j: graph.getNode(i).predLines){
-            cout << setw(5) << j;
-        }
-        cout << endl;
-        tmp = i;
-    }
-    double totalDist = graph.getNode(*--path.end()).dist;
-    cout << totalDist  << " Km travelled" << "\n";
-    cout << path.size()-1 << " Stops" << endl;
-    return path;
-}
-
-string STCP::auxDeparture(const double depLat, const double depLon) {
-    double walking, distance;
-    string code;
-
-    cout << "How far can the departure stop be from you?" << endl;
-    cin >> walking;
-
-    cout << "Stops near you: " << endl;
-    auto m = graph.getNodes();
-    for(auto n: m) {
-        distance = Graph::getDistance(depLat, depLon, n.second.first, n.second.second);
-
-        if(distance <= walking) {
-            cout << graph.getNode(n.first).code << " (code) || " <<  graph.getNode(n.first).name << " (name);" << endl;
-        }
+    if (this->seconds >= 60) {
+        this->minutes += this->seconds / 60;
+        this->seconds = this->seconds % 60;
     }
 
-    cout << "What stop code?" << endl;
-    cout << "Option: "; cin >> code;
-
-    return code;
-}
-
-string STCP::auxArrival(const double arrLat, const double arrLon) {
-    double walking, distance;
-    string code;
-
-    cout << "How far can the arrival stop be from your arrival stop?" << endl;
-    cin >> walking;
-
-    cout << "Stops near arrival spot: " << endl;
-    for(auto n: graph.getNodes()) {
-        if(n.first == 0) { continue; }
-
-        distance = Graph::getDistance(arrLat, arrLon, graph.getNode(n.first).latitude, graph.getNode(n.first).longitude);
-
-        if(distance <= walking) {
-            cout << graph.getNode(n.first).code << " (code) || " <<  graph.getNode(n.first).name << " (name);" << endl;
-        }
+    if (this->minutes >= 60) {
+        this->hours += this->minutes / 60;
+        this->minutes = this->minutes % 60;
     }
 
-    cout << "What stop code?" << endl;
-    cout << "Option: "; cin >> code;
-
-    return code;
+    if (this->hours >= 24) {
+        this->hours = this->hours % 24;
+    }
 }
+
