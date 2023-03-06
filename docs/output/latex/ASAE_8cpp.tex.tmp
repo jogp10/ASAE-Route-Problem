@@ -1,8 +1,0 @@
-\hypertarget{ASAE_8cpp}{}\doxysection{src/\+ASAE.cpp File Reference}
-\label{ASAE_8cpp}\index{src/ASAE.cpp@{src/ASAE.cpp}}
-{\ttfamily \#include $<$fstream$>$}\newline
-{\ttfamily \#include $<$map$>$}\newline
-{\ttfamily \#include $<$vector$>$}\newline
-{\ttfamily \#include \char`\"{}ASAE.\+h\char`\"{}}\newline
-Include dependency graph for ASAE.\+cpp\+:
-% FIG 0

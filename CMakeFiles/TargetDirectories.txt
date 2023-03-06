@@ -1,3 +1,0 @@
-/home/ze/Programming/ia_t03g34_assignment1/CMakeFiles/ASAEinspectionRoute.dir
-/home/ze/Programming/ia_t03g34_assignment1/CMakeFiles/edit_cache.dir
-/home/ze/Programming/ia_t03g34_assignment1/CMakeFiles/rebuild_cache.dir
