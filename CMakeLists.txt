@@ -10,6 +10,5 @@ add_executable(
         src/graph/disjointSets.h src/graph/minHeap.h
         src/graph/graph.cpp src/graph/graph.h
 
-        src/Menu.cpp src/Menu.h
         src/ASAE.cpp src/ASAE.h
 )

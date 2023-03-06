@@ -1,5 +1,5 @@
-#ifndef _GRAPH_H_
-#define _GRAPH_H_
+#ifndef GRAPH_H_
+#define GRAPH_H_
 
 #include "minHeap.h"
 #include <vector>
@@ -39,18 +39,27 @@ class Graph {
     };
 
     struct Time {
+        int milliseconds;
         int seconds;
         int minutes;
         int hours;
 
-        void setTime(int seconds = 0, int minutes = 0, int hours = 0);
+        void setTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0);
 
-        void addTime(int seconds = 0, int minutes = 0, int hours = 0);
+        void addTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0);
         void addTime(Time time);
+        void subTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0);
+        void subTime(Time time);
+
+        void toNextHour();
+
+        bool operator<(const Time &rhs) const;
+
+        void toPreviousHour();
     };
 
     int n;              // Graph size (vertices are numbered from 1 to n)
-    bool hasDir;        // false: undirect; true: directed
+    bool hasDir;        // false: undirected; true: directed
     vector<Node> nodes; // The list of nodes being represented
 
     int nrVehicles;
@@ -58,7 +67,7 @@ class Graph {
     Time departure_time;
     Time max_work_time;
     Time limit_time;
-    Time time;
+    vector<Time> times;
 
     void setNrVehicles(int n) { nrVehicles = floor(n*0.1);};
 
@@ -69,14 +78,13 @@ public:
      * @param nodes nr nodes
      * @param dir direction ( default: undirected)
      */
-    explicit Graph(int nodes, bool dir = false, Time departure_time = {0, 0, 0}, Time max_work_time = {0, 0, 0});
+    explicit Graph(int nodes, bool dir = false, Time departure_time = {0, 0, 0, 0}, Time max_work_time = {0, 0, 0, 0});
 
     /**
      * Add edge from source to destination with a certain weight
      * @param src Origin Stop
      * @param dest Destination Stop
      * @param weight Distance between Origin and Destination
-     * @param line Line wich i can get from Origin to Destination
      */
     void addEdge(int src, int dest, float weight = 1.00);
 
@@ -105,21 +113,20 @@ public:
     Node getNode(int at);
 
     /**
-     * Path
-     * @param a Departure local
-     * @param b Destination local
-     * @param type Type of trajectory the algorithm is going to use
-     * @return list of code's stop which belong to path
-     * - less stops = n + e
-     * - shortest = less lines = less zones = n + e * log n
+     * Path from a to b
+     * @param a
+     * @param b
+     * @return
      */
     list<int> path(int a, int b);
 
-    int evaluate_solution(const vector<list<int>>& solution);
+    static int evaluate_solution(const vector<list<int>>& solution);
 
-    int random_node(const int idx);
+    int random_node(int idx) const;
 
-    vector<list<int>> generate_random_solution() const;
+    int closest_node(int idx) const;
+
+    vector<list<int>> generate_random_solution();
 
     void hillClimbing();
 
@@ -129,8 +136,11 @@ public:
 
     void geneticAlgorithm();
 
+    float getDistance(int a, int b);
 
     void showAllEstablishments();
+
+    static void printSolution(const vector<list<int>>& solution);
 };
 
-#endif
+#endif /* GRAPH_H_ */

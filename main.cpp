@@ -2,13 +2,13 @@
 // Created by john on 20/01/22.
 //
 
-#include "src/Menu.h"
+#include "src/ASAE.h"
 
 
 int main(int argc, char* argv[]) {
 
-    ASAE menu = ASAE();
-
+    ASAE asae = ASAE();
+    asae.menu();
     return 0;
 }
 

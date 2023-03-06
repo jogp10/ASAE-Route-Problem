@@ -115,18 +115,19 @@ void ASAE::readEstablishments()
 ASAE::ASAE()
 {
     int nodes = numberOfLines("./dataset/establishments.csv");
-    this->graph = Graph(nodes, true);
+    this->graph = Graph(nodes, true, {0, 0, 0, 9}, {0, 0, 0, 8});
 
     readEstablishments();
     readTimeDistances();
 
     cout << "Done building graph." << endl;
-
-    menu();
 }
 
 void ASAE::menu() {
     int option = 0;
+    auto solution = graph.generate_random_solution();
+    Graph::printSolution(solution);
+    cout << endl;
     while (option != 5) {
         cout << "1 - Show all establishments" << endl;
         cout << "2 - Show all establishments of a given type" << endl;
