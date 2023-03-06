@@ -1,0 +1,185 @@
+\hypertarget{classGraph}{}\doxysection{Graph Class Reference}
+\label{classGraph}\index{Graph@{Graph}}
+
+
+{\ttfamily \#include $<$graph.\+h$>$}
+
+
+
+Collaboration diagram for Graph\+:
+% FIG 0
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structGraph_1_1Edge}{Edge}}
+\item 
+struct \mbox{\hyperlink{structGraph_1_1Node}{Node}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classGraph_a18b4f6dec368300991b68dd75e39a5e9}{Graph}} (int \mbox{\hyperlink{classGraph_a71b5e16eb9e0670fea3ecee3526abb41}{nodes}}, bool dir=false)
+\item 
+void \mbox{\hyperlink{classGraph_a8372af32b0ca9c2934c6c6fefd35ae6a}{add\+Edge}} (int src, int dest, float weight=1.\+00)
+\item 
+void \mbox{\hyperlink{classGraph_a423bfd9e82a378b5fb20432c675c38a5}{set\+Node}} (int index, string address, float latitude, float longitude, float inspection\+\_\+utility, int inspection\+\_\+time, vector$<$ int $>$ opening\+\_\+hours)
+\item 
+map$<$ int, pair$<$ float, float $>$ $>$ \mbox{\hyperlink{classGraph_a9d13f62102a086bd66947349e736cafb}{get\+Nodes}} ()
+\item 
+\mbox{\hyperlink{structGraph_1_1Node}{Node}} \mbox{\hyperlink{classGraph_ab5176edff48155015ba7d83f801c704f}{get\+Node}} (int at)
+\item 
+list$<$ int $>$ \mbox{\hyperlink{classGraph_a9910063b5b63da5d8e2326d3291d22b6}{path}} (int a, int b)
+\item 
+void \mbox{\hyperlink{classGraph_a29eb85cbf9a8bfcbde71a756648032a2}{bfs}} (int a, int b)
+\end{DoxyCompactItemize}
+\doxysubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classGraph_a81a76a428e630453ef019a15b9092967}{n}}
+\item 
+bool \mbox{\hyperlink{classGraph_a60baa846929049c84b7e50ffb5f401e8}{has\+Dir}}
+\item 
+vector$<$ \mbox{\hyperlink{structGraph_1_1Node}{Node}} $>$ \mbox{\hyperlink{classGraph_a71b5e16eb9e0670fea3ecee3526abb41}{nodes}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classGraph_a18b4f6dec368300991b68dd75e39a5e9}\label{classGraph_a18b4f6dec368300991b68dd75e39a5e9}} 
+\index{Graph@{Graph}!Graph@{Graph}}
+\index{Graph@{Graph}!Graph@{Graph}}
+\doxysubsubsection{\texorpdfstring{Graph()}{Graph()}}
+{\footnotesize\ttfamily Graph\+::\+Graph (\begin{DoxyParamCaption}\item[{int}]{nodes,  }\item[{bool}]{dir = {\ttfamily false} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+Constructor 
+\begin{DoxyParams}{Parameters}
+{\em nodes} & nr nodes \\
+\hline
+{\em dir} & direction ( default\+: undirected) \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classGraph_a8372af32b0ca9c2934c6c6fefd35ae6a}\label{classGraph_a8372af32b0ca9c2934c6c6fefd35ae6a}} 
+\index{Graph@{Graph}!addEdge@{addEdge}}
+\index{addEdge@{addEdge}!Graph@{Graph}}
+\doxysubsubsection{\texorpdfstring{addEdge()}{addEdge()}}
+{\footnotesize\ttfamily void Graph\+::add\+Edge (\begin{DoxyParamCaption}\item[{int}]{src,  }\item[{int}]{dest,  }\item[{float}]{weight = {\ttfamily 1.00} }\end{DoxyParamCaption})}
+
+Add edge from source to destination with a certain weight 
+\begin{DoxyParams}{Parameters}
+{\em src} & Origin Stop \\
+\hline
+{\em dest} & Destination Stop \\
+\hline
+{\em weight} & Distance between Origin and Destination \\
+\hline
+{\em line} & Line wich i can get from Origin to Destination \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classGraph_a29eb85cbf9a8bfcbde71a756648032a2}\label{classGraph_a29eb85cbf9a8bfcbde71a756648032a2}} 
+\index{Graph@{Graph}!bfs@{bfs}}
+\index{bfs@{bfs}!Graph@{Graph}}
+\doxysubsubsection{\texorpdfstring{bfs()}{bfs()}}
+{\footnotesize\ttfamily void Graph\+::bfs (\begin{DoxyParamCaption}\item[{int}]{a,  }\item[{int}]{b }\end{DoxyParamCaption})}
+
+BFS Algortihm 
+\begin{DoxyParams}{Parameters}
+{\em a} & \mbox{\hyperlink{structGraph_1_1Node}{Node}} to start algorithm \\
+\hline
+{\em b} & \mbox{\hyperlink{structGraph_1_1Node}{Node}} to end algortihm BIG O = n + e \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classGraph_ab5176edff48155015ba7d83f801c704f}\label{classGraph_ab5176edff48155015ba7d83f801c704f}} 
+\index{Graph@{Graph}!getNode@{getNode}}
+\index{getNode@{getNode}!Graph@{Graph}}
+\doxysubsubsection{\texorpdfstring{getNode()}{getNode()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structGraph_1_1Node}{Graph\+::\+Node}} Graph\+::get\+Node (\begin{DoxyParamCaption}\item[{int}]{at }\end{DoxyParamCaption})}
+
+Get \mbox{\hyperlink{structGraph_1_1Node}{Node}} 
+\begin{DoxyParams}{Parameters}
+{\em at} & index of \mbox{\hyperlink{structGraph_1_1Node}{Node}} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{structGraph_1_1Node}{Node}} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classGraph_a9d13f62102a086bd66947349e736cafb}\label{classGraph_a9d13f62102a086bd66947349e736cafb}} 
+\index{Graph@{Graph}!getNodes@{getNodes}}
+\index{getNodes@{getNodes}!Graph@{Graph}}
+\doxysubsubsection{\texorpdfstring{getNodes()}{getNodes()}}
+{\footnotesize\ttfamily map$<$ int, pair$<$ float, float $>$ $>$ Graph\+::get\+Nodes (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Get Map of nodes which belong to graph \begin{DoxyReturn}{Returns}
+map where key\+: code of stop, value\+: latitude, longitude 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classGraph_a9910063b5b63da5d8e2326d3291d22b6}\label{classGraph_a9910063b5b63da5d8e2326d3291d22b6}} 
+\index{Graph@{Graph}!path@{path}}
+\index{path@{path}!Graph@{Graph}}
+\doxysubsubsection{\texorpdfstring{path()}{path()}}
+{\footnotesize\ttfamily list$<$ int $>$ Graph\+::path (\begin{DoxyParamCaption}\item[{int}]{a,  }\item[{int}]{b }\end{DoxyParamCaption})}
+
+Dijkstra Path 
+\begin{DoxyParams}{Parameters}
+{\em a} & Departure local \\
+\hline
+{\em b} & Destination local \\
+\hline
+{\em type} & Type of trajectory the algorithm is going to use \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+list of code\textquotesingle{}s stop which belong to path
+\begin{DoxyItemize}
+\item less stops = n + e
+\item shortest = less lines = less zones = n + e $\ast$ log n 
+\end{DoxyItemize}
+\end{DoxyReturn}
+\mbox{\Hypertarget{classGraph_a423bfd9e82a378b5fb20432c675c38a5}\label{classGraph_a423bfd9e82a378b5fb20432c675c38a5}} 
+\index{Graph@{Graph}!setNode@{setNode}}
+\index{setNode@{setNode}!Graph@{Graph}}
+\doxysubsubsection{\texorpdfstring{setNode()}{setNode()}}
+{\footnotesize\ttfamily void Graph\+::set\+Node (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{string}]{address,  }\item[{float}]{latitude,  }\item[{float}]{longitude,  }\item[{float}]{inspection\+\_\+utility,  }\item[{int}]{inspection\+\_\+time,  }\item[{vector$<$ int $>$}]{opening\+\_\+hours }\end{DoxyParamCaption})}
+
+Set \mbox{\hyperlink{structGraph_1_1Node}{Node}}\textquotesingle{}s updated with Stop\textquotesingle{}s info 
+\begin{DoxyParams}{Parameters}
+{\em Name} & Name of Stop \\
+\hline
+{\em Code} & Code of Stop \\
+\hline
+{\em Zone} & Zone of Stop \\
+\hline
+{\em Latitude} & Latitude of Stop \\
+\hline
+{\em Longitude} & Longitude of Stop \\
+\hline
+{\em index} & Index in vector$<$\+Node$>$ of \mbox{\hyperlink{classGraph}{Graph}} \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classGraph_a60baa846929049c84b7e50ffb5f401e8}\label{classGraph_a60baa846929049c84b7e50ffb5f401e8}} 
+\index{Graph@{Graph}!hasDir@{hasDir}}
+\index{hasDir@{hasDir}!Graph@{Graph}}
+\doxysubsubsection{\texorpdfstring{hasDir}{hasDir}}
+{\footnotesize\ttfamily bool Graph\+::has\+Dir\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classGraph_a81a76a428e630453ef019a15b9092967}\label{classGraph_a81a76a428e630453ef019a15b9092967}} 
+\index{Graph@{Graph}!n@{n}}
+\index{n@{n}!Graph@{Graph}}
+\doxysubsubsection{\texorpdfstring{n}{n}}
+{\footnotesize\ttfamily int Graph\+::n\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classGraph_a71b5e16eb9e0670fea3ecee3526abb41}\label{classGraph_a71b5e16eb9e0670fea3ecee3526abb41}} 
+\index{Graph@{Graph}!nodes@{nodes}}
+\index{nodes@{nodes}!Graph@{Graph}}
+\doxysubsubsection{\texorpdfstring{nodes}{nodes}}
+{\footnotesize\ttfamily vector$<$\mbox{\hyperlink{structGraph_1_1Node}{Node}}$>$ Graph\+::nodes\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/graph/\mbox{\hyperlink{graph_8h}{graph.\+h}}\item 
+src/graph/\mbox{\hyperlink{graph_8cpp}{graph.\+cpp}}\end{DoxyCompactItemize}
