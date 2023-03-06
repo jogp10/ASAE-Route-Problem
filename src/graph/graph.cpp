@@ -76,3 +76,28 @@ void Graph::bfs(int a, int b) {
     }
 
 }
+
+int Graph::evaluate_solution(const vector<list<int>>& solution) {
+    int maxEstablishment = 0;
+    int bestSolution = -1;
+    for (int i = 0; i < solution.size(); ++i){
+        if(solution[i].size() > maxEstablishment){
+            maxEstablishment = solution[i].size();
+            bestSolution = i;
+        }
+    }
+    return bestSolution;
+}
+
+int Graph::random_node(list<Edge> &list) {
+    int random = rand() % list.size();
+    int i = 0;
+
+    for (auto it = list.begin(); it != list.end(); ++it) {
+        if (i == random) {
+            return it->dest;
+        }
+        i++;
+    }
+    return -1;
+}

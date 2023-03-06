@@ -53,6 +53,7 @@ void ASAE::readEdges()
                     graph.addEdge(origin, destino, stof(weight));
                     destino++;
                 }
+                
                 origin++;
             }
             // cout << count << " number of edges read in file " << myfile << endl;

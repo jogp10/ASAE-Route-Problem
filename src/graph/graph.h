@@ -100,7 +100,11 @@ public:
      * @param b Node to end algortihm
      * BIG O = n + e
      */
-     void bfs(int a, int b);
+    void bfs(int a, int b);
+
+    int evaluate_solution(const vector<list<int>>& solution);
+
+    int random_node(list<Edge> &nodes);
 
 };
 
