@@ -57,6 +57,7 @@ void ASAE::readEdges()
                     destino++;
                     i++;
                 }
+                
                 origin++;
             }
             // cout << count << " number of edges read in file " << myfile << endl;
