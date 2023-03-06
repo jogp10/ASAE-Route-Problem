@@ -28,35 +28,6 @@ int ASAE::numberOfLines(const string &myfile)
     return number_of_lines - 1;
 }
 
-void ASAE::readLines(const string &myFile)
-{
-    int pos;
-    string line, code, name;
-    ifstream file(myFile);
-    string delimiter = ",";
-
-    if (file.is_open())
-    {
-        int count = 1;
-        getline(file, line);
-
-        while (!file.eof())
-        {
-            getline(file, line);
-
-            pos = line.find(delimiter);
-            code = line.substr(0, pos);
-            name = line.substr(pos + 1, line.size() - pos);
-
-            lines.insert(make_pair(code, name));
-            readEdges(code);
-
-            count++;
-        }
-        file.close();
-    }
-}
-
 void ASAE::readEdges(const string &code)
 {
     for (int i = 0; i <= 1; i++)
