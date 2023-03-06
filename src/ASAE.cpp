@@ -4,15 +4,20 @@
 
 #include "ASAE.h"
 
+using namespace std;
+
 int ASAE::numberOfLines(const string &myfile)
 {
     int number_of_lines = 0;
 
     string line;
-    ifstream file(myfile);
+    fstream file;
+    file.open(myfile, fstream::in); 
 
     if (file.is_open())
     {
+        getline(file, line); 
+
         while (!file.eof())
         {
             getline(file, line);
@@ -21,35 +26,6 @@ int ASAE::numberOfLines(const string &myfile)
         file.close();
     }
     return number_of_lines - 1;
-}
-
-void ASAE::readLines(const string &myFile)
-{
-    int pos;
-    string line, code, name;
-    ifstream file(myFile);
-    string delimiter = ",";
-
-    if (file.is_open())
-    {
-        int count = 1;
-        getline(file, line);
-
-        while (!file.eof())
-        {
-            getline(file, line);
-
-            pos = line.find(delimiter);
-            code = line.substr(0, pos);
-            name = line.substr(pos + 1, line.size() - pos);
-
-            lines.insert(make_pair(code, name));
-            readEdges(code);
-
-            count++;
-        }
-        file.close();
-    }
 }
 
 void ASAE::readEdges(const string &code)
@@ -91,38 +67,67 @@ void ASAE::readEstablishments()
     string line;
     string delimiter = ",";
     size_t pos;
-    string token;
-    ifstream file("../dataset/establishments.csv");
+    ifstream file("./dataset/establishments.csv");
     int count = 1;
 
     if (file.is_open())
     {
-        getline(file, line);
-        while (!file.eof())
+        getline(file, line); // trash
+        while (getline(file, line))
         {
-
             vector<string> extra;
-            getline(file, line);
+            vector<int> opening_hours(24); 
+            string element;
+            stringstream str(line); 
 
-            while ((pos = line.find(delimiter)) != std::string::npos)
+            while(getline(str, element, ',')) 
             {
-                token = line.substr(0, pos);
-                extra.push_back(token);
-                line.erase(0, pos + delimiter.length());
+                if (element[1] == '[') {
+                    int i = 0; 
+                    element.erase(0, 2);
+
+                    while(element[element.size() - 2] != '"') 
+                    {
+                        opening_hours[i] = stoi(element);
+                        getline(str, element, ',');
+
+                        i++;
+                    }
+
+                    element.erase(element.size() - 3, 3); 
+                   opening_hours[i] = stoi(element);
+                }
+                else if(element[0] == '"') 
+                {
+                    element.erase(0, 1);
+
+                    while(element[element.size() - 1] != '"') 
+                    {
+                        string temp;
+                        getline(str, temp, ',');
+                        element += "," + temp;
+                        //cout << temp << endl; 
+                    }
+
+                    element.erase(element.size() - 1);
+                }
+
+                extra.push_back(element);  
             }
-            vector<int> opening_hours(24, 0);
-            graph.setNode(stoi(extra[0]), extra[1], stof(extra[2]), stof(extra[3]), stof(extra[4]), stoi(extra[5]), opening_hours);
+
+            graph.setNode(stoi(extra[0]), extra[4], stof(extra[5]), stof(extra[6]), stof(extra[7]), stoi(extra[8]), opening_hours);
             stops.insert(make_pair(extra[0], count));
             count++;
         }
-        // cout << count << "number of stops read" << endl;
+    
         file.close();
     }
 }
 
 ASAE::ASAE()
 {
-    int nodes = numberOfLines("../dataset/establishments.csv");
+    int nodes = numberOfLines("./dataset/establishments.csv");
+    cout << nodes << " number of nodes" << endl;
     Graph g(nodes, true);
     this->graph = g;
 
@@ -136,7 +141,9 @@ ASAE::ASAE()
 
 void ASAE::toRead()
 {
-    readLines("../dataset/distances.csv");
+    //readLines("../dataset/distances.csv");
+    cout << numberOfLines("./dataset/establishments.csv") << endl;
+    cout << "ran toRead" << endl;
 }
 
 void ASAE::setTime(int seconds, int minutes, int hours)

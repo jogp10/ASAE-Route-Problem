@@ -135,5 +135,10 @@ CmakeDoxyfile.in
 CmakeDoxygenDefaults.cmake
 CMakeFiles
 Makefile
+<<<<<<< HEAD
 .idea
 cmake-build-debug/
+=======
+
+.vscode
+>>>>>>> 543c6466e6dd53f781e85854cbb21a2c86d4a613

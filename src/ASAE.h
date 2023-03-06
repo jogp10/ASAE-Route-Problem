@@ -23,15 +23,9 @@ class ASAE
     static int numberOfLines(const string &myfile);
 
     /**
-     * Goes to file and reads stops, adds them to graph
+     * Goes to file and reads establishments info, adds them as nodes to graph
      */
     void readEstablishments();
-
-    /**
-     * Goes to file and reads code and name of lines
-     * @param myFile file path
-     */
-    void readLines(const string &file);
 
     /**
      * Goes to file and connects stops and lines, by adding edges to graph
@@ -46,7 +40,7 @@ public:
     ASAE();
 
     /**
-     * Function to load lines after being chosen day or night
+     * 
      */
     void toRead();
 
