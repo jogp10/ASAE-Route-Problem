@@ -9,14 +9,14 @@ class Menu {
     /**
      * Menu to choose between asking for stops or coordinates
      */
-    void procedure();
+
 
 public:
     /**
      * ASAE Menu
      * @param asae ASAE, bus service provider
      */
-    Menu(ASAE asae);
+    Menu();
 };
 
 

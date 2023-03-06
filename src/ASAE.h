@@ -9,8 +9,7 @@
 class ASAE
 {
     int number_of_vans = 0; 
-    map<string, string> lines; // key: codigo da linha, value: nome da linha
-    map<string, int> stops;    // key: codigo da paragem, value: index no vetor de nodes do grafo
+
     Graph graph = Graph(0);
     int hours;
     int minutes;
@@ -32,7 +31,7 @@ class ASAE
      * Goes to file and connects stops and lines, by adding edges to graph
      * @param code Line Code
      */
-    void readEdges(const string &code);
+    void readEdges();
 
 public:
     /**
@@ -45,10 +44,12 @@ public:
     */
     void setNumberOfVans(int numberOfVans);
 
-    /**
-     * 
-     */
-    void toRead();
+    /*
+     * Set number of vans
+*/
+    void getNumberOfVans(int numberOfVans);
+
+
 
     /**
      * Set time
@@ -69,6 +70,8 @@ public:
      * @return index
      */
     int convertCodeToIndex(string code);
+
+
 };
 
 #endif // ASAE_H

@@ -7,7 +7,7 @@ Graph::Graph(int num, bool dir) : n(num), hasDir(dir), nodes(num+1) {
 
 // Add edge from source to destination with a certain weight
 void Graph::addEdge(int src, int dest, float weight) {
-    if (src<1 || src>n || dest<1 || dest>n) return;
+    if (src<0 || src>n || dest<0 || dest>n || src==dest) return;
     nodes[src].adj.push_back({dest, weight});
     if (!hasDir) nodes[dest].adj.push_back({src, weight});
 }
@@ -39,6 +39,7 @@ list<int> Graph::path(int a, int b) {
 
 void Graph::setNode(int index, string address, float latitude, float longitude, float inspection_utility, int inspection_time, vector<int> opening_hours) {
     Node u;
+    u.id = index;
     u.address = address;
     u.latitude = latitude;
     u.longitude = longitude;

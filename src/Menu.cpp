@@ -6,14 +6,14 @@
 
 using namespace std;
 
-Menu::Menu(ASAE asae) {
-    this->asae = move(asae);
+Menu::Menu() {
+    this->asae = ASAE();
 
     int choice = 0;
 
-    cout << "1) Simulated Annealing" << endl;
+    /*cout << "1) Simulated Annealing" << endl;
     cout << "2) Hill Climbing" << endl;
-    cout << "Choice: "; cin >> choice;
+    //cout << "Choice: "; cin >> choice;
 
     switch(choice) {
         case 1:
@@ -21,30 +21,11 @@ Menu::Menu(ASAE asae) {
             break;
         case 2:
             procedure();
-            break;
-        default:
-            return;
-    }
-}
-
-
-void Menu::procedure() {
-    int choice;
-
-    asae.toRead();
- /*
-    asae.toRead();
-
-    cout << "1) " << endl;
-    cout << "2) " << endl;
-    cout << "Option: "; cin >> choice;
-
-    switch(choice) {
-        case 1:
-            break;
-        case 2:
             break;
         default:
             return;
     }*/
 }
+
+
+
