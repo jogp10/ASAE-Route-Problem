@@ -41,17 +41,21 @@ void ASAE::readEdges()
             char sep = ',';
 
             getline(file, line);   // trash
-            getline(file, line, sep); // first origin
-
+            getline(file, line, sep);   // trash
 
             while (!file.eof()) {
                 string weight;
 
                 int destino = 0;
-
-                while(getline(file, weight, sep) && weight[0] != 'p') {
+                int i = 0;
+                while(getline(file, weight, sep)) {
+                    if(i == 1003) return;
+                    if(weight[weight.size()-3] == 'p' | weight[weight.size()-3] == '_') {
+                        break;
+                    }
                     graph.addEdge(origin, destino, stof(weight));
                     destino++;
+                    i++;
                 }
                 origin++;
             }
@@ -83,7 +87,7 @@ void ASAE::readEstablishments()
                     int i = 0; 
                     element.erase(0, 2);
 
-                    while(element[element.size() - 1] != '"')
+                    while(element[2] != ']')
                     {
                         opening_hours[i] = stoi(element);
                         getline(str, element, ',');
@@ -91,7 +95,7 @@ void ASAE::readEstablishments()
                         i++;
                     }
 
-                    element.erase(element.size() - 2, 2);
+                    element.erase(2, element.size() - 2);
                     opening_hours[i] = stoi(element) ;
                 }
                 else if(element[0] == '"') 

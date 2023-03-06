@@ -7,7 +7,6 @@
 
 int main(int argc, char* argv[]) {
 
-    ASAE asae;
     Menu menu = Menu();
 
     return 0;
