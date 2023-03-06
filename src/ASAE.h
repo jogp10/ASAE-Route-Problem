@@ -8,12 +8,7 @@
 
 class ASAE
 {
-    int number_of_vans = 0; 
-
     Graph graph = Graph(0);
-    int hours;
-    int minutes;
-    int seconds;
 
     /**
      * Number lines in file
@@ -39,32 +34,7 @@ public:
      */
     ASAE();
 
-    /**
-     * Set number of vans
-     * @param numberOfVans
-     */
-    void setNumberOfVans(int numberOfVans);
-
-    /**
-     * Get number of vans
-     * @param numberOfVans
-     * @return
-     */
-    int getNumberOfVans(int numberOfVans);
-
-    /**
-     * Set time
-     * @param time
-     */
-    void setTime(int seconds = 0, int minutes = 0, int hours = 0);
-
-    /**
-     * Add time
-     * @param time
-     */
-    void addTime(int seconds = 0, int minutes = 0, int hours = 0);
-
-
+    void menu();
 };
 
 #endif // ASAE_H

@@ -38,9 +38,30 @@ class Graph {
         vector<int> opening_hours;
     };
 
+    struct Time {
+        int seconds;
+        int minutes;
+        int hours;
+
+        void setTime(int seconds = 0, int minutes = 0, int hours = 0);
+
+        void addTime(int seconds = 0, int minutes = 0, int hours = 0);
+        void addTime(Time time);
+    };
+
     int n;              // Graph size (vertices are numbered from 1 to n)
     bool hasDir;        // false: undirect; true: directed
     vector<Node> nodes; // The list of nodes being represented
+
+    int nrVehicles;
+
+    Time departure_time;
+    Time max_work_time;
+    Time limit_time;
+    Time time;
+
+    void setNrVehicles(int n) { nrVehicles = floor(n*0.1);};
+
 
 public:
     /**
@@ -48,7 +69,7 @@ public:
      * @param nodes nr nodes
      * @param dir direction ( default: undirected)
      */
-    explicit Graph(int nodes, bool dir = false);
+    explicit Graph(int nodes, bool dir = false, Time departure_time = {0, 0, 0}, Time max_work_time = {0, 0, 0});
 
     /**
      * Add edge from source to destination with a certain weight
@@ -84,7 +105,7 @@ public:
     Node getNode(int at);
 
     /**
-     * Dijkstra Path
+     * Path
      * @param a Departure local
      * @param b Destination local
      * @param type Type of trajectory the algorithm is going to use
@@ -94,18 +115,22 @@ public:
      */
     list<int> path(int a, int b);
 
-    /**
-     * BFS Algortihm
-     * @param a Node to start algorithm
-     * @param b Node to end algortihm
-     * BIG O = n + e
-     */
-    void bfs(int a, int b);
-
     int evaluate_solution(const vector<list<int>>& solution);
 
-    int random_node(list<Edge> &nodes);
+    int random_node(const int idx);
 
+    vector<list<int>> generate_random_solution() const;
+
+    void hillClimbing();
+
+    void simulatedAnnealing();
+
+    void tabuSearch();
+
+    void geneticAlgorithm();
+
+
+    void showAllEstablishments();
 };
 
 #endif

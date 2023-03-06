@@ -120,50 +120,38 @@ ASAE::ASAE()
     readEstablishments();
     readTimeDistances();
 
-    setNumberOfVans(nodes);
-
     cout << "Done building graph." << endl;
+
+    menu();
 }
 
-void ASAE::setNumberOfVans(int n)
-{
-    this->number_of_vans = floor(n * 0.1);
-}
+void ASAE::menu() {
+    int option = 0;
+    while (option != 5) {
+        cout << "1 - Show all establishments" << endl;
+        cout << "2 - Show all establishments of a given type" << endl;
+        cout << "3 - Show all establishments of a given type and with a given name" << endl;
+        cout << "4 - Show all establishments of a given type and with a given name and with a given opening hour" << endl;
+        cout << "5 - Exit" << endl;
+        cout << "Option: ";
+        cin >> option;
 
-
-
-void ASAE::setTime(int seconds, int minutes, int hours)
-{
-    this->seconds = seconds;
-    this->minutes = minutes;
-    this->hours = hours;
-}
-
-void ASAE::addTime(int seconds, int minutes, int hours)
-{
-    this->seconds += seconds;
-    this->minutes += minutes;
-    this->hours += hours;
-
-    if (this->seconds >= 60)
-    {
-        this->minutes += this->seconds / 60;
-        this->seconds = this->seconds % 60;
+        switch (option) {
+            case 1:
+                graph.showAllEstablishments();
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            default:
+                cout << "Invalid option." << endl;
+                break;
+        }
     }
 
-    if (this->minutes >= 60)
-    {
-        this->hours += this->minutes / 60;
-        this->minutes = this->minutes % 60;
-    }
-
-    if (this->hours >= 24)
-    {
-        this->hours = this->hours % 24;
-    }
 }
-
-int ASAE::getNumberOfVans(int numberOfVans) {
-    return this->number_of_vans;
-}
-

@@ -2,7 +2,12 @@
 
 
 // Constructor: nr nodes and direction (default: undirected)
-Graph::Graph(int num, bool dir) : n(num), hasDir(dir), nodes(num+1) {
+Graph::Graph(int num, bool dir, Time departure_time, Time max_work_time) : n(num), hasDir(dir), nodes(num+1),
+                                                                           departure_time(departure_time), max_work_time(max_work_time) {
+    this->time = this->departure_time;
+    this->limit_time = this->departure_time;
+    this->limit_time.addTime(this->max_work_time);
+    this->setNrVehicles(n);
 }
 
 // Add edge from source to destination with a certain weight
@@ -50,54 +55,80 @@ void Graph::setNode(int index, string address, float latitude, float longitude, 
     nodes[index] = u;
 }
 
-void Graph::bfs(int a, int b) {
-    for (int v=1; v<=n; v++) nodes[v].visited = false;
-    queue<int> q; // queue of unvisited nodes
-
-    q.push(a);
-    nodes[a].dist=0;
-    nodes[a].visited=true;
-
-    while (!q.empty()) { // while there are still unvisited nodes
-
-        int u = q.front(); q.pop();
-
-        for (const auto& e : nodes[u].adj) {
-            int w = e.dest;
-
-            if (!nodes[w].visited) {
-                q.push(w);
-                nodes[w].pred = u;
-                nodes[w].visited = true;
-                nodes[w].dist = nodes[u].dist + e.weight;
-            }
-            if(w==b) break;
-        }
-    }
-
-}
-
 int Graph::evaluate_solution(const vector<list<int>>& solution) {
-    int maxEstablishment = 0;
-    int bestSolution = -1;
-    for (int i = 0; i < solution.size(); ++i){
-        if(solution[i].size() > maxEstablishment){
-            maxEstablishment = solution[i].size();
-            bestSolution = i;
-        }
+    int bestSolution = 0;
+    for (int i = 0; i < solution.size(); i++){
+        bestSolution += solution[i].size();
     }
     return bestSolution;
 }
 
-int Graph::random_node(list<Edge> &list) {
-    int random = rand() % list.size();
-    int i = 0;
-
-    for (auto it = list.begin(); it != list.end(); ++it) {
-        if (i == random) {
-            return it->dest;
+int Graph::random_node(const int idx) {
+    while (true) {
+        int random = rand() % (n-1) + 1;
+        if (random != idx) {
+            return random;
         }
-        i++;
     }
-    return -1;
+}
+
+void Graph::hillClimbing() {
+
+}
+
+void Graph::simulatedAnnealing() {
+
+}
+
+void Graph::tabuSearch() {
+
+}
+
+void Graph::geneticAlgorithm() {
+
+}
+
+vector<list<int>> Graph::generate_random_solution() const {
+    vector<bool> available(n, true);
+
+    return vector<list<int>>();
+}
+
+void Graph::showAllEstablishments() {
+    for (int i = 1; i < nodes.size(); ++i) {
+        cout << "Node " << i << ": " << nodes[i].address << endl;
+    }
+}
+
+void Graph::Time::addTime(int seconds, int minutes, int hours) {
+    this->seconds += seconds;
+    this->hours += minutes;
+    this->hours += hours;
+
+    if (this->seconds >= 60)
+    {
+        this->minutes += this->seconds / 60;
+        this->seconds = this->seconds % 60;
+    }
+
+    if (this->minutes >= 60)
+    {
+        this->hours += this->minutes / 60;
+        this->minutes = this->minutes % 60;
+    }
+
+    if (this->hours >= 24)
+    {
+        this->hours = this->hours % 24;
+    }
+}
+
+void Graph::Time::setTime(int seconds, int minutes, int hours) {
+    this->seconds = seconds;
+    this->minutes = minutes;
+    this->hours = hours;
+}
+
+void Graph::Time::addTime(Graph::Time time) {
+    this->addTime(time.seconds, time.minutes, time.hours);
 }
