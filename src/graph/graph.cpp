@@ -98,14 +98,24 @@ vector<list<int>> Graph::generate_random_solution() {
     list<int> visited;
     int availables = nrVehicles;
     vector<list<int>> solution(nrVehicles, list<int>(1, 0));
+    list<pair<int, int>> not_compatible_pairs;
+    int max_tries = 1000;
 
     for (auto &t: times) t = departure_time;
 
-    while (availables && visited.size() < n) {
+    while (availables && visited.size() < n && max_tries) {
         int i = rand() % nrVehicles;
         int j = (rand() % n + 1) - 1;
 
         if (find(unavailable.begin(), unavailable.end(), i) != unavailable.end() || find(visited.begin(), visited.end(), j) != visited.end()) {
+            cout << "Unavailable: " << i << " " << j << endl;
+            max_tries--;
+            continue;
+        }
+
+        if (find(not_compatible_pairs.begin(), not_compatible_pairs.end(), make_pair(i, j)) != not_compatible_pairs.end()) {
+            cout << "Not compatible pair: " << i << " " << j << endl;
+            max_tries--;
             continue;
         }
 
@@ -117,8 +127,7 @@ vector<list<int>> Graph::generate_random_solution() {
 
         if (limit_time < times[i]) {
             times[i].subTime({miliseconds, seconds, 0, 0});
-            unavailable.push_back(i);
-            availables--;
+            not_compatible_pairs.emplace_back(i, j);
             continue;
         }
 
@@ -129,8 +138,7 @@ vector<list<int>> Graph::generate_random_solution() {
             times[i].toNextHour();
             if (limit_time < times[i]) {
                 times[i].subTime({miliseconds, seconds, 0, 0});
-                unavailable.push_back(i);
-                availables--;
+                not_compatible_pairs.emplace_back(i, j);
                 stop = true;
 
                 for(int k = 0; k < nr_hours; ++k) times[i].toPreviousHour();
