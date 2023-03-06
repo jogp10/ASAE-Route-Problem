@@ -32,6 +32,8 @@ void Menu::procedure() {
     int choice;
 
     asae.toRead();
+ /*
+    asae.toRead();
 
     cout << "1) " << endl;
     cout << "2) " << endl;
@@ -44,5 +46,5 @@ void Menu::procedure() {
             break;
         default:
             return;
-    }
+    }*/
 }

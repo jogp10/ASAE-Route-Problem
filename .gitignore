@@ -135,3 +135,5 @@ CmakeDoxyfile.in
 CmakeDoxygenDefaults.cmake
 CMakeFiles
 Makefile
+
+.vscode
