@@ -7,17 +7,17 @@
 
 using namespace std;
 
-int ASAE::numberOfLines(const string &myfile)
+int ASAE::numberOfLines(const string &myFile)
 {
     int number_of_lines = 0;
 
     string line;
     fstream file;
-    file.open(myfile, fstream::in);
+    file.open(myFile, fstream::in);
 
     if (file.is_open())
     {
-        getline(file, line);
+        getline(file, line); // trash
 
         while (!file.eof())
         {
@@ -29,11 +29,11 @@ int ASAE::numberOfLines(const string &myfile)
     return number_of_lines - 1;
 }
 
-void ASAE::readEdges()
+void ASAE::readTimeDistances()
 {
-        string myfile = "./dataset/distances.csv";
+        string myFile = "./dataset/distances.csv";
 
-        ifstream file(myfile);
+        ifstream file(myFile);
 
         if (file.is_open()) {
             int origin = 0;
@@ -46,31 +46,21 @@ void ASAE::readEdges()
             while (!file.eof()) {
                 string weight;
 
-                int destino = 0;
-                int i = 0;
+                int destin = 0;
                 while(getline(file, weight, sep)) {
-                    if(i == 1003) return;
-                    if(weight[weight.size()-3] == 'p' | weight[weight.size()-3] == '_') {
-                        break;
-                    }
-                    graph.addEdge(origin, destino, stof(weight));
-                    destino++;
-                    i++;
+                    if(weight[weight.size()-3] == 'p' | weight[weight.size()-3] == '_') { break; }
+                    graph.addEdge(origin, destin, stof(weight));
+                    destin++;
                 }
-                
                 origin++;
             }
-            // cout << count << " number of edges read in file " << myfile << endl;
         }
 }
 
 void ASAE::readEstablishments()
 {
-    string line;
-    string delimiter = ",";
-    size_t pos;
+    string line, delimiter = ",";
     ifstream file("./dataset/establishments.csv");
-    int count = 1;
 
     if (file.is_open())
     {
@@ -108,7 +98,6 @@ void ASAE::readEstablishments()
                         string temp;
                         getline(str, temp, ',');
                         element += "," + temp;
-                        //cout << temp << endl; 
                     }
 
                     element.erase(element.size() - 1);
@@ -117,7 +106,6 @@ void ASAE::readEstablishments()
                 extra.push_back(element);  
             }
             graph.setNode(stoi(extra[0]), extra[4], stof(extra[5]), stof(extra[6]), stof(extra[7]), stoi(extra[8]), opening_hours);
-            count++;
         }
     
         file.close();
@@ -127,26 +115,14 @@ void ASAE::readEstablishments()
 ASAE::ASAE()
 {
     int nodes = numberOfLines("./dataset/establishments.csv");
-    //cout << nodes << " number of nodes" << endl;
-    this->graph = Graph(nodes, true) ;
+    this->graph = Graph(nodes, true);
 
     readEstablishments();
+    readTimeDistances();
 
     setNumberOfVans(nodes);
 
-    readEdges();
-    auto a = this->graph.getNode(4).adj;
-    cout << "Done" << endl;
-
-
-    for (auto a : this->graph.getNode(5).adj) {
-        cout << a.dest << " " << a.weight << endl;
-    }
-    /*
-        cout << lines.size() << " number of lines stored " << endl;
-        cout << endl <<  stops.size() << " number of stops stored " << endl;
-        cout << graph.getNodes().size() << " number of stops stored in getNodes " << endl;
-        */
+    cout << "Done building graph." << endl;
 }
 
 void ASAE::setNumberOfVans(int n)
@@ -187,8 +163,7 @@ void ASAE::addTime(int seconds, int minutes, int hours)
     }
 }
 
-int ASAE::convertCodeToIndex(string a)
-{
-    return stoi(a.erase(0, 2));
+int ASAE::getNumberOfVans(int numberOfVans) {
+    return this->number_of_vans;
 }
 

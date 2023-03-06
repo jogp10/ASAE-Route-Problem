@@ -7,7 +7,6 @@
 using namespace std;
 
 Menu::Menu() {
-    this->asae = ASAE();
 
     int choice = 0;
 

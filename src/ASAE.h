@@ -31,7 +31,7 @@ class ASAE
      * Goes to file and connects stops and lines, by adding edges to graph
      * @param code Line Code
      */
-    void readEdges();
+    void readTimeDistances();
 
 public:
     /**
@@ -39,17 +39,18 @@ public:
      */
     ASAE();
 
-    /*
-    * Set number of vans
-    */
+    /**
+     * Set number of vans
+     * @param numberOfVans
+     */
     void setNumberOfVans(int numberOfVans);
 
-    /*
-     * Set number of vans
-*/
-    void getNumberOfVans(int numberOfVans);
-
-
+    /**
+     * Get number of vans
+     * @param numberOfVans
+     * @return
+     */
+    int getNumberOfVans(int numberOfVans);
 
     /**
      * Set time
@@ -62,16 +63,6 @@ public:
      * @param time
      */
     void addTime(int seconds = 0, int minutes = 0, int hours = 0);
-
-    /**
-     *
-     * Convert code of stop to index in vector<Node> nodes that belongs to graph
-     * @param code
-     * @return index
-     */
-    int convertCodeToIndex(string code);
-
-
 
 
 };

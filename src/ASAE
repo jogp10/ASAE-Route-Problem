@@ -73550,7 +73550,7 @@ void ASAE::readLines(const string &myFile)
     }
 }
 
-void ASAE::readEdges(const string &code)
+void ASAE::readTimeDistances(const string &code)
 {
     for (int i = 0; i <= 1; i++)
     {
