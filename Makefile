@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/john/Documents/ai/ia_t03g34_assignment1
+CMAKE_SOURCE_DIR = /home/ze/Programming/ia_t03g34_assignment1
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/john/Documents/ai/ia_t03g34_assignment1
+CMAKE_BINARY_DIR = /home/ze/Programming/ia_t03g34_assignment1
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/john/Documents/ai/ia_t03g34_assignment1/CMakeFiles /home/john/Documents/ai/ia_t03g34_assignment1//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ze/Programming/ia_t03g34_assignment1/CMakeFiles /home/ze/Programming/ia_t03g34_assignment1//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/john/Documents/ai/ia_t03g34_assignment1/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ze/Programming/ia_t03g34_assignment1/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -128,19 +128,6 @@ ASAEinspectionRoute: cmake_check_build_system
 ASAEinspectionRoute/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ASAEinspectionRoute.dir/build.make CMakeFiles/ASAEinspectionRoute.dir/build
 .PHONY : ASAEinspectionRoute/fast
-
-#=============================================================================
-# Target rules for targets named Doxygen
-
-# Build rule for target.
-Doxygen: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Doxygen
-.PHONY : Doxygen
-
-# fast build rule for target.
-Doxygen/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Doxygen.dir/build.make CMakeFiles/Doxygen.dir/build
-.PHONY : Doxygen/fast
 
 main.o: main.cpp.o
 .PHONY : main.o
@@ -246,7 +233,6 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... Doxygen"
 	@echo "... ASAEinspectionRoute"
 	@echo "... main.o"
 	@echo "... main.i"

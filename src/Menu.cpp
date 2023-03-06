@@ -7,7 +7,7 @@
 using namespace std;
 
 Menu::Menu(ASAE asae) {
-    this->asae=std::move(asae);
+    this->asae = move(asae);
 
     int choice = 0;
 

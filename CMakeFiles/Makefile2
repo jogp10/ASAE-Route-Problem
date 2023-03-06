@@ -54,17 +54,16 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/john/Documents/ai/ia_t03g34_assignment1
+CMAKE_SOURCE_DIR = /home/ze/Programming/ia_t03g34_assignment1
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/john/Documents/ai/ia_t03g34_assignment1
+CMAKE_BINARY_DIR = /home/ze/Programming/ia_t03g34_assignment1
 
 #=============================================================================
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
 all: CMakeFiles/ASAEinspectionRoute.dir/all
-all: CMakeFiles/Doxygen.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -73,7 +72,6 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/ASAEinspectionRoute.dir/clean
-clean: CMakeFiles/Doxygen.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -83,14 +81,14 @@ clean: CMakeFiles/Doxygen.dir/clean
 CMakeFiles/ASAEinspectionRoute.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ASAEinspectionRoute.dir/build.make CMakeFiles/ASAEinspectionRoute.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ASAEinspectionRoute.dir/build.make CMakeFiles/ASAEinspectionRoute.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/john/Documents/ai/ia_t03g34_assignment1/CMakeFiles --progress-num=1,2,3,4,5 "Built target ASAEinspectionRoute"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ze/Programming/ia_t03g34_assignment1/CMakeFiles --progress-num=1,2,3,4,5 "Built target ASAEinspectionRoute"
 .PHONY : CMakeFiles/ASAEinspectionRoute.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/ASAEinspectionRoute.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/john/Documents/ai/ia_t03g34_assignment1/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ze/Programming/ia_t03g34_assignment1/CMakeFiles 5
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/ASAEinspectionRoute.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/john/Documents/ai/ia_t03g34_assignment1/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ze/Programming/ia_t03g34_assignment1/CMakeFiles 0
 .PHONY : CMakeFiles/ASAEinspectionRoute.dir/rule
 
 # Convenience name for target.
@@ -101,32 +99,6 @@ ASAEinspectionRoute: CMakeFiles/ASAEinspectionRoute.dir/rule
 CMakeFiles/ASAEinspectionRoute.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ASAEinspectionRoute.dir/build.make CMakeFiles/ASAEinspectionRoute.dir/clean
 .PHONY : CMakeFiles/ASAEinspectionRoute.dir/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/Doxygen.dir
-
-# All Build rule for target.
-CMakeFiles/Doxygen.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Doxygen.dir/build.make CMakeFiles/Doxygen.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Doxygen.dir/build.make CMakeFiles/Doxygen.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/john/Documents/ai/ia_t03g34_assignment1/CMakeFiles --progress-num=6 "Built target Doxygen"
-.PHONY : CMakeFiles/Doxygen.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/Doxygen.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/john/Documents/ai/ia_t03g34_assignment1/CMakeFiles 1
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/Doxygen.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/john/Documents/ai/ia_t03g34_assignment1/CMakeFiles 0
-.PHONY : CMakeFiles/Doxygen.dir/rule
-
-# Convenience name for target.
-Doxygen: CMakeFiles/Doxygen.dir/rule
-.PHONY : Doxygen
-
-# clean rule for target.
-CMakeFiles/Doxygen.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Doxygen.dir/build.make CMakeFiles/Doxygen.dir/clean
-.PHONY : CMakeFiles/Doxygen.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
