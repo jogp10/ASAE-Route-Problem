@@ -8,6 +8,7 @@
 
 class ASAE
 {
+    int number_of_vans = 0; 
     map<string, string> lines; // key: codigo da linha, value: nome da linha
     map<string, int> stops;    // key: codigo da paragem, value: index no vetor de nodes do grafo
     Graph graph = Graph(0);
@@ -38,6 +39,11 @@ public:
      * ASAE Constructor
      */
     ASAE();
+
+    /*
+    * Set number of vans
+    */
+    void setNumberOfVans(int numberOfVans);
 
     /**
      * 

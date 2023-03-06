@@ -1,6 +1,7 @@
 #include <fstream>
 #include <map>
 #include <vector>
+#include <math.h>
 
 #include "ASAE.h"
 
@@ -127,16 +128,24 @@ void ASAE::readEstablishments()
 ASAE::ASAE()
 {
     int nodes = numberOfLines("./dataset/establishments.csv");
-    cout << nodes << " number of nodes" << endl;
+    //cout << nodes << " number of nodes" << endl;
     Graph g(nodes, true);
     this->graph = g;
 
     readEstablishments();
+
+    this->setNumberOfVans(nodes); 
+    
     /*
         cout << lines.size() << " number of lines stored " << endl;
         cout << endl <<  stops.size() << " number of stops stored " << endl;
         cout << graph.getNodes().size() << " number of stops stored in getNodes " << endl;
         */
+}
+
+void ASAE::setNumberOfVans(int n)
+{
+    this->number_of_vans = floor(n * 0.1);
 }
 
 void ASAE::toRead()
