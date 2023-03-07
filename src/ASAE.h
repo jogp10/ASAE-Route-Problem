@@ -9,6 +9,8 @@
 class ASAE
 {
     Graph graph = Graph(0);
+    string establishmentsFile = "./dataset/establishments.csv";
+    string distancesFile = "./dataset/distances.csv";
 
     /**
      * Number lines in file
@@ -20,13 +22,13 @@ class ASAE
     /**
      * Goes to file and reads establishments info, adds them as nodes to graph
      */
-    void readEstablishments();
+    void readEstablishments(int n);
 
     /**
      * Goes to file and connects stops and lines, by adding edges to graph
      * @param code Line Code
      */
-    void readTimeDistances();
+    void readTimeDistances(int n);
 
 public:
     /**

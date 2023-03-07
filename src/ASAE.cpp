@@ -29,9 +29,9 @@ int ASAE::numberOfLines(const string &myFile)
     return number_of_lines - 1;
 }
 
-void ASAE::readTimeDistances()
+void ASAE::readTimeDistances(int n)
 {
-        string myFile = "./dataset/distances2.csv";
+        string myFile = distancesFile;
 
         ifstream file(myFile);
 
@@ -43,27 +43,37 @@ void ASAE::readTimeDistances()
             getline(file, line);   // trash
             getline(file, line, sep);   // trash
 
+
             while (!file.eof()) {
                 string weight;
 
                 int destin = 0;
                 while(getline(file, weight, sep)) {
                     graph.addEdge(origin, destin, stof(weight));
-                    if(weight[weight.size()-3] == 'p' | weight[weight.size()-3] == '_') { break; }
                     destin++;
+
+                    if(weight[weight.size()-3] == 'p' | weight[weight.size()-3] == '_') { break; }
+                    if(destin == n) {
+                        getline(file, weight); // trash
+                        getline(file, weight, sep); // trash
+                        cout << weight << endl;
+                        if(weight[weight.size()-3] == 'p' | weight[weight.size()-3] == '_') { break; }
+                        break; }
                 }
                 origin++;
+                if(origin == n) { break; }
             }
         }
 }
 
-void ASAE::readEstablishments()
+void ASAE::readEstablishments(int n)
 {
     string line, delimiter = ",";
-    ifstream file("./dataset/establishments2.csv");
+    ifstream file(establishmentsFile);
 
     if (file.is_open())
     {
+        int nrEstablishmentsRead = 0;
         getline(file, line); // trash
         while (getline(file, line))
         {
@@ -106,6 +116,8 @@ void ASAE::readEstablishments()
                 extra.push_back(element);  
             }
             graph.setNode(stoi(extra[0]), extra[4], stof(extra[5]), stof(extra[6]), stof(extra[7]), stoi(extra[8]), opening_hours);
+            nrEstablishmentsRead++;
+            if(nrEstablishmentsRead == n) { break; }
         }
     
         file.close();
@@ -115,11 +127,13 @@ void ASAE::readEstablishments()
 ASAE::ASAE()
 {
     srand(time(NULL));
-    int nodes = numberOfLines("./dataset/establishments2.csv");
-    this->graph = Graph(nodes, true, {0, 0, 0, 9}, {0, 0, 0, 8});
+    int nodes = numberOfLines(distancesFile);
+    int number_of_establishments = 1001;
 
-    readEstablishments();
-    readTimeDistances();
+    this->graph = Graph(number_of_establishments, true, {0, 0, 0, 9}, {0, 0, 0, 8});
+
+    readEstablishments(number_of_establishments);
+    readTimeDistances(number_of_establishments);
 
     cout << "Done building graph." << endl;
 }
