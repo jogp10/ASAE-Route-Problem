@@ -43,12 +43,13 @@ class Graph {
         int seconds;
         int minutes;
         int hours;
+        int days;
 
-        void setTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0);
+        void setTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0, int days = 0);
 
-        void addTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0);
+        void addTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0, int days = 0);
         void addTime(Time time);
-        void subTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0);
+        void subTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0, int days = 0);
         void subTime(Time time);
 
         void toNextHour();
@@ -147,6 +148,11 @@ public:
     float totalTravelTime(const vector<list<int>>& solution);
 
     float totalWaitingTime(const vector<list<int>>& solution);
+
+    float totalOperationTime(const vector<list<int>>& solution);
+
+    Time minimumOperationTime(int a, int b, Time time);
+    Time operationTime(int a, int b, Time time);
 };
 
 #endif /* GRAPH_H_ */

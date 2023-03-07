@@ -31,7 +31,7 @@ int ASAE::numberOfLines(const string &myFile)
 
 void ASAE::readTimeDistances()
 {
-        string myFile = "./dataset/distances.csv";
+        string myFile = "./dataset/distances2.csv";
 
         ifstream file(myFile);
 
@@ -48,8 +48,8 @@ void ASAE::readTimeDistances()
 
                 int destin = 0;
                 while(getline(file, weight, sep)) {
-                    if(weight[weight.size()-3] == 'p' | weight[weight.size()-3] == '_') { break; }
                     graph.addEdge(origin, destin, stof(weight));
+                    if(weight[weight.size()-3] == 'p' | weight[weight.size()-3] == '_') { break; }
                     destin++;
                 }
                 origin++;
@@ -60,7 +60,7 @@ void ASAE::readTimeDistances()
 void ASAE::readEstablishments()
 {
     string line, delimiter = ",";
-    ifstream file("./dataset/establishments.csv");
+    ifstream file("./dataset/establishments2.csv");
 
     if (file.is_open())
     {
@@ -114,7 +114,8 @@ void ASAE::readEstablishments()
 
 ASAE::ASAE()
 {
-    int nodes = numberOfLines("./dataset/establishments.csv");
+    srand(time(NULL));
+    int nodes = numberOfLines("./dataset/establishments2.csv");
     this->graph = Graph(nodes, true, {0, 0, 0, 9}, {0, 0, 0, 8});
 
     readEstablishments();
@@ -131,6 +132,7 @@ void ASAE::menu() {
 
     graph.totalTravelTime(solution);
     graph.totalWaitingTime(solution);
+    graph.totalOperationTime(solution);
 
     cout << endl;
     while (option != 5) {
