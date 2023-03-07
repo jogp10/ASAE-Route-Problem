@@ -48,20 +48,28 @@ void ASAE::readTimeDistances(int n)
                 string weight;
 
                 int destin = 0;
+
                 while(getline(file, weight, sep)) {
+
+
                     graph.addEdge(origin, destin, stof(weight));
                     destin++;
-
-                    if(weight[weight.size()-3] == 'p' | weight[weight.size()-3] == '_') { break; }
-                    if(destin == n) {
+                    if(destin == n && destin != max_establishments) {
                         getline(file, weight); // trash
                         getline(file, weight, sep); // trash
                         cout << weight << endl;
-                        if(weight[weight.size()-3] == 'p' | weight[weight.size()-3] == '_') { break; }
+                        if(hasSubstring(weight)) { break; }
                         break; }
+                    if(hasSubstring(weight)) { break; }
+
+
+
                 }
+
                 origin++;
-                if(origin == n) { break; }
+                if(origin == n) {
+                    break;
+                }
             }
         }
 }
@@ -117,7 +125,9 @@ void ASAE::readEstablishments(int n)
             }
             graph.setNode(stoi(extra[0]), extra[4], stof(extra[5]), stof(extra[6]), stof(extra[7]), stoi(extra[8]), opening_hours);
             nrEstablishmentsRead++;
-            if(nrEstablishmentsRead == n) { break; }
+            if(nrEstablishmentsRead == n) {
+                break;
+            }
         }
     
         file.close();
@@ -127,13 +137,17 @@ void ASAE::readEstablishments(int n)
 ASAE::ASAE()
 {
     srand(time(NULL));
-    int nodes = numberOfLines(distancesFile);
+    max_establishments = numberOfLines(distancesFile);
+
     int number_of_establishments = 1001;
 
     this->graph = Graph(number_of_establishments, true, {0, 0, 0, 9}, {0, 0, 0, 8});
 
     readEstablishments(number_of_establishments);
     readTimeDistances(number_of_establishments);
+
+
+    //stop execution
 
     cout << "Done building graph." << endl;
 }
@@ -176,4 +190,9 @@ void ASAE::menu() {
         }
     }
 
+}
+
+bool ASAE::hasSubstring(const std::string& str)
+{
+    return str.find("p_") != std::string::npos;
 }

@@ -11,6 +11,7 @@ class ASAE
     Graph graph = Graph(0);
     string establishmentsFile = "./dataset/establishments.csv";
     string distancesFile = "./dataset/distances.csv";
+    int max_establishments= 0;
 
     /**
      * Number lines in file
@@ -37,6 +38,8 @@ public:
     ASAE();
 
     void menu();
+
+    bool hasSubstring(const string &s);
 };
 
 #endif // ASAE_H

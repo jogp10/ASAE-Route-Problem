@@ -72,7 +72,11 @@ class Graph {
     Time limit_time;
     vector<Time> times;
 
-    void setNrVehicles(int n) { nrVehicles = floor(n*0.1);};
+    void setNrVehicles(int n) {
+
+        nrVehicles = floor(n*0.1);
+        if(nrVehicles == 0) nrVehicles = 1;
+    };
 
 
 public:
