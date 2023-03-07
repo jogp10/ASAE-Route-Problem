@@ -149,6 +149,8 @@ public:
 
     static void printSolution(const vector<list<int>>& solution);
 
+    void printDetailedSolution(const vector<list<int>>& solution);
+
     float totalTravelTime(const vector<list<int>>& solution);
 
     float totalWaitingTime(const vector<list<int>>& solution);

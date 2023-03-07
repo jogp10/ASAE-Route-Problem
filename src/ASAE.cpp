@@ -57,13 +57,9 @@ void ASAE::readTimeDistances(int n)
                     if(destin == n && destin != max_establishments) {
                         getline(file, weight); // trash
                         getline(file, weight, sep); // trash
-                        cout << weight << endl;
                         if(hasSubstring(weight)) { break; }
                         break; }
                     if(hasSubstring(weight)) { break; }
-
-
-
                 }
 
                 origin++;
@@ -139,13 +135,31 @@ ASAE::ASAE()
     srand(time(NULL));
     max_establishments = numberOfLines(distancesFile);
 
-    int number_of_establishments = 1001;
+    int number_of_establishments = 21;
 
     this->graph = Graph(number_of_establishments, true, {0, 0, 0, 9}, {0, 0, 0, 8});
 
     readEstablishments(number_of_establishments);
     readTimeDistances(number_of_establishments);
 
+    vector<list<int>> solution;
+    list<int> aux;
+    aux.emplace_back(0);
+    aux.emplace_back(17);
+    aux.emplace_back(14);
+    aux.emplace_back(13);
+    aux.emplace_back(10);
+    aux.emplace_back(5);
+    aux.emplace_back(4);
+    aux.emplace_back(6);
+    aux.emplace_back(18);
+    aux.emplace_back(7);
+    aux.emplace_back(0);
+
+    solution.push_back(aux);
+
+    graph.printDetailedSolution(solution);
+    graph.totalOperationTime(solution);
 
     //stop execution
 

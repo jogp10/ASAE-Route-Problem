@@ -119,13 +119,13 @@ vector<list<int>> Graph::generate_random_solution() {
 
         int last = solution[i].back();
 
-        //cout << "Vehicle -> " << i << "    Node -> " << last << endl;
-        //cout << times[i].hours << ":" << times[i].minutes << "h" << endl;
+        cout << "Vehicle -> " << i << "    Node -> " << last << endl;
+        cout << times[i].hours << ":" << times[i].minutes << "h" << endl;
 
         Time min_op = minimumOperationTime(last, j, times[i]);
         min_op.addTime(times[i]);
         if (limit_time < min_op) {
-            //cout << "Limit time reached" << endl;
+            cout << "Limit time reached" << endl;
             not_compatible_pairs[i].emplace_back(j);
             continue;
         }
@@ -237,21 +237,21 @@ Graph::Time Graph::minimumOperationTime(int a, int b, Time time) {
 
     Time w = {0, 0, 0, 0};
     w.addTime({milliseconds_distance, (int) time_distance, 0, 0});
-    //cout << "Time to travel to Node " << b << ": " << w.hours << ":" << w.minutes << "h" << endl;
+    cout << "Time to travel to Node " << b << ": " << w.hours << ":" << w.minutes << "h" << endl;
 
     time.addTime({milliseconds_distance, (int) time_distance, 0, 0});
 
-    //if(nodes[b].opening_hours[time.hours] == 0) cout << "Node " << b << " is closed at " << time.hours << endl;
+    if(nodes[b].opening_hours[time.hours] == 0) cout << "Node " << b << " is closed at " << time.hours << endl;
     for(int i = time.hours; i < 24; i++) {
         if(nodes[b].opening_hours[time.hours] == 0) {
             time.toNextHour();
         }
         else break;
     }
-    //cout << "Node " << b << " is open /(time) " << time.hours << ":" << time.minutes << "h" << endl;
+    cout << "Node " << b << " is open /(time) " << time.hours << ":" << time.minutes << "h" << endl;
 
     time.addTime({milliseconds_depot, (int) time_depot, time_inspection, 0});
-    //cout << "Inspection time: " << time_inspection/60 << ":" << time_inspection%60 << endl;
+    cout << "Inspection time: " << time_inspection/60 << ":" << time_inspection%60 << endl;
     time.subTime(aux);
     return time;
 }
@@ -300,6 +300,25 @@ float Graph::totalOperationTime(const vector<list<int>> &solution) {
     cout << "Total operation time: " << operation_time << "s" << endl;
     cout << "Number of vehicles above 8h: " << number_above << endl;
     return operation_time;
+}
+
+void Graph::printDetailedSolution(const vector<list<int>> &solution) {
+    // For each step in vechicle i, node,time before leaving to node, time of travel distance to node, inspection time, time after inspection
+    for (int i = 0; i < solution.size(); ++i) {
+        Time t = departure_time;
+        int last = 0;
+
+        auto it = solution[i].begin();
+        it++;
+        for (; it != solution[i].end(); ++it)  {
+            cout << "Time to travel to Node " << *it << " " << (int) getDistance(last, *it)/60 << "m" << endl;
+            cout << "Vehicle " << i << " Node " << *it << " " << t.hours << ":" << t.minutes << "h" << endl;
+            cout << "Time to inspect Node " << *it << ": " << nodes[*it].inspection_time/60 << ":" << nodes[*it].inspection_time%60 << endl << endl;
+            t.addTime(operationTime(last, *it, t));
+            last = *it;
+        }
+    }
+
 }
 
 void Graph::Time::addTime(int milliseconds, int seconds, int minutes, int hours, int days) {
