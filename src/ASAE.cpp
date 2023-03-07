@@ -126,7 +126,12 @@ ASAE::ASAE()
 void ASAE::menu() {
     int option = 0;
     auto solution = graph.generate_random_solution();
+
     Graph::printSolution(solution);
+
+    graph.totalTravelTime(solution);
+    graph.totalWaitingTime(solution);
+
     cout << endl;
     while (option != 5) {
         cout << "1 - Show all establishments" << endl;

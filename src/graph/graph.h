@@ -56,6 +56,8 @@ class Graph {
         bool operator<(const Time &rhs) const;
 
         void toPreviousHour();
+
+        float toSeconds();
     };
 
     int n;              // Graph size (vertices are numbered from 1 to n)
@@ -141,6 +143,10 @@ public:
     void showAllEstablishments();
 
     static void printSolution(const vector<list<int>>& solution);
+
+    float totalTravelTime(const vector<list<int>>& solution);
+
+    float totalWaitingTime(const vector<list<int>>& solution);
 };
 
 #endif /* GRAPH_H_ */

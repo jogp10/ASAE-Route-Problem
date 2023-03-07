@@ -197,6 +197,51 @@ float Graph::getDistance(int a, int b) {
     }
 }
 
+float Graph::totalTravelTime(const vector<list<int>> &solution) {
+    float travel_time = 0;
+    for (int i = 0; i < solution.size(); ++i) {
+        float vehicle_time = 0;
+        int last = 0;
+        for (auto it = solution[i].begin(); it != solution[i].end(); ++it)  {
+            vehicle_time += getDistance(last, *it);
+            last = *it;
+        }
+        cout << "Vehicle " << i << " total travel time: " << vehicle_time << "s" << endl;
+        travel_time += vehicle_time;
+    }
+    cout << "Total travel time: " << travel_time << "s" << endl;
+    return travel_time;
+
+}
+
+float Graph::totalWaitingTime(const vector<list<int>> &solution) {
+    float waiting_time;
+
+    for (int i = 0; i < solution.size(); ++i) {
+        float vehicle_time = 0;
+        Graph::Time time = departure_time;
+        int last = 0;
+        for (auto it = solution[i].begin(); it != solution[i].end(); ++it)  {
+            int seconds = (int) getDistance(last, *it);
+            int miliseconds = (int) ((getDistance(last, *it) - (float) seconds) * 1000);
+            time.addTime({miliseconds, seconds, 0, 0});
+            while (nodes[*it].opening_hours[time.hours] == 0) {
+                auto aux = time;
+                time.toNextHour();
+                auto diff = time;
+                diff.subTime(aux);
+                vehicle_time += diff.toSeconds();
+            }
+            time.addTime(0, 0, nodes[*it].inspection_time, 0);
+            last = *it;
+        }
+        cout << "Vehicle " << i << " total waiting time: " << vehicle_time << "s" << endl;
+        waiting_time += vehicle_time;
+    }
+    cout << "Total waiting time: " << waiting_time << "s" << endl;
+    return waiting_time;
+}
+
 void Graph::Time::addTime(int milliseconds, int seconds, int minutes, int hours) {
     this->milliseconds += milliseconds;
     this->seconds += seconds;
@@ -299,4 +344,8 @@ void Graph::Time::toPreviousHour() {
     this->seconds = 0;
     this->milliseconds = 0;
 
+}
+
+float Graph::Time::toSeconds() {
+    return (float) this->milliseconds / 1000 + this->seconds + this->minutes * 60 + this->hours * 3600;
 }
