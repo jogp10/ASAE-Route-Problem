@@ -37,8 +37,16 @@ public:
      */
     ASAE();
 
+    /**
+     * ASAE menu display
+     */
     void menu();
 
+    /**
+     * Checks if string has substring "p_"
+     * @param s
+     * @return
+     */
     bool hasSubstring(const string &s);
 };
 

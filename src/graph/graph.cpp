@@ -321,6 +321,11 @@ void Graph::printDetailedSolution(const vector<list<int>> &solution) {
 
 }
 
+void Graph::setNrVehicles(int n) {
+        nrVehicles = floor(n*0.1);
+        if(nrVehicles == 0) nrVehicles = 1;
+}
+
 void Graph::Time::addTime(int milliseconds, int seconds, int minutes, int hours, int days) {
     this->milliseconds += milliseconds;
     this->seconds += seconds;
