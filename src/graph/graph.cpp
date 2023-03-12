@@ -1,5 +1,6 @@
 #include "graph.h"
 
+#include <random>
 #include <utility>
 #include <list>
 #include <algorithm>
@@ -15,12 +16,14 @@ Graph::Graph(int num, bool dir, Time departure_time, Time max_work_time) : n(num
     this->times = vector<Time>(nrVehicles, this->departure_time);
 }
 
+
 // Add edge from source to destination with a certain weight
 void Graph::addEdge(int src, int dest, float weight) {
     if (src<0 || src>n || dest<0 || dest>n || src==dest) return;
     nodes[src].adj.push_back({dest, weight});
     if (!hasDir) nodes[dest].adj.push_back({src, weight});
 }
+
 
 map<int, pair<float, float>> Graph::getNodes(){
     map<int, pair<float, float>> localizations;
@@ -30,9 +33,11 @@ map<int, pair<float, float>> Graph::getNodes(){
     return localizations;
 }
 
+
 Graph::Node Graph::getNode(int at){
     return nodes[at];
 }
+
 
 list<int> Graph::path(int a, int b) {
     list<int> path;
@@ -47,6 +52,7 @@ list<int> Graph::path(int a, int b) {
     return path;
 }
 
+
 void Graph::setNode(int index, string address, float latitude, float longitude, float inspection_utility, int inspection_time, vector<int> opening_hours) {
     Node u;
     u.id = index;
@@ -60,6 +66,7 @@ void Graph::setNode(int index, string address, float latitude, float longitude, 
     nodes[index] = u;
 }
 
+
 int Graph::evaluate_solution(const vector<list<int>>& solution) {
     int bestSolution = 0;
     for (const auto & i : solution){
@@ -67,6 +74,7 @@ int Graph::evaluate_solution(const vector<list<int>>& solution) {
     }
     return bestSolution;
 }
+
 
 int Graph::random_node(const int idx) const {
     while (true) {
@@ -77,23 +85,8 @@ int Graph::random_node(const int idx) const {
     }
 }
 
-void Graph::hillClimbing() {
 
-}
-
-void Graph::simulatedAnnealing() {
-
-}
-
-void Graph::tabuSearch() {
-
-}
-
-void Graph::geneticAlgorithm() {
-
-}
-
-vector<list<int>> Graph::generate_random_solution() {
+vector<list<int>> Graph::generate_random_solution(bool log) {
 
     int nr_visited = 0;
     vector<list<int>> not_compatible_pairs(nrVehicles, list<int>());
@@ -119,13 +112,13 @@ vector<list<int>> Graph::generate_random_solution() {
 
         int last = solution[i].back();
 
-        cout << "Vehicle -> " << i << "    Node -> " << last << endl;
-        cout << times[i].hours << ":" << times[i].minutes << "h" << endl;
+        if(log) cout << "Vehicle -> " << i << "    Node -> " << last << endl;
+        if(log) cout << times[i].hours << ":" << times[i].minutes << "h" << endl;
 
         Time min_op = minimumOperationTime(last, j, times[i]);
         min_op.addTime(times[i]);
         if (limit_time < min_op) {
-            cout << "Limit time reached" << endl;
+            if(log) cout << "Limit time reached" << endl;
             not_compatible_pairs[i].emplace_back(j);
             continue;
         }
@@ -142,11 +135,13 @@ vector<list<int>> Graph::generate_random_solution() {
     return solution;
 }
 
+
 void Graph::showAllEstablishments() {
     for (int i = 1; i < nodes.size(); ++i) {
         cout << "Node " << i << ": " << nodes[i].address << endl;
     }
 }
+
 
 void Graph::printSolution(const vector<list<int>> &solution) {
     for (int i = 0; i < solution.size(); ++i) {
@@ -158,6 +153,7 @@ void Graph::printSolution(const vector<list<int>> &solution) {
         cout << endl;
     }
 }
+
 
 int Graph::closest_node(int idx) const {
     int closest = -1;
@@ -171,6 +167,7 @@ int Graph::closest_node(int idx) const {
     return closest;
 }
 
+
 float Graph::getDistance(int a, int b) {
     for (auto e: nodes[a].adj) {
         if (e.dest == b) {
@@ -178,6 +175,7 @@ float Graph::getDistance(int a, int b) {
         }
     }
 }
+
 
 float Graph::totalTravelTime(const vector<list<int>> &solution) {
     float travel_time = 0;
@@ -194,6 +192,7 @@ float Graph::totalTravelTime(const vector<list<int>> &solution) {
     cout << "Total travel time: " << travel_time << "s" << endl;
     return travel_time;
 }
+
 
 float Graph::totalWaitingTime(const vector<list<int>> &solution) {
     float waiting_time = 0;
@@ -226,7 +225,8 @@ float Graph::totalWaitingTime(const vector<list<int>> &solution) {
     return waiting_time;
 }
 
-Graph::Time Graph::minimumOperationTime(int a, int b, Time time) {
+
+Graph::Time Graph::minimumOperationTime(int a, int b, Time time, bool log) {
     Graph::Time aux = time;
 
     float time_distance = (int) getDistance(a, b);
@@ -237,26 +237,27 @@ Graph::Time Graph::minimumOperationTime(int a, int b, Time time) {
 
     Time w = {0, 0, 0, 0};
     w.addTime({milliseconds_distance, (int) time_distance, 0, 0});
-    cout << "Time to travel to Node " << b << ": " << w.hours << ":" << w.minutes << "h" << endl;
+    if(log)  cout << "Time to travel to Node " << b << ": " << w.hours << ":" << w.minutes << "h" << endl;
 
     time.addTime({milliseconds_distance, (int) time_distance, 0, 0});
 
-    if(nodes[b].opening_hours[time.hours] == 0) cout << "Node " << b << " is closed at " << time.hours << endl;
+    if(nodes[b].opening_hours[time.hours] == 0 && log) cout << "Node " << b << " is closed at " << time.hours << endl;
     for(int i = time.hours; i < 24; i++) {
         if(nodes[b].opening_hours[time.hours] == 0) {
             time.toNextHour();
         }
         else break;
     }
-    cout << "Node " << b << " is open /(time) " << time.hours << ":" << time.minutes << "h" << endl;
+    if(log) cout << "Node " << b << " is open /(time) " << time.hours << ":" << time.minutes << "h" << endl;
 
     time.addTime({milliseconds_depot, (int) time_depot, time_inspection, 0});
-    cout << "Inspection time: " << time_inspection/60 << ":" << time_inspection%60 << endl;
+    if(log) cout << "Inspection time: " << time_inspection/60 << ":" << time_inspection%60 << endl;
     time.subTime(aux);
     return time;
 }
 
-Graph::Time Graph::operationTime(int a, int b, Time time) {
+
+Graph::Time Graph::operationTime(int a, int b, Time time, bool log) {
     Graph::Time aux = time;
 
     float time_distance = (int) getDistance(a, b);
@@ -276,6 +277,7 @@ Graph::Time Graph::operationTime(int a, int b, Time time) {
     time.subTime(aux);
     return time;
 }
+
 
 float Graph::totalOperationTime(const vector<list<int>> &solution) {
     float operation_time = 0;
@@ -302,6 +304,7 @@ float Graph::totalOperationTime(const vector<list<int>> &solution) {
     return operation_time;
 }
 
+
 void Graph::printDetailedSolution(const vector<list<int>> &solution) {
     // For each step in vechicle i, node,time before leaving to node, time of travel distance to node, inspection time, time after inspection
     for (int i = 0; i < solution.size(); ++i) {
@@ -321,10 +324,138 @@ void Graph::printDetailedSolution(const vector<list<int>> &solution) {
 
 }
 
+
 void Graph::setNrVehicles(int n) {
         nrVehicles = floor(n*0.1);
         if(nrVehicles == 0) nrVehicles = 1;
 }
+
+
+vector<list<int>> Graph::mutation_solution_1(const vector<list<int>> &solution) {
+    vector<list<int>> new_solution = solution;
+    int vehicle = rand() % nrVehicles;
+    int vehicle2 = rand() % nrVehicles;
+    int node = rand() % (new_solution[vehicle].size() - 2) + 1;
+    int node2 = rand() % (new_solution[vehicle2].size() - 2) + 1;
+
+    auto it = new_solution[vehicle].begin();
+    auto it2 = new_solution[vehicle2].begin();
+
+    advance(it, node);
+    advance(it2, node2);
+
+    int aux = *it;
+    *it = *it2;
+    *it2 = aux;
+
+    return new_solution;
+}
+
+vector<list<int>> Graph::mutation_solution_2(const vector<list<int>> &solution) {
+    vector<list<int>> new_solution = solution;
+    int vehicle = rand() % nrVehicles;
+    int node = rand() % (new_solution[vehicle].size() - 2) + 1;
+    int node2 = rand() % (nodes.size() - 1) + 1;
+
+    for (int i = 0; i < new_solution.size(); i++) {
+        for (auto it = new_solution[i].begin(); it != new_solution[i].end(); ++it) {
+            if (*it == node2) {
+                node2 = rand() % (nodes.size() - 1) + 1;
+                i = -1;
+                break;
+            }
+        }
+    }
+
+    auto it = new_solution[vehicle].begin();
+    advance(it, node);
+
+    *it = node2;
+
+    return new_solution;
+}
+
+
+vector<list<int>> Graph::mutation_solution_4(const vector<list<int>> &solution) {
+    vector<list<int>> new_solution = solution;
+
+    int vehicle = rand() % nrVehicles;
+    int node = rand() % (new_solution[vehicle].size() - 2) + 1;
+    int node2 = rand() % (new_solution[vehicle].size() - 2) + 1;
+
+    while(abs(node - node2) < 2) { node2 = rand() % (new_solution[vehicle].size() - 3) + 1; }
+
+    if(node > node2) {
+        int aux = node;
+        node = node2;
+        node2 = aux;
+    }
+
+    auto it = next(new_solution[vehicle].begin(), node);
+    auto it2 = next(new_solution[vehicle].begin(), node2);
+
+    vector<int> aux(it, it2);
+    shuffle(aux.begin(), aux.end(), default_random_engine(rand()));
+    copy(aux.begin(), aux.end(), it);
+
+    return new_solution;
+}
+
+vector<list<int>> Graph::mutation_solution_5(const vector<list<int>> &solution) {
+    vector<list<int>> new_solution = solution;
+
+    int vehicle = rand() % nrVehicles;
+    int node = rand() % (new_solution[vehicle].size() - 2) + 1;
+    int node2 = rand() % (nodes.size() - 1) + 1;
+    int node3 = rand() % (nodes.size() - 1) + 1;
+
+    for (int i = 0; i < new_solution.size(); i++) {
+        for (auto it = new_solution[i].begin(); it != new_solution[i].end(); ++it) {
+            if (*it == node2) {
+                node2 = rand() % (nodes.size() - 1) + 1;
+                i = -1;
+                break;
+            }
+        }
+    }
+
+    for (int i = 0; i < new_solution.size(); i++) {
+        for (auto it = new_solution[i].begin(); it != new_solution[i].end(); ++it) {
+            if (*it == node3 || node2 == node3) {
+                node3 = rand() % (nodes.size() - 1) + 1;
+                i = -1;
+                break;
+            }
+        }
+    }
+
+    auto it = new_solution[vehicle].begin();
+    advance(it, node);
+
+    *it = node2;
+    new_solution[vehicle].insert(it, node3);
+
+    return new_solution;
+}
+
+vector<list<int>> Graph::mutation_solution_6(const vector<list<int>> &solution) {
+    int mutation = rand() % 5 + 1;
+    switch (mutation) {
+        case 1:
+            return mutation_solution_1(solution);
+        case 2:
+            return mutation_solution_2(solution);
+        case 3:
+            return mutation_solution_3(solution);
+        case 4:
+            return mutation_solution_4(solution);
+        case 5:
+            return mutation_solution_5(solution);
+        default:
+            return solution;
+    }
+}
+
 
 void Graph::Time::addTime(int milliseconds, int seconds, int minutes, int hours, int days) {
     this->milliseconds += milliseconds;
@@ -357,6 +488,7 @@ void Graph::Time::addTime(int milliseconds, int seconds, int minutes, int hours,
     }
 }
 
+
 void Graph::Time::setTime(int milliseconds, int seconds, int minutes, int hours, int days) {
     this->milliseconds = milliseconds;
     this->seconds = seconds;
@@ -365,9 +497,11 @@ void Graph::Time::setTime(int milliseconds, int seconds, int minutes, int hours,
     this->days = days;
 }
 
+
 void Graph::Time::addTime(Graph::Time time) {
     this->addTime(time.milliseconds, time.seconds, time.minutes, time.hours, time.days);
 }
+
 
 bool Graph::Time::operator<(const Graph::Time &rhs) const {
     if (days < rhs.days) return true;
@@ -381,9 +515,11 @@ bool Graph::Time::operator<(const Graph::Time &rhs) const {
     return milliseconds < rhs.milliseconds;
 }
 
+
 void Graph::Time::subTime(Graph::Time time) {
     this->subTime(time.milliseconds, time.seconds, time.minutes, time.hours, time.days);
 }
+
 
 void Graph::Time::subTime(int milliseconds, int seconds, int minutes, int hours, int days) {
     Time aux = {milliseconds, seconds, minutes, hours, days};
@@ -403,6 +539,7 @@ void Graph::Time::subTime(int milliseconds, int seconds, int minutes, int hours,
     this->milliseconds = (int) (this_seconds * 1000);
 }
 
+
 void Graph::Time::toNextHour() {
     this->hours++;
     if (this->hours >= 24) {
@@ -414,6 +551,7 @@ void Graph::Time::toNextHour() {
     this->milliseconds = 0;
 }
 
+
 void Graph::Time::toPreviousHour() {
     this->hours--;
     if (this->hours < 0) {
@@ -424,6 +562,7 @@ void Graph::Time::toPreviousHour() {
     this->seconds = 0;
     this->milliseconds = 0;
 }
+
 
 float Graph::Time::toSeconds() {
     return (float) this->milliseconds / 1000 + this->seconds + this->minutes * 60 + this->hours * 3600 + this->days * 86400;

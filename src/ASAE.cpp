@@ -142,7 +142,8 @@ ASAE::ASAE()
     readEstablishments(number_of_establishments);
     readTimeDistances(number_of_establishments);
 
-    vector<list<int>> solution;
+    vector<list<int>> solution, solution2;
+    /*
     list<int> aux;
     aux.emplace_back(0);
     aux.emplace_back(17);
@@ -155,11 +156,13 @@ ASAE::ASAE()
     aux.emplace_back(18);
     aux.emplace_back(7);
     aux.emplace_back(0);
+    solution.push_back(aux);*/
 
-    solution.push_back(aux);
+    solution = graph.generate_random_solution();
 
-    graph.printDetailedSolution(solution);
-    graph.totalOperationTime(solution);
+    graph.printSolution(solution);
+    solution2 = graph.mutation_solution_5(solution);
+    graph.printSolution(solution2);
 
     //stop execution
 
@@ -168,14 +171,8 @@ ASAE::ASAE()
 
 void ASAE::menu() {
     int option = 0;
-    auto solution = graph.generate_random_solution();
 
-    Graph::printSolution(solution);
-
-    graph.totalTravelTime(solution);
-    graph.totalWaitingTime(solution);
-    graph.totalOperationTime(solution);
-
+    cout << endl << "Welcome to the ASAE!" << endl;
     cout << endl;
     while (option != 5) {
         cout << "1 - Show all establishments" << endl;

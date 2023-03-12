@@ -204,7 +204,7 @@ public:
      * Get Random Solution
      * @return  Random Solution
      */
-    vector<list<int>> generate_random_solution();
+    vector<list<int>> generate_random_solution(bool log=false);
 
     /**
      * Get Distance between two establishments
@@ -259,7 +259,7 @@ public:
      * @param time  Current time
      * @return  Minimum time required to be able to do dislocation
      */
-    Time minimumOperationTime(int origin, int destin, Time time);
+    Time minimumOperationTime(int origin, int destin, Time time, bool log=false);
 
     /**
      * Get time of dislocation
@@ -268,7 +268,50 @@ public:
      * @param time  Current time
      * @return  Time of dislocation
      */
-    Time operationTime(int origin, int destin, Time time);
+    Time operationTime(int origin, int destin, Time time, bool log=false);
+
+    /**
+     * Exchange two establishments in a solution
+     * @param solution
+     * @return
+     */
+    vector<list<int>> mutation_solution_1(const vector<list<int>>& solution);
+
+    /**
+     * Exchange one establishment for one that didn't appear in the solution
+     * @param solution
+     * @return
+     */
+    vector<list<int>> mutation_solution_2(const vector<list<int>>& solution);
+
+    /**
+      * Generate a new path between two nodes
+      * @param solution
+      * @return
+      */
+    vector<list<int>> mutation_solution_3(const vector<list<int>>& solution);
+
+    /**
+      * Scramble the order of a subset of nodes in a vehicle's path
+      * @param solution
+      * @return
+      */
+    vector<list<int>> mutation_solution_4(const vector<list<int>>& solution);
+
+    /**
+      * Remove a node from a vehicle's path and insert two new nodes
+      * @param solution
+      * @return
+      */
+    vector<list<int>> mutation_solution_5(const vector<list<int>>& solution);
+
+    /**
+     * Choose a random mutation
+     * @param solution
+     * @return
+     */
+    vector<list<int>> mutation_solution_6(const vector<list<int>>& solution);
+
 
     void hillClimbing();
 
