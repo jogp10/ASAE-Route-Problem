@@ -5,7 +5,6 @@
 #include <list>
 #include <algorithm>
 
-
 // Constructor: nr nodes and direction (default: undirected)
 Graph::Graph(int num, bool dir, Time departure_time, Time max_work_time) : n(num), hasDir(dir), nodes(num) {
     this->departure_time = departure_time;
@@ -459,6 +458,54 @@ vector<list<int>> Graph::mutation_solution_6(const vector<list<int>> &solution) 
         default:
             return solution;
     }
+}
+
+
+vector<list<int>> Graph::hillClimbing(const vector<list<int>>& initial_solution, const int iteration_number) {
+    vector<list<int>> best_solution = initial_solution;
+    int best_score = this->evaluate_solution(initial_solution);
+    int iteration = 0;
+
+    while(iteration < iteration_number) {
+        iteration++;
+
+        vector<list<int>> neighbour_solution = mutation_solution_6(best_solution);
+        int neighbour_score = this->evaluate_solution(neighbour_solution);
+
+        if(neighbour_score > best_score) {
+            best_solution = neighbour_solution;
+            best_score = neighbour_score;
+        }
+
+    }
+
+    return best_solution;
+}
+
+
+vector<list<int>> Graph::simulatedAnnealing(vector<list<int>> initial_solution, const int iteration_number) {
+    vector<list<int>> best_solution = initial_solution;
+    int best_score = this->evaluate_solution(initial_solution);
+    int iteration = 0;
+    float temperature = 1000;
+
+    while(iteration < iteration_number) {
+        temperature *= 0.999;
+        iteration++;
+
+        vector<list<int>> neighbour_solution = mutation_solution_6(best_solution);
+        int neighbour_score = this->evaluate_solution(neighbour_solution);
+        float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+
+
+        if((neighbour_score > best_score) or (pow(M_E, (neighbour_score - best_score) / temperature) >= r)) {
+            best_solution = neighbour_solution;
+            best_score = neighbour_score;
+        }
+
+    }
+
+    return best_solution;
 }
 
 

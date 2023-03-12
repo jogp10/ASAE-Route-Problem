@@ -9,6 +9,7 @@
 #include <climits>
 #include <cmath>
 #include <queue>
+#include <math.h>
 
 using namespace std;
 
@@ -312,10 +313,9 @@ public:
      */
     vector<list<int>> mutation_solution_6(const vector<list<int>>& solution);
 
+    vector<list<int>> hillClimbing(const vector<list<int>>& initial_solution, const int iteration_number);
 
-    void hillClimbing();
-
-    void simulatedAnnealing();
+    vector<list<int>> simulatedAnnealing(vector<list<int>> initial_solution, const int iteration_number);
 
     void tabuSearch();
 
