@@ -375,6 +375,11 @@ vector<list<int>> Graph::mutation_solution_2(const vector<list<int>> &solution) 
     return new_solution;
 }
 
+vector<list<int>> Graph::mutation_solution_3(const vector<list<int>>& solution) {
+    vector<list<int>> a = solution;
+    return a;
+}
+
 
 vector<list<int>> Graph::mutation_solution_4(const vector<list<int>> &solution) {
     vector<list<int>> new_solution = solution;
