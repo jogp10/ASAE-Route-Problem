@@ -159,10 +159,19 @@ ASAE::ASAE()
     solution.push_back(aux);*/
 
     solution = graph.generate_random_solution();
+    cout << graph.check_solution(solution) << endl;
+    cout << this->graph.totalOperationTime(solution) << endl;
 
-    graph.printSolution(solution);
-    solution2 = graph.mutation_solution_5(solution);
-    graph.printSolution(solution2);
+
+    cout << graph.check_solution(solution) << endl;
+
+
+
+
+    /*solution2 = graph.mutation_solution_5(solution);
+    cout <<graph.check_solution(solution2) << endl;
+    graph.printSolution(solution2);*/
+
 
     //stop execution
 

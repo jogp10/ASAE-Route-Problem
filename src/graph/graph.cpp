@@ -275,8 +275,10 @@ Graph::Time Graph::operationTime(int a, int b, Time time, bool log) {
         else break;
     }
 
-    time.addTime({0, 0, time_inspection, 0});
+    if(b!=0)time.addTime({0, 0, time_inspection, 0});
+
     time.subTime(aux);
+
     return time;
 }
 
@@ -339,6 +341,10 @@ vector<list<int>> Graph::mutation_solution_1(const vector<list<int>> &solution) 
     int vehicle2 = rand() % nrVehicles;
     int node = rand() % (new_solution[vehicle].size() - 2) + 1;
     int node2 = rand() % (new_solution[vehicle2].size() - 2) + 1;
+    while(vehicle == vehicle2 && node ==node2){
+        node2 = rand() % (new_solution[vehicle2].size() - 2) + 1;
+    }
+
 
     auto it = new_solution[vehicle].begin();
     auto it2 = new_solution[vehicle2].begin();
@@ -349,8 +355,8 @@ vector<list<int>> Graph::mutation_solution_1(const vector<list<int>> &solution) 
     int aux = *it;
     *it = *it2;
     *it2 = aux;
+    return check_solution(new_solution)? new_solution : solution;
 
-    return new_solution;
 }
 
 vector<list<int>> Graph::mutation_solution_2(const vector<list<int>> &solution) {
@@ -511,6 +517,25 @@ vector<list<int>> Graph::simulatedAnnealing(vector<list<int>> initial_solution, 
     return best_solution;
 }
 
+bool Graph::check_solution(vector<list<int>> solution) {
+    // check if hours of path doesnt exceed 8 hours
+    for (auto &t: times) t = departure_time;
+    for (int i = 0; i < solution.size(); i++) {
+        for (auto it = solution[i].begin(); it != solution[i].end(); ++it) {
+            if(it == solution[i].begin()) continue;
+            else {
+                int node1 = *prev(it);
+                int node2 = *it;
+                auto d = operationTime(node1, node2, times[i]);
+                times[i].addTime(d);
+            }
+        }
+        if(limit_time < times[i] ) return false;
+    }
+    return true;
+
+}
+
 
 void Graph::Time::addTime(int milliseconds, int seconds, int minutes, int hours, int days) {
     this->milliseconds += milliseconds;
@@ -569,6 +594,7 @@ bool Graph::Time::operator<(const Graph::Time &rhs) const {
     if (rhs.seconds < seconds) return false;
     return milliseconds < rhs.milliseconds;
 }
+
 
 
 void Graph::Time::subTime(Graph::Time time) {
