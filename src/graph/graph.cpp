@@ -413,8 +413,7 @@ vector<list<int>> Graph::mutation_solution_1(const vector<list<int>> &solution) 
     int aux = *it;
     *it = *it2;
     *it2 = aux;
-    return check_solution(new_solution)? new_solution : solution;
-
+    return check_solution(new_solution) ? new_solution : solution;
 }
 
 vector<list<int>> Graph::mutation_solution_2(const vector<list<int>> &solution) {
@@ -438,12 +437,12 @@ vector<list<int>> Graph::mutation_solution_2(const vector<list<int>> &solution) 
 
     *it = node2;
 
-    return new_solution;
+    return check_solution(new_solution) ? new_solution : solution;
 }
 
 vector<list<int>> Graph::mutation_solution_3(const vector<list<int>>& solution) {
-    vector<list<int>> a = solution;
-    return a;
+    vector<list<int>> new_solution = solution;
+    return check_solution(new_solution) ? new_solution : solution;
 }
 
 
@@ -469,7 +468,7 @@ vector<list<int>> Graph::mutation_solution_4(const vector<list<int>> &solution) 
     shuffle(aux.begin(), aux.end(), default_random_engine(engine()));
     copy(aux.begin(), aux.end(), it);
 
-    return new_solution;
+    return check_solution(new_solution) ? new_solution : solution;
 }
 
 vector<list<int>> Graph::mutation_solution_5(const vector<list<int>> &solution) {
@@ -506,7 +505,7 @@ vector<list<int>> Graph::mutation_solution_5(const vector<list<int>> &solution) 
     *it = node2;
     new_solution[vehicle].insert(it, node3);
 
-    return new_solution;
+    return check_solution(new_solution) ? new_solution : solution;
 }
 
 vector<list<int>> Graph::mutation_solution_6(const vector<list<int>> &solution) {
@@ -530,6 +529,8 @@ vector<list<int>> Graph::mutation_solution_6(const vector<list<int>> &solution) 
 
 vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
     vector<list<int>> best_solution = this->generate_random_solution();
+    printSolution(best_solution);
+    cout << check_solution(best_solution) << endl;
     int best_score = (this->*evaluation_func)(best_solution);
     int iteration = 0;
 

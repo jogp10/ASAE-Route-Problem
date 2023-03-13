@@ -131,7 +131,7 @@ void ASAE::readEstablishments(int n)
 
 ASAE::ASAE()
 {
-    srand(time(nullptr));
+    //srand(time(nullptr));
     max_establishments = numberOfLines(distancesFile);
 
     int number_of_establishments = 21;
@@ -143,8 +143,8 @@ ASAE::ASAE()
 
 
     vector<list<int>> solution;
-    solution = graph.generate_closest_solution();
-    Graph::printSolution(solution);
+    solution = graph.generate_random_solution();
+    //Graph::printSolution(solution);
 
 
     //stop execution
@@ -167,12 +167,13 @@ void ASAE::menu() {
 
         vector<list<int>> solution;
         switch (option) {
+            case 0:
+                return;
             case 1:
                 graph.showAllEstablishments();
                 break;
             case 2:
-                graph.hillClimbing(1000, &Graph::mutation_solution_6, &Graph::evaluate_solution);
-                (graph.*(&Graph::hillClimbing))(1000, (&Graph::mutation_solution_6), (&Graph::evaluate_solution), false);
+                solution = (graph.*(&Graph::hillClimbing))(1000, (&Graph::mutation_solution_6), (&Graph::evaluate_solution), false);
                 break;
             case 3:
                 break;
@@ -184,6 +185,9 @@ void ASAE::menu() {
                 cout << "Invalid option." << endl;
                 break;
         }
+        Graph::printSolution(solution);
+        cout << graph.check_solution(solution) << endl;
+        //graph.printDetailedSolution(solution);
     }
 
 }
