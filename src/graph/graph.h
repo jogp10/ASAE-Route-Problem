@@ -9,7 +9,7 @@
 #include <climits>
 #include <cmath>
 #include <queue>
-#include <math.h>
+#include <cmath>
 
 using namespace std;
 
@@ -185,7 +185,7 @@ public:
      * @param solution  Solution
      * @return  Solution Value
      */
-    static int evaluate_solution(const vector<list<int>>& solution);
+    int evaluate_solution(const vector<list<int>>& solution);
 
     /**
      * Get Random Node different from idx
@@ -206,7 +206,7 @@ public:
      * @param idx
      * @return
      */
-    int closest_node(int idx, int order=1, bool visiteds=false) const;
+    int closest_node(int idx, int order=1) const;
 
     /**
      * Get Random Solution
@@ -326,13 +326,13 @@ public:
      */
     vector<list<int>> mutation_solution_6(const vector<list<int>>& solution);
 
-    vector<list<int>> hillClimbing(const vector<list<int>>& initial_solution, int iteration_number);
+    vector<list<int>> hillClimbing(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&), bool log=false);
 
-    vector<list<int>> simulatedAnnealing(vector<list<int>> initial_solution, int iteration_number);
+    vector<list<int>> simulatedAnnealing(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&), bool log=false);
 
     void tabuSearch();
 
-    void geneticAlgorithm();
+    void geneticAlgorithm(int iteration_number, int population_size, vector<list<int>> (Graph::*crossover_func)(const vector<list<int>>&), vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (*evaluation_func)(const vector<list<int>>&), bool log=false);
 
     bool check_solution(vector<list<int>> vector1);
 };

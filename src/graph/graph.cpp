@@ -208,7 +208,7 @@ int Graph::closest_node(int idx, list<int> incompatible) const {
 }
 
 
-int Graph::closest_node(int idx, int order, bool visiteds) const {
+int Graph::closest_node(int idx, int order) const {
     order = order > n-2 ? n-2 : order;
 
     vector<int> closest_nodes(order, -1);
@@ -527,16 +527,16 @@ vector<list<int>> Graph::mutation_solution_6(const vector<list<int>> &solution) 
 }
 
 
-vector<list<int>> Graph::hillClimbing(const vector<list<int>>& initial_solution, const int iteration_number) {
-    vector<list<int>> best_solution = initial_solution;
-    int best_score = this->evaluate_solution(initial_solution);
+vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
+    vector<list<int>> best_solution = this->generate_random_solution();
+    int best_score = (this->*evaluation_func)(best_solution);
     int iteration = 0;
 
     while(iteration < iteration_number) {
         iteration++;
 
-        vector<list<int>> neighbour_solution = mutation_solution_6(best_solution);
-        int neighbour_score = this->evaluate_solution(neighbour_solution);
+        vector<list<int>> neighbour_solution = (this->*mutation_func)(best_solution);
+        int neighbour_score = (this->*evaluation_func)(neighbour_solution);
 
         if(neighbour_score > best_score) {
             best_solution = neighbour_solution;
@@ -549,9 +549,9 @@ vector<list<int>> Graph::hillClimbing(const vector<list<int>>& initial_solution,
 }
 
 
-vector<list<int>> Graph::simulatedAnnealing(vector<list<int>> initial_solution, const int iteration_number) {
-    vector<list<int>> best_solution = initial_solution;
-    int best_score = this->evaluate_solution(initial_solution);
+vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
+    vector<list<int>> best_solution = this->generate_random_solution();
+    int best_score = (this->*evaluation_func)(best_solution);
     int iteration = 0;
     float temperature = 1000;
 
@@ -559,8 +559,8 @@ vector<list<int>> Graph::simulatedAnnealing(vector<list<int>> initial_solution, 
         temperature *= 0.999;
         iteration++;
 
-        vector<list<int>> neighbour_solution = mutation_solution_6(best_solution);
-        int neighbour_score = this->evaluate_solution(neighbour_solution);
+        vector<list<int>> neighbour_solution = (this->*mutation_func)(best_solution);
+        int neighbour_score = (this->*evaluation_func)(neighbour_solution);
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
 

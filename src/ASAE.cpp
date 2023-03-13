@@ -1,7 +1,6 @@
 #include <fstream>
-#include <map>
 #include <vector>
-#include <math.h>
+#include <cmath>
 
 #include "ASAE.h"
 
@@ -132,7 +131,7 @@ void ASAE::readEstablishments(int n)
 
 ASAE::ASAE()
 {
-    srand(time(NULL));
+    srand(time(nullptr));
     max_establishments = numberOfLines(distancesFile);
 
     int number_of_establishments = 21;
@@ -145,7 +144,7 @@ ASAE::ASAE()
 
     vector<list<int>> solution;
     solution = graph.generate_closest_solution();
-    graph.printSolution(solution);
+    Graph::printSolution(solution);
 
 
     //stop execution
@@ -166,11 +165,14 @@ void ASAE::menu() {
         cout << "Option: ";
         cin >> option;
 
+        vector<list<int>> solution;
         switch (option) {
             case 1:
                 graph.showAllEstablishments();
                 break;
             case 2:
+                graph.hillClimbing(1000, &Graph::mutation_solution_6, &Graph::evaluate_solution);
+                (graph.*(&Graph::hillClimbing))(1000, (&Graph::mutation_solution_6), (&Graph::evaluate_solution), false);
                 break;
             case 3:
                 break;

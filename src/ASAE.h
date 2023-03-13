@@ -47,7 +47,7 @@ public:
      * @param s
      * @return
      */
-    bool hasSubstring(const string &s);
+    static bool hasSubstring(const string &s);
 };
 
 #endif // ASAE_H
