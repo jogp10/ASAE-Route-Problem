@@ -6,7 +6,7 @@
 #include <algorithm>
 
 // Constructor: nr nodes and direction (default: undirected)
-Graph::Graph(int num, bool dir, Time departure_time, Time max_work_time) : n(num), hasDir(dir), nodes(num) {
+Graph::Graph(int num, bool dir, Time departure_time, Time max_work_time) : n(num), hasDir(dir), nodes(num), engine(std::random_device{}()) {
     this->departure_time = departure_time;
     this->max_work_time = max_work_time;
     this->limit_time = this->departure_time;
@@ -99,8 +99,8 @@ vector<list<int>> Graph::generate_random_solution(bool log) {
     for (auto &n: nodes) n.visited = false;
 
     while (nr_visited < n && max_tries) {
-        int i = rand() % nrVehicles;
-        int j = (rand() % (n - 1)) + 1;
+        int i = engine() % nrVehicles;
+        int j = (engine() % (n - 1)) + 1;
 
         if (nodes[j].visited) {
             max_tries--;
@@ -233,6 +233,7 @@ float Graph::getDistance(int a, int b) {
             return e.weight;
         }
     }
+    return -1.0;
 }
 
 
@@ -394,12 +395,12 @@ void Graph::setNrVehicles(int n) {
 
 vector<list<int>> Graph::mutation_solution_1(const vector<list<int>> &solution) {
     vector<list<int>> new_solution = solution;
-    int vehicle = rand() % nrVehicles;
-    int vehicle2 = rand() % nrVehicles;
-    int node = rand() % (new_solution[vehicle].size() - 2) + 1;
-    int node2 = rand() % (new_solution[vehicle2].size() - 2) + 1;
+    int vehicle = engine() % nrVehicles;
+    int vehicle2 = engine() % nrVehicles;
+    int node = engine() % (new_solution[vehicle].size() - 2) + 1;
+    int node2 = engine() % (new_solution[vehicle2].size() - 2) + 1;
     while(vehicle == vehicle2 && node ==node2){
-        node2 = rand() % (new_solution[vehicle2].size() - 2) + 1;
+        node2 = engine() % (new_solution[vehicle2].size() - 2) + 1;
     }
 
 
@@ -418,14 +419,14 @@ vector<list<int>> Graph::mutation_solution_1(const vector<list<int>> &solution) 
 
 vector<list<int>> Graph::mutation_solution_2(const vector<list<int>> &solution) {
     vector<list<int>> new_solution = solution;
-    int vehicle = rand() % nrVehicles;
-    int node = rand() % (new_solution[vehicle].size() - 2) + 1;
-    int node2 = rand() % (nodes.size() - 1) + 1;
+    int vehicle = engine() % nrVehicles;
+    int node = engine() % (new_solution[vehicle].size() - 2) + 1;
+    int node2 = engine() % (nodes.size() - 1) + 1;
 
     for (int i = 0; i < new_solution.size(); i++) {
         for (auto it = new_solution[i].begin(); it != new_solution[i].end(); ++it) {
             if (*it == node2) {
-                node2 = rand() % (nodes.size() - 1) + 1;
+                node2 = engine() % (nodes.size() - 1) + 1;
                 i = -1;
                 break;
             }
@@ -449,11 +450,11 @@ vector<list<int>> Graph::mutation_solution_3(const vector<list<int>>& solution) 
 vector<list<int>> Graph::mutation_solution_4(const vector<list<int>> &solution) {
     vector<list<int>> new_solution = solution;
 
-    int vehicle = rand() % nrVehicles;
-    int node = rand() % (new_solution[vehicle].size() - 2) + 1;
-    int node2 = rand() % (new_solution[vehicle].size() - 2) + 1;
+    int vehicle = engine() % nrVehicles;
+    int node = engine() % (new_solution[vehicle].size() - 2) + 1;
+    int node2 = engine() % (new_solution[vehicle].size() - 2) + 1;
 
-    while(abs(node - node2) < 2) { node2 = rand() % (new_solution[vehicle].size() - 3) + 1; }
+    while(abs(node - node2) < 2) { node2 = engine() % (new_solution[vehicle].size() - 3) + 1; }
 
     if(node > node2) {
         int aux = node;
@@ -465,7 +466,7 @@ vector<list<int>> Graph::mutation_solution_4(const vector<list<int>> &solution) 
     auto it2 = next(new_solution[vehicle].begin(), node2);
 
     vector<int> aux(it, it2);
-    shuffle(aux.begin(), aux.end(), default_random_engine(rand()));
+    shuffle(aux.begin(), aux.end(), default_random_engine(engine()));
     copy(aux.begin(), aux.end(), it);
 
     return new_solution;
@@ -474,15 +475,15 @@ vector<list<int>> Graph::mutation_solution_4(const vector<list<int>> &solution) 
 vector<list<int>> Graph::mutation_solution_5(const vector<list<int>> &solution) {
     vector<list<int>> new_solution = solution;
 
-    int vehicle = rand() % nrVehicles;
-    int node = rand() % (new_solution[vehicle].size() - 2) + 1;
-    int node2 = rand() % (nodes.size() - 1) + 1;
-    int node3 = rand() % (nodes.size() - 1) + 1;
+    int vehicle = engine() % nrVehicles;
+    int node = engine() % (new_solution[vehicle].size() - 2) + 1;
+    int node2 = engine() % (nodes.size() - 1) + 1;
+    int node3 = engine() % (nodes.size() - 1) + 1;
 
     for (int i = 0; i < new_solution.size(); i++) {
         for (auto it = new_solution[i].begin(); it != new_solution[i].end(); ++it) {
             if (*it == node2) {
-                node2 = rand() % (nodes.size() - 1) + 1;
+                node2 = engine() % (nodes.size() - 1) + 1;
                 i = -1;
                 break;
             }
@@ -492,7 +493,7 @@ vector<list<int>> Graph::mutation_solution_5(const vector<list<int>> &solution) 
     for (int i = 0; i < new_solution.size(); i++) {
         for (auto it = new_solution[i].begin(); it != new_solution[i].end(); ++it) {
             if (*it == node3 || node2 == node3) {
-                node3 = rand() % (nodes.size() - 1) + 1;
+                node3 = engine() % (nodes.size() - 1) + 1;
                 i = -1;
                 break;
             }
@@ -509,7 +510,7 @@ vector<list<int>> Graph::mutation_solution_5(const vector<list<int>> &solution) 
 }
 
 vector<list<int>> Graph::mutation_solution_6(const vector<list<int>> &solution) {
-    int mutation = rand() % 5 + 1;
+    int mutation = engine() % 5 + 1;
     switch (mutation) {
         case 1:
             return mutation_solution_1(solution);
@@ -561,7 +562,7 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<l
 
         vector<list<int>> neighbour_solution = (this->*mutation_func)(best_solution);
         int neighbour_score = (this->*evaluation_func)(neighbour_solution);
-        float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        float r = static_cast <float> (engine()) / static_cast <float> (RAND_MAX);
 
 
         if((neighbour_score > best_score) or (pow(M_E, (neighbour_score - best_score) / temperature) >= r)) {

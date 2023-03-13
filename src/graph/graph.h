@@ -10,6 +10,7 @@
 #include <cmath>
 #include <queue>
 #include <cmath>
+#include <random>
 
 using namespace std;
 
@@ -122,6 +123,8 @@ class Graph {
     Time max_work_time; // Maximum time vehicles can work
     Time limit_time;    // Time when vehicles stop working
     vector<Time> times;     // Current times for each vehicle
+
+    std::mt19937 engine;
 
     /**
      * Set number of vehicles
