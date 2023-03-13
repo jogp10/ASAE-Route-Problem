@@ -157,7 +157,7 @@ public:
      * @param inspection_time   Inspection Time of Establishment
      * @param opening_hours     Opening Hours of Establishment
      */
-    void setNode(int index, string address, float latitude, float longitude, float inspection_utility, int inspection_time, vector<int> opening_hours);
+    void setNode(int index, string district, string county, string parish, string address, float latitude, float longitude, float inspection_utility, int inspection_time, vector<int> opening_hours);
 
     /**
      * Get Nodes

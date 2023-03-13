@@ -52,9 +52,12 @@ list<int> Graph::path(int a, int b) {
 }
 
 
-void Graph::setNode(int index, string address, float latitude, float longitude, float inspection_utility, int inspection_time, vector<int> opening_hours) {
+void Graph::setNode(int index, string district, string county, string parish, string address, float latitude, float longitude, float inspection_utility, int inspection_time, vector<int> opening_hours) {
     Node u;
     u.id = index;
+    u.district = std::move(district);
+    u.county = std::move(county);
+    u.parish = std::move(parish);
     u.address = std::move(address);
     u.latitude = latitude;
     u.longitude = longitude;

@@ -119,7 +119,7 @@ void ASAE::readEstablishments(int n)
 
                 extra.push_back(element);  
             }
-            graph.setNode(stoi(extra[0]), extra[4], stof(extra[5]), stof(extra[6]), stof(extra[7]), stoi(extra[8]), opening_hours);
+            graph.setNode(stoi(extra[0]), extra[1], extra[2], extra[3], extra[4], stof(extra[5]), stof(extra[6]), stof(extra[7]), stoi(extra[8]), opening_hours);
             nrEstablishmentsRead++;
             if(nrEstablishmentsRead == n) {
                 break;
