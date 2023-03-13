@@ -1,8 +1,0 @@
-# ninja log v5
-0	214	1678646078002373964	CMakeFiles/ASAEinspectionRoute.dir/main.cpp.o	cfba5d010e3f419a
-0	308	1678646078094377516	CMakeFiles/ASAEinspectionRoute.dir/src/ASAE.cpp.o	921618eb2f653193
-0	442	1678646078230382767	CMakeFiles/ASAEinspectionRoute.dir/src/graph/graph.cpp.o	2f0c887aeccd535d
-1	487	1678646343356473819	CMakeFiles/ASAEinspectionRoute.dir/src/graph/graph.cpp.o	2f0c887aeccd535d
-1	440	1678646814601949391	CMakeFiles/ASAEinspectionRoute.dir/src/graph/graph.cpp.o	2f0c887aeccd535d
-1	449	1678646972395727987	CMakeFiles/ASAEinspectionRoute.dir/src/graph/graph.cpp.o	2f0c887aeccd535d
-449	492	1678646972435729450	ASAEinspectionRoute	dd62b1102f7735f8
