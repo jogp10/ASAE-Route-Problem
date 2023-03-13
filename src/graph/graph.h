@@ -9,7 +9,8 @@
 #include <climits>
 #include <cmath>
 #include <queue>
-#include <math.h>
+#include <cmath>
+#include <random>
 
 using namespace std;
 
@@ -122,6 +123,7 @@ class Graph {
     Time limit_time;    // Time when vehicles stop working
     vector<Time> times;     // Current times for each vehicle
 
+    std::mt19937 engine;
 
     /**
      * Set number of vehicles
@@ -185,7 +187,7 @@ public:
      * @param solution  Solution
      * @return  Solution Value
      */
-    static int evaluate_solution(const vector<list<int>>& solution);
+    int evaluate_solution(const vector<list<int>>& solution);
 
     /**
      * Get Random Node different from idx
@@ -195,17 +197,30 @@ public:
     int random_node(int idx) const;
 
     /**
-     * Get Closest Node different from idx
+     * Get Closest Node different from idx and incompatible
      * @param idx
      * @return
      */
-    int closest_node(int idx) const;
+    int closest_node(int idx, list<int> incompatible) const;
+
+    /**
+     * Get order (th) Closest Node different from idx
+     * @param idx
+     * @return
+     */
+    int closest_node(int idx, int order=1) const;
 
     /**
      * Get Random Solution
      * @return  Random Solution
      */
     vector<list<int>> generate_random_solution(bool log=false);
+
+    /**
+     * Get Solution with closest nodes
+     * @return  Random Solution
+     */
+    vector<list<int>> generate_closest_solution(bool log=false);
 
     /**
      * Get Distance between two establishments
@@ -313,13 +328,15 @@ public:
      */
     vector<list<int>> mutation_solution_6(const vector<list<int>>& solution);
 
-    vector<list<int>> hillClimbing(const vector<list<int>>& initial_solution, const int iteration_number);
+    vector<list<int>> hillClimbing(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&), bool log=false);
 
-    vector<list<int>> simulatedAnnealing(vector<list<int>> initial_solution, const int iteration_number);
+    vector<list<int>> simulatedAnnealing(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&), bool log=false);
 
     void tabuSearch();
 
-    void geneticAlgorithm();
+    void geneticAlgorithm(int iteration_number, int population_size, vector<list<int>> (Graph::*crossover_func)(const vector<list<int>>&), vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (*evaluation_func)(const vector<list<int>>&), bool log=false);
+
+    bool check_solution(vector<list<int>> vector1);
 };
 
 #endif /* GRAPH_H_ */

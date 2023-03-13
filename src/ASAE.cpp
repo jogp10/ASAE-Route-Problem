@@ -1,7 +1,6 @@
 #include <fstream>
-#include <map>
 #include <vector>
-#include <math.h>
+#include <cmath>
 
 #include "ASAE.h"
 
@@ -132,7 +131,7 @@ void ASAE::readEstablishments(int n)
 
 ASAE::ASAE()
 {
-    srand(time(NULL));
+    //srand(time(nullptr));
     max_establishments = numberOfLines(distancesFile);
 
     int number_of_establishments = 21;
@@ -142,30 +141,13 @@ ASAE::ASAE()
     readEstablishments(number_of_establishments);
     readTimeDistances(number_of_establishments);
 
-    vector<list<int>> solution, solution2;
-    /*
-    list<int> aux;
-    aux.emplace_back(0);
-    aux.emplace_back(17);
-    aux.emplace_back(14);
-    aux.emplace_back(13);
-    aux.emplace_back(10);
-    aux.emplace_back(5);
-    aux.emplace_back(4);
-    aux.emplace_back(6);
-    aux.emplace_back(18);
-    aux.emplace_back(7);
-    aux.emplace_back(0);
-    solution.push_back(aux);*/
 
+    vector<list<int>> solution;
     solution = graph.generate_random_solution();
+    //Graph::printSolution(solution);
 
-    graph.printSolution(solution);
-    solution2 = graph.mutation_solution_5(solution);
-    graph.printSolution(solution2);
 
     //stop execution
-
     cout << "Done building graph." << endl;
 }
 
@@ -183,11 +165,15 @@ void ASAE::menu() {
         cout << "Option: ";
         cin >> option;
 
+        vector<list<int>> solution;
         switch (option) {
+            case 0:
+                return;
             case 1:
                 graph.showAllEstablishments();
                 break;
             case 2:
+                solution = (graph.*(&Graph::hillClimbing))(1000, (&Graph::mutation_solution_6), (&Graph::evaluate_solution), false);
                 break;
             case 3:
                 break;
@@ -199,6 +185,9 @@ void ASAE::menu() {
                 cout << "Invalid option." << endl;
                 break;
         }
+        Graph::printSolution(solution);
+        cout << graph.check_solution(solution) << endl;
+        //graph.printDetailedSolution(solution);
     }
 
 }
