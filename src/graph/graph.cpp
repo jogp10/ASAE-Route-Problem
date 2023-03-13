@@ -13,6 +13,7 @@ Graph::Graph(int num, bool dir, Time departure_time, Time max_work_time) : n(num
     this->limit_time.addTime(this->max_work_time);
     this->setNrVehicles(n);
     this->times = vector<Time>(nrVehicles, this->departure_time);
+
 }
 
 

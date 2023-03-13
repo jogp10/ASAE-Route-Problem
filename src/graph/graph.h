@@ -13,7 +13,6 @@
 
 using namespace std;
 
-
 class Graph {
 
     struct Edge {
@@ -122,6 +121,7 @@ class Graph {
     Time max_work_time; // Maximum time vehicles can work
     Time limit_time;    // Time when vehicles stop working
     vector<Time> times;     // Current times for each vehicle
+
 
     /**
      * Set number of vehicles
