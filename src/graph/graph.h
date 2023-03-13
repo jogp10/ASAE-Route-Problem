@@ -195,17 +195,30 @@ public:
     int random_node(int idx) const;
 
     /**
-     * Get Closest Node different from idx
+     * Get Closest Node different from idx and incompatible
      * @param idx
      * @return
      */
-    int closest_node(int idx) const;
+    int closest_node(int idx, list<int> incompatible) const;
+
+    /**
+     * Get order (th) Closest Node different from idx
+     * @param idx
+     * @return
+     */
+    int closest_node(int idx, int order=1, bool visiteds=false) const;
 
     /**
      * Get Random Solution
      * @return  Random Solution
      */
     vector<list<int>> generate_random_solution(bool log=false);
+
+    /**
+     * Get Solution with closest nodes
+     * @return  Random Solution
+     */
+    vector<list<int>> generate_closest_solution(bool log=false);
 
     /**
      * Get Distance between two establishments
@@ -313,9 +326,9 @@ public:
      */
     vector<list<int>> mutation_solution_6(const vector<list<int>>& solution);
 
-    vector<list<int>> hillClimbing(const vector<list<int>>& initial_solution, const int iteration_number);
+    vector<list<int>> hillClimbing(const vector<list<int>>& initial_solution, int iteration_number);
 
-    vector<list<int>> simulatedAnnealing(vector<list<int>> initial_solution, const int iteration_number);
+    vector<list<int>> simulatedAnnealing(vector<list<int>> initial_solution, int iteration_number);
 
     void tabuSearch();
 

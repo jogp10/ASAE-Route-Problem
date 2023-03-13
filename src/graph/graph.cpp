@@ -138,6 +138,44 @@ vector<list<int>> Graph::generate_random_solution(bool log) {
 }
 
 
+vector<list<int>> Graph::generate_closest_solution(bool log) {
+    vector<list<int>> solution(nrVehicles, list<int>(1, 0));
+
+    for (auto &t: times) t = departure_time;
+    for (auto &n: nodes) n.visited = false;
+
+    for(int i=0; i<nrVehicles; i++) {
+        for(int j=0; j<n-2; j++) {
+            int last = solution[i].back();
+            int nthClosest = closest_node(last, j+1);
+
+            if (nodes[nthClosest].visited) continue;
+
+            if(log) cout << "Vehicle -> " << i << "    Node -> " << last << endl;
+            if(log) cout << times[i].hours << ":" << times[i].minutes << "h" << endl;
+
+            Time min_op = minimumOperationTime(last, nthClosest, times[i]);
+
+            min_op.addTime(times[i]);
+            if (limit_time < min_op) {
+                if(log) cout << "Limit time reached" << endl;
+                continue;
+            }
+
+            nodes[nthClosest].visited = true;
+            solution[i].push_back(nthClosest);
+            Time op = operationTime(last, nthClosest, times[i]);
+            times[i].addTime(op);
+            j=-1;
+        }
+    }
+
+    for (int i = 0; i < nrVehicles; ++i) { solution[i].push_back(0); } // add depot to the end of each route
+
+    return solution;
+}
+
+
 void Graph::showAllEstablishments() {
     for (int i = 1; i < nodes.size(); ++i) {
         cout << "Node " << i << ": " << nodes[i].address << endl;
@@ -157,16 +195,35 @@ void Graph::printSolution(const vector<list<int>> &solution) {
 }
 
 
-int Graph::closest_node(int idx) const {
+int Graph::closest_node(int idx, list<int> incompatible) const {
     int closest = -1;
     float min_dist = INT_MAX;
     for(auto e: nodes[idx].adj){
-        if(e.weight < min_dist){
+        if(e.weight < min_dist && find(incompatible.begin(), incompatible.end(), e.dest) == incompatible.end() && e.dest > 0){
             min_dist = e.weight;
             closest = e.dest;
         }
     }
     return closest;
+}
+
+
+int Graph::closest_node(int idx, int order, bool visiteds) const {
+    order = order > n-2 ? n-2 : order;
+
+    vector<int> closest_nodes(order, -1);
+    vector<float> closest_nodes_dist(order, INT_MAX);
+
+    for(int i = 0; i < order; ++i) {
+        for (auto e: nodes[idx].adj) {
+            if (e.weight < closest_nodes_dist[i] && find(closest_nodes.begin(), closest_nodes.end(), e.dest) == closest_nodes.end() && e.dest != idx && e.dest > 0) {
+                closest_nodes_dist[i] = e.weight;
+                closest_nodes[i] = e.dest;
+            }
+        }
+    }
+
+    return closest_nodes[order-1];
 }
 
 

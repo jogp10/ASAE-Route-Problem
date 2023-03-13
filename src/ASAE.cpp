@@ -158,14 +158,9 @@ ASAE::ASAE()
     aux.emplace_back(0);
     solution.push_back(aux);*/
 
-    solution = graph.generate_random_solution();
-
-    graph.printSolution(solution);
-    solution2 = graph.mutation_solution_5(solution);
-    graph.printSolution(solution2);
-
+    solution = graph.generate_closest_solution();
     //stop execution
-
+    graph.printSolution(solution);
     cout << "Done building graph." << endl;
 }
 
