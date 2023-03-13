@@ -333,6 +333,8 @@ public:
     void tabuSearch();
 
     void geneticAlgorithm();
+
+    bool check_solution(vector<list<int>> vector1);
 };
 
 #endif /* GRAPH_H_ */

@@ -142,25 +142,13 @@ ASAE::ASAE()
     readEstablishments(number_of_establishments);
     readTimeDistances(number_of_establishments);
 
-    vector<list<int>> solution, solution2;
-    /*
-    list<int> aux;
-    aux.emplace_back(0);
-    aux.emplace_back(17);
-    aux.emplace_back(14);
-    aux.emplace_back(13);
-    aux.emplace_back(10);
-    aux.emplace_back(5);
-    aux.emplace_back(4);
-    aux.emplace_back(6);
-    aux.emplace_back(18);
-    aux.emplace_back(7);
-    aux.emplace_back(0);
-    solution.push_back(aux);*/
 
+    vector<list<int>> solution;
     solution = graph.generate_closest_solution();
-    //stop execution
     graph.printSolution(solution);
+
+
+    //stop execution
     cout << "Done building graph." << endl;
 }
 
