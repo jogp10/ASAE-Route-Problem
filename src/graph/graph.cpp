@@ -454,7 +454,12 @@ vector<list<int>> Graph::mutation_solution_4(const vector<list<int>> &solution) 
     int node = engine() % (new_solution[vehicle].size() - 2) + 1;
     int node2 = engine() % (new_solution[vehicle].size() - 2) + 1;
 
-    while(abs(node - node2) < 2) { node2 = engine() % (new_solution[vehicle].size() - 3) + 1; }
+    if(solution[vehicle].size() < 5) return solution;
+
+    while(abs(node - node2) < 2) {
+        node = engine() % (new_solution[vehicle].size() - 2) + 1;
+        node2 = engine() % (new_solution[vehicle].size() - 2) + 1;
+    }
 
     if(node > node2) {
         int aux = node;
