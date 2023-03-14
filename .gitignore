@@ -141,3 +141,4 @@ cmake-build-debug/
 build.ninja
 .ninja_log
 .ninja_deps
+.cmake/*
