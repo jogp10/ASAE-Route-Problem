@@ -36,6 +36,11 @@ install(
         EXPORT install_targets
 )
 
+# Add working directory
+set_target_properties(${target} PROPERTIES
+        VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/examples"
+        )
+
 add_executable(
         ASAEinspectionRoute
         main.cpp
