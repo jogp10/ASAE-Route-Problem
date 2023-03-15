@@ -134,7 +134,7 @@ ASAE::ASAE()
     //srand(time(nullptr));
     max_establishments = numberOfLines(distancesFile);
 
-    int number_of_establishments = 21;
+    int number_of_establishments = 1001;
 
     this->graph = Graph(number_of_establishments, true, {0, 0, 0, 9}, {0, 0, 0, 8});
 
@@ -148,6 +148,8 @@ ASAE::ASAE()
 
 
     //stop execution
+    // Plot establishments in a map
+    graph.plotGraph();
     cout << "Done building graph." << endl;
 }
 

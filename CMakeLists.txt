@@ -22,6 +22,11 @@ add_executable(
         src/graph/graph.cpp src/graph/graph.h
 
         src/ASAE.cpp src/ASAE.h
-)
+        src/plot.cpp src/plot.h)
 
 target_link_libraries(ASAEinspectionRoute PUBLIC matplot)
+
+set_target_properties( ASAEinspectionRoute
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../"
+        )
