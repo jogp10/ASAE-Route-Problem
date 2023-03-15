@@ -25,8 +25,3 @@ add_executable(
 )
 
 target_link_libraries(ASAEinspectionRoute PUBLIC matplot)
-
-set_target_properties(ASAEinspectionRoute PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
-        )
-
