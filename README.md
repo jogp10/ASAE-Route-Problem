@@ -11,3 +11,5 @@ Dependencies
    - sudo apt install gnuplot (linux)
    - brew install gnuplot (mac)
    - http://www.gnuplot.info/download.html (windows)
+
+RUN: cmake . && make && ./ASAEInspectionRoute
