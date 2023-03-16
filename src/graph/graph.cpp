@@ -306,7 +306,7 @@ Graph::Time Graph::minimumOperationTime(int a, int b, Time time, bool log) {
     time.addTime({milliseconds_distance, (int) time_distance, 0, 0});
 
     if(nodes[b].opening_hours[time.hours] == 0 && log) cout << "Node " << b << " is closed at " << time.hours << endl;
-    for(int i = time.hours; i < 24; i++) {
+    for(int i = time.hours; i < limit_time.hours+1; i++) {
         if(nodes[b].opening_hours[time.hours] == 0) {
             time.toNextHour();
         }
@@ -328,16 +328,16 @@ Graph::Time Graph::operationTime(int a, int b, Time time, bool log) {
     int time_inspection = b != 0 ? nodes[b].inspection_time: 0;
     int milliseconds_distance = (int) ((getDistance(a, b) - (float) time_distance) * 1000);
 
-    time.addTime({milliseconds_distance, (int) time_distance, 0, 0});
+    time.addTime({milliseconds_distance, (int) time_distance, 0, 0, 0});
 
-    for(int i = 0; i < 24; i++) {
+    for(int i = time.hours; i < limit_time.hours+1; i++) {
         if(nodes[b].opening_hours[time.hours] == 0) {
             time.toNextHour();
         }
         else break;
     }
 
-    if(b!=0)time.addTime({0, 0, time_inspection, 0});
+    if(b!=0)time.addTime({0, 0, time_inspection, 0, 0});
 
     time.subTime(aux);
 
@@ -537,7 +537,7 @@ vector<list<int>> Graph::mutation_solution_6(const vector<list<int>> &solution) 
 
 
 vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
-    vector<list<int>> best_solution = this->generate_closest_solution();
+    vector<list<int>> best_solution = this->generate_random_solution();
     int best_score = (this->*evaluation_func)(best_solution);
 
     printSolution(best_solution);
@@ -630,7 +630,7 @@ bool queueContainsElem(queue<Type> queue, Type element) {
 
 vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&),
                                     int (Graph::*evaluation_func)(const vector<list<int>>&), bool log) {
-    vector<list<int>> best_solution = this->generate_closest_solution();
+    vector<list<int>> best_solution = this->generate_random_solution();
     int best_score = (this->*evaluation_func)(best_solution);
 
     printSolution(best_solution);
@@ -657,11 +657,8 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
             best_solution = best_neighbour_solution;
             best_score = best_neighbour_score;
         }
-        //add solution to tabu list
         tabu_list.push(best_neighbour_solution);
 
-        // se tabu_list.size() > max_size_defined
-        // tabu_list.removeFirst()
         if(tabu_list.size() > tabu_size) { tabu_list.pop(); }
 
     }

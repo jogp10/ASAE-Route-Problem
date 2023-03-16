@@ -132,9 +132,9 @@ ASAE::ASAE()
     //srand(time(nullptr));
     max_establishments = numberOfLines(distancesFile);
 
-    int number_of_establishments = 100;
+    int number_of_establishments = 200;
 
-    this->graph = Graph(number_of_establishments, true, {0, 0, 0, 9}, {0, 0, 0, 8});
+    this->graph = Graph(number_of_establishments, true, {0, 0, 0, 9, 0}, {0, 0, 0, 8, 0});
 
     readEstablishments(number_of_establishments);
     readTimeDistances(number_of_establishments);
@@ -189,11 +189,12 @@ void ASAE::menu() {
         cout << "3 - Simulated annealing" << endl;
         cout << "4 - Tabu" << endl;
         cout << "5 - Genetic" << endl;
-        cout << "6 - Exit" << endl;
+        cout << "0 - Exit" << endl;
         cout << "Option: ";
         cin >> option;
 
         vector<list<int>> solution;
+
         switch (option) {
             case 0:
                 return;
