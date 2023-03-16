@@ -4,7 +4,6 @@
 
 #include "ASAE.h"
 
-using namespace std;
 
 int ASAE::numberOfLines(const string &myFile)
 {
@@ -148,8 +147,8 @@ ASAE::ASAE()
 
 
     //stop execution
-    // Plot establishments in a map
-    graph.plotGraph();
+
+
     cout << "Done building graph." << endl;
 }
 
@@ -197,4 +196,8 @@ void ASAE::menu() {
 bool ASAE::hasSubstring(const std::string& str)
 {
     return str.find("p_") != std::string::npos;
+}
+
+void ASAE::drawPlot() {
+    graph.plotGraph();
 }

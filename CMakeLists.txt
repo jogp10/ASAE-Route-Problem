@@ -18,11 +18,10 @@ add_executable(
         ASAEinspectionRoute
         main.cpp
 
-        src/graph/disjointSets.h src/graph/minHeap.h
         src/graph/graph.cpp src/graph/graph.h
 
         src/ASAE.cpp src/ASAE.h
-        src/plot.cpp src/plot.h)
+        src/plot.cpp src/plot.h src/matplot/geoplot_draw.cpp src/matplot/geoplot_draw.h)
 
 target_link_libraries(ASAEinspectionRoute PUBLIC matplot)
 
