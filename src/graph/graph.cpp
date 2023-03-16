@@ -4,6 +4,7 @@
 #include <utility>
 #include <list>
 #include <algorithm>
+#include <queue>
 
 // Constructor: nr nodes and direction (default: undirected)
 Graph::Graph(int num, bool dir, Time departure_time, Time max_work_time) : n(num), hasDir(dir), nodes(num), engine(std::random_device{}()) {
@@ -576,6 +577,73 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<l
             best_solution = neighbour_solution;
             best_score = neighbour_score;
         }
+
+    }
+
+    return best_solution;
+}
+
+vector<vector<list<int>>> Graph::getNeighbours(vector<list<int>> solution) {
+    vector<vector<list<int>>> array;
+
+    array.push_back(this->mutation_solution_1(solution));
+    array.push_back(this->mutation_solution_2(solution));
+    array.push_back(this->mutation_solution_3(solution));
+    array.push_back(this->mutation_solution_4(solution));
+    array.push_back(this->mutation_solution_5(solution));
+
+    return array;
+}
+
+template <class Type>
+bool queueContainsElem(queue<Type> queue, Type element) {
+    int iterations = queue.size();
+    bool contains = false;
+
+    for(int i = 0; i < iterations; i++) {
+        vector<list<int>> elem = queue.front();
+        queue.pop();
+
+        if(elem == element)  {
+            contains = true;
+        }
+
+        queue.push(elem);
+    }
+
+    return contains;
+}
+
+vector<list<int>> Graph::tabuSearch(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&),
+                                    int (Graph::*evaluation_func)(const vector<list<int>>&), int max_size_tabu_list, bool log) {
+    vector<list<int>> best_solution = this->generate_random_solution();
+    int best_score = (this->*evaluation_func)(best_solution);
+    queue<vector<list<int>>> tabu_list;
+
+    for(int i = 0; i < iteration_number; i++) {
+        vector<vector<list<int>>> neighbourhood = this->getNeighbours(best_solution);
+        vector<list<int>> best_neighbour_solution;
+        int best_neighbour_score = numeric_limits<int>::min();
+
+        for(auto neighbour: neighbourhood) {
+            int neighbour_score = (this->*evaluation_func)(neighbour);
+
+            if ((neighbour_score > best_neighbour_score) && !queueContainsElem(tabu_list, neighbour) ) {
+                best_neighbour_solution = neighbour;
+                best_neighbour_score = neighbour_score;
+            }
+        }
+
+        if(best_neighbour_score > best_score) {
+            best_solution = best_neighbour_solution;
+            best_score = best_neighbour_score;
+        }
+        //add solution to tabu list
+        tabu_list.push(best_neighbour_solution);
+
+        // se tabu_list.size() > max_size_defined
+        // tabu_list.removeFirst()
+        if(tabu_list.size() > max_size_tabu_list) { tabu_list.pop(); }
 
     }
 
