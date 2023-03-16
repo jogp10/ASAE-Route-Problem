@@ -1,6 +1,5 @@
 #include <fstream>
 #include <vector>
-#include <cmath>
 
 #include "ASAE.h"
 
@@ -28,7 +27,7 @@ int ASAE::numberOfLines(const string &myFile)
     return number_of_lines - 1;
 }
 
-void ASAE::readTimeDistances(int n)
+void ASAE::readTimeDistances(const int &n)
 {
         string myFile = distancesFile;
 
@@ -69,9 +68,9 @@ void ASAE::readTimeDistances(int n)
         }
 }
 
-void ASAE::readEstablishments(int n)
+void ASAE::readEstablishments(const int &n)
 {
-    string line, delimiter = ",";
+    string line;
     ifstream file(establishmentsFile);
 
     if (file.is_open())
@@ -143,9 +142,7 @@ ASAE::ASAE()
 
 
     vector<list<int>> solution;
-    solution = graph.generate_random_solution();
-    //Graph::printSolution(solution);
-
+    /*
     list<int> vehicle1;
     vehicle1.push_back(0);
     vehicle1.emplace_back(7);
@@ -174,11 +171,11 @@ ASAE::ASAE()
 
     graph.printDetailedSolution(solution2, true);
     //graph.printSolution(solution2);
-    cout << graph.totalOperationTime(solution2) << endl;
+    cout << graph.totalOperationTime(solution2) << endl;*/
 
     //stop execution
     // Plot establishments in a map
-    graph.plotGraph();
+    //graph.plotGraph();
     cout << "Done building graph." << endl;
 }
 
@@ -204,12 +201,13 @@ void ASAE::menu() {
                 graph.showAllEstablishments();
                 break;
             case 2:
-                solution = (graph.*(&Graph::hillClimbing))(1000, (&Graph::mutation_solution_6), (&Graph::evaluate_solution), false);
+                solution = (graph.*(&Graph::hillClimbing))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
                 break;
             case 3:
-                solution = (graph.*(&Graph::tabuSearch))(1000, 20, 5, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
+                solution = (graph.*(&Graph::simulatedAnnealing))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
                 break;
             case 4:
+                solution = (graph.*(&Graph::tabuSearch))(1000, 20, 5, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
                 break;
             case 5:
                 break;
