@@ -671,6 +671,36 @@ bool Graph::check_solution(vector<list<int>> solution) {
 
 }
 
+void Graph::plotGraph() {
+    // plot establishments (lat, long) in a map
+    using namespace matplot;
+
+    auto x = std::vector<double>();
+    auto y = std::vector<double>();
+    float max_lat = -100;
+    float max_long = -100;
+    float min_lat = 100;
+    float min_long = 100;
+    for (auto &n: nodes) {
+        x.push_back(n.latitude);
+        y.push_back(n.longitude);
+        if (n.latitude > max_lat) max_lat = n.latitude;
+        if (n.latitude < min_lat) min_lat = n.latitude;
+        if (n.longitude > max_long) max_long = n.longitude;
+        if (n.longitude < min_long) min_long = n.longitude;
+    }
+    cout << "max_lat: " << max_lat << endl;
+    cout << "min_lat: " << min_lat << endl;
+    cout << "max_long: " << max_long << endl;
+    cout << "min_long: " << min_long << endl;
+
+    geoplot(x, y, "g-*");
+    //geolimits({nodes[0].latitude-0.01, nodes[0].latitude+0.01}, {nodes[0].longitude-0.01, nodes[0].longitude+0.01});
+    geolimits({min_lat-0.1, max_lat+0.1}, {min_long-0.1, max_long+0.1});
+
+    show();
+}
+
 
 void Graph::Time::addTime(int milliseconds, int seconds, int minutes, int hours, int days) {
     this->milliseconds += milliseconds;

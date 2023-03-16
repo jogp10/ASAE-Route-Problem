@@ -2,6 +2,8 @@
 #define GRAPH_H_
 
 #include "minHeap.h"
+
+#include <matplot/matplot.h>
 #include <vector>
 #include <list>
 #include <iostream>
@@ -339,6 +341,8 @@ public:
     void geneticAlgorithm(int iteration_number, int population_size, vector<list<int>> (Graph::*crossover_func)(const vector<list<int>>&), vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (*evaluation_func)(const vector<list<int>>&), bool log=false);
 
     bool check_solution(vector<list<int>> vector1);
+
+    void plotGraph();
 };
 
 #endif /* GRAPH_H_ */

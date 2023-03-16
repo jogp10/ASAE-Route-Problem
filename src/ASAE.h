@@ -1,10 +1,12 @@
 #ifndef ASAE_H
 #define ASAE_H
 
-#include "graph/graph.h"
 #include <map>
 #include <iomanip>
 #include <iostream>
+
+#include "graph/graph.h"
+
 
 class ASAE
 {

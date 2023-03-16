@@ -148,6 +148,8 @@ ASAE::ASAE()
 
 
     //stop execution
+    // Plot establishments in a map
+    graph.plotGraph();
     cout << "Done building graph." << endl;
 }
 
