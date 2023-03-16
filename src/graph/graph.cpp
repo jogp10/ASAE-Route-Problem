@@ -239,7 +239,7 @@ float Graph::getDistance(int a, int b) {
 }
 
 
-float Graph::totalTravelTime(const vector<list<int>> &solution) {
+float Graph::totalTravelTime(const vector<list<int>> &solution, bool log) {
     float travel_time = 0;
     for (int i = 0; i < solution.size(); ++i) {
         float vehicle_time = 0;
@@ -256,7 +256,7 @@ float Graph::totalTravelTime(const vector<list<int>> &solution) {
 }
 
 
-float Graph::totalWaitingTime(const vector<list<int>> &solution) {
+float Graph::totalWaitingTime(const vector<list<int>> &solution, bool log) {
     float waiting_time = 0;
 
     for (int i = 0; i < solution.size(); ++i) {
@@ -343,7 +343,7 @@ Graph::Time Graph::operationTime(int a, int b, Time time, bool log) {
 }
 
 
-float Graph::totalOperationTime(const vector<list<int>> &solution) {
+float Graph::totalOperationTime(const vector<list<int>> &solution, bool log) {
     float operation_time = 0;
     int number_above = 0;
     for (int i = 0; i < solution.size(); ++i) {
@@ -584,10 +584,10 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<l
     return best_solution;
 }
 
-vector<vector<list<int>>> Graph::getNeighbours(vector<list<int>> solution, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&)) {
+vector<vector<list<int>>> Graph::getNeighbours(vector<list<int>> solution, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&)) {
     vector<vector<list<int>>> array;
 
-    for(int i = 0; i < 5; i++) {
+    for(int i = 0; i < neighborhood_size; i++) {
         array.push_back((this->*mutation_func)(solution));
     }
 
@@ -613,8 +613,8 @@ bool queueContainsElem(queue<Type> queue, Type element) {
     return contains;
 }
 
-vector<list<int>> Graph::tabuSearch(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&),
-                                    int (Graph::*evaluation_func)(const vector<list<int>>&), int max_size_tabu_list, bool log) {
+vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&),
+                                    int (Graph::*evaluation_func)(const vector<list<int>>&), bool log) {
     vector<list<int>> best_solution = this->generate_random_solution();
     printSolution(best_solution);
     cout << check_solution(best_solution) << endl;
@@ -623,11 +623,11 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, vector<list<int>> (Gra
     queue<vector<list<int>>> tabu_list;
 
     for(int i = 0; i < iteration_number; i++) {
-        vector<vector<list<int>>> neighbourhood = this->getNeighbours(best_solution, (mutation_func));
+        vector<vector<list<int>>> neighbourhood = this->getNeighbours(best_solution, neighborhood_size, (mutation_func));
         vector<list<int>> best_neighbour_solution;
         int best_neighbour_score = numeric_limits<int>::min();
 
-        for(auto neighbour: neighbourhood) {
+        for(const auto& neighbour: neighbourhood) {
             int neighbour_score = (this->*evaluation_func)(neighbour);
 
             if ((neighbour_score > best_neighbour_score) && !queueContainsElem(tabu_list, neighbour) ) {
@@ -645,7 +645,7 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, vector<list<int>> (Gra
 
         // se tabu_list.size() > max_size_defined
         // tabu_list.removeFirst()
-        if(tabu_list.size() > max_size_tabu_list) { tabu_list.pop(); }
+        if(tabu_list.size() > tabu_size) { tabu_list.pop(); }
 
     }
 

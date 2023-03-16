@@ -254,21 +254,21 @@ public:
      * @param solution  Solution
      * @return  Total travel time
      */
-    float totalTravelTime(const vector<list<int>>& solution);
+    float totalTravelTime(const vector<list<int>>& solution, bool log=false);
 
     /**
      * Get total waiting time of a solution
      * @param solution  Solution
      * @return  Total waiting time
      */
-    float totalWaitingTime(const vector<list<int>>& solution);
+    float totalWaitingTime(const vector<list<int>>& solution, bool log=false);
 
     /**
      * Get total operation time of a solution
      * @param solution  Solution
      * @return  Total operation time
      */
-    float totalOperationTime(const vector<list<int>>& solution);
+    float totalOperationTime(const vector<list<int>>& solution, bool log=false);
 
     /**
      * Get minimum time required to be able to do dislocation
@@ -330,13 +330,13 @@ public:
      */
     vector<list<int>> mutation_solution_6(const vector<list<int>>& solution);
 
-    vector<vector<list<int>>> getNeighbours(vector<list<int>> solution, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&));
+    vector<vector<list<int>>> getNeighbours(vector<list<int>> solution, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&));
 
     vector<list<int>> hillClimbing(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&), bool log=false);
 
     vector<list<int>> simulatedAnnealing(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&), bool log=false);
 
-    vector<list<int>> tabuSearch(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&),int max_size_tabu_list, bool log=false);
+    vector<list<int>> tabuSearch(int iteration_number, int tabu_size, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&), bool log=false);
 
     void geneticAlgorithm(int iteration_number, int population_size, vector<list<int>> (Graph::*crossover_func)(const vector<list<int>>&), vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (*evaluation_func)(const vector<list<int>>&), bool log=false);
 
