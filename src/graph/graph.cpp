@@ -539,6 +539,7 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
     printSolution(best_solution);
     cout << check_solution(best_solution) << endl;
     int best_score = (this->*evaluation_func)(best_solution);
+    cout << best_score << endl;
     int iteration = 0;
 
     while(iteration < iteration_number) {
@@ -583,14 +584,12 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<l
     return best_solution;
 }
 
-vector<vector<list<int>>> Graph::getNeighbours(vector<list<int>> solution) {
+vector<vector<list<int>>> Graph::getNeighbours(vector<list<int>> solution, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&)) {
     vector<vector<list<int>>> array;
 
-    array.push_back(this->mutation_solution_1(solution));
-    array.push_back(this->mutation_solution_2(solution));
-    array.push_back(this->mutation_solution_3(solution));
-    array.push_back(this->mutation_solution_4(solution));
-    array.push_back(this->mutation_solution_5(solution));
+    for(int i = 0; i < 5; i++) {
+        array.push_back((this->*mutation_func)(solution));
+    }
 
     return array;
 }
@@ -617,11 +616,14 @@ bool queueContainsElem(queue<Type> queue, Type element) {
 vector<list<int>> Graph::tabuSearch(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&),
                                     int (Graph::*evaluation_func)(const vector<list<int>>&), int max_size_tabu_list, bool log) {
     vector<list<int>> best_solution = this->generate_random_solution();
+    printSolution(best_solution);
+    cout << check_solution(best_solution) << endl;
     int best_score = (this->*evaluation_func)(best_solution);
+    cout << best_score << endl;
     queue<vector<list<int>>> tabu_list;
 
     for(int i = 0; i < iteration_number; i++) {
-        vector<vector<list<int>>> neighbourhood = this->getNeighbours(best_solution);
+        vector<vector<list<int>>> neighbourhood = this->getNeighbours(best_solution, (mutation_func));
         vector<list<int>> best_neighbour_solution;
         int best_neighbour_score = numeric_limits<int>::min();
 

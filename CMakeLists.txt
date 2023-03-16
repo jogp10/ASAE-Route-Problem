@@ -1,3 +1,4 @@
+
 cmake_minimum_required(VERSION 3.14)
 project(ASAEinspectionRoute)
 
@@ -21,7 +22,11 @@ add_executable(
         src/graph/disjointSets.h src/graph/minHeap.h
         src/graph/graph.cpp src/graph/graph.h
 
-        src/ASAE.cpp src/ASAE.h
-)
+        src/ASAE.cpp src/ASAE.h)
 
 target_link_libraries(ASAEinspectionRoute PUBLIC matplot)
+
+set_target_properties( ASAEinspectionRoute
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../"
+        )
