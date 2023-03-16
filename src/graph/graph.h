@@ -346,13 +346,23 @@ public:
 
     std::vector<std::list<int>> tabuSearch(int iteration_number, int tabu_size, int neighborhood_size, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
-    void geneticAlgorithm(int iteration_number, int population_size, std::vector<std::list<int>> (Graph::*crossover_func)(const std::vector<std::list<int>>&), std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
+    std::vector<std::list<int>> geneticAlgorithm(int iteration_number, int population_size, int tournament_size, int mutation_probability, std::vector<std::vector<std::list<int>>> (Graph::*crossover_func)(const std::vector<std::list<int>>&, const std::vector<std::list<int>>&), std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
     bool check_solution(std::vector<std::list<int>> vector1);
 
     void plotGraph();
 
+    std::vector<std::vector<std::list<int>>> generatePopulation(int population_size);
 
+    std::vector<std::list<int>> tournamentSelection(std::vector<std::vector<std::list<int>>> population, int size, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
+
+    std::vector<std::list<int>> rouletteSelection(std::vector<std::vector<std::list<int>>> population, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
+
+    std::vector<std::vector<std::list<int>>> replace_least_fittest(std::vector<std::vector<std::list<int>>> population, std::vector<std::list<int>> new_solution, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
+
+    std::pair<std::vector<std::list<int>>, int> get_greatest_fit(std::vector<std::vector<std::list<int>>> population, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
+
+    std::vector<std::vector<std::list<int>>> crossover_test(const std::vector<std::list<int>>& parent1, const std::vector<std::list<int>>& parent2);
 };
 
 #endif /* GRAPH_H_ */
