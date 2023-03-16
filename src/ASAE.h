@@ -7,6 +7,7 @@
 
 #include "graph/graph.h"
 
+using namespace std;
 
 class ASAE
 {
@@ -50,6 +51,8 @@ public:
      * @return
      */
     static bool hasSubstring(const string &s);
+
+    void drawPlot();
 };
 
 #endif // ASAE_H
