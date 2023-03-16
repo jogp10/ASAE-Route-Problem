@@ -247,28 +247,28 @@ public:
      * Display more details about a solution
      * @param solution
      */
-    void printDetailedSolution(const std::vector<std::list<int>>& solution);
+    void printDetailedSolution(const std::vector<std::list<int>>& solution, bool log=false);
 
     /**
      * Get total travel time of a solution
      * @param solution  Solution
      * @return  Total travel time
      */
-    float totalTravelTime(const std::vector<std::list<int>>& solution);
+    float totalTravelTime(const std::vector<std::list<int>>& solution, bool log=false);
 
     /**
      * Get total waiting time of a solution
      * @param solution  Solution
      * @return  Total waiting time
      */
-    float totalWaitingTime(const std::vector<std::list<int>>& solution);
+    float totalWaitingTime(const std::vector<std::list<int>>& solution, bool log=false);
 
     /**
      * Get total operation time of a solution
      * @param solution  Solution
      * @return  Total operation time
      */
-    float totalOperationTime(const std::vector<std::list<int>>& solution);
+    float totalOperationTime(const std::vector<std::list<int>>& solution, bool log=false);
 
     /**
      * Get minimum time required to be able to do dislocation
@@ -330,11 +330,13 @@ public:
      */
     std::vector<std::list<int>> mutation_solution_6(const std::vector<std::list<int>>& solution);
 
+    std::vector<std::vector<std::list<int>>> getNeighbours(std::vector<std::list<int>> solution, int neighborhood_size, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&));
+
     std::vector<std::list<int>> hillClimbing(int iteration_number, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
     std::vector<std::list<int>> simulatedAnnealing(int iteration_number, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
-    void tabuSearch();
+    std::vector<std::list<int>> tabuSearch(int iteration_number, int tabu_size, int neighborhood_size, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
     void geneticAlgorithm(int iteration_number, int population_size, std::vector<std::list<int>> (Graph::*crossover_func)(const std::vector<std::list<int>>&), std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 

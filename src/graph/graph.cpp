@@ -5,6 +5,7 @@
 #include <utility>
 #include <list>
 #include <algorithm>
+#include <queue>
 
 using namespace std;
 // Constructor: nr nodes and direction (default: undirected)
@@ -240,7 +241,7 @@ float Graph::getDistance(int a, int b) {
 }
 
 
-float Graph::totalTravelTime(const vector<list<int>> &solution) {
+float Graph::totalTravelTime(const vector<list<int>> &solution, bool log) {
     float travel_time = 0;
     for (int i = 0; i < solution.size(); ++i) {
         float vehicle_time = 0;
@@ -257,7 +258,7 @@ float Graph::totalTravelTime(const vector<list<int>> &solution) {
 }
 
 
-float Graph::totalWaitingTime(const vector<list<int>> &solution) {
+float Graph::totalWaitingTime(const vector<list<int>> &solution, bool log) {
     float waiting_time = 0;
 
     for (int i = 0; i < solution.size(); ++i) {
@@ -329,7 +330,7 @@ Graph::Time Graph::operationTime(int a, int b, Time time, bool log) {
 
     time.addTime({milliseconds_distance, (int) time_distance, 0, 0});
 
-    for(int i = time.hours; i < 24; i++) {
+    for(int i = 0; i < 24; i++) {
         if(nodes[b].opening_hours[time.hours] == 0) {
             time.toNextHour();
         }
@@ -344,7 +345,7 @@ Graph::Time Graph::operationTime(int a, int b, Time time, bool log) {
 }
 
 
-float Graph::totalOperationTime(const vector<list<int>> &solution) {
+float Graph::totalOperationTime(const vector<list<int>> &solution, bool log) {
     float operation_time = 0;
     int number_above = 0;
     for (int i = 0; i < solution.size(); ++i) {
@@ -370,7 +371,7 @@ float Graph::totalOperationTime(const vector<list<int>> &solution) {
 }
 
 
-void Graph::printDetailedSolution(const vector<list<int>> &solution) {
+void Graph::printDetailedSolution(const vector<list<int>> &solution, bool log) {
     // For each step in vechicle i, node,time before leaving to node, time of travel distance to node, inspection time, time after inspection
     for (int i = 0; i < solution.size(); ++i) {
         Time t = departure_time;
@@ -379,10 +380,10 @@ void Graph::printDetailedSolution(const vector<list<int>> &solution) {
         auto it = solution[i].begin();
         it++;
         for (; it != solution[i].end(); ++it)  {
+            cout << "Vehicle " << i << " Going to Node " << *it << " " << t.hours << ":" << t.minutes << "h" << endl;
             cout << "Time to travel to Node " << *it << " " << (int) getDistance(last, *it)/60 << "m" << endl;
-            cout << "Vehicle " << i << " Node " << *it << " " << t.hours << ":" << t.minutes << "h" << endl;
             cout << "Time to inspect Node " << *it << ": " << nodes[*it].inspection_time/60 << ":" << nodes[*it].inspection_time%60 << endl << endl;
-            t.addTime(operationTime(last, *it, t));
+            t.addTime(operationTime(last, *it, t, log));
             last = *it;
         }
     }
@@ -536,10 +537,11 @@ vector<list<int>> Graph::mutation_solution_6(const vector<list<int>> &solution) 
 
 
 vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
-    vector<list<int>> best_solution = this->generate_random_solution();
+    vector<list<int>> best_solution = this->generate_closest_solution();
     printSolution(best_solution);
     cout << check_solution(best_solution) << endl;
     int best_score = (this->*evaluation_func)(best_solution);
+    cout << best_score << endl;
     int iteration = 0;
 
     while(iteration < iteration_number) {
@@ -562,6 +564,11 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
 vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
     vector<list<int>> best_solution = this->generate_random_solution();
     int best_score = (this->*evaluation_func)(best_solution);
+
+    printSolution(best_solution);
+    cout << check_solution(best_solution) << endl;
+    cout << best_score << endl;
+
     int iteration = 0;
     float temperature = 1000;
 
@@ -578,6 +585,74 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<l
             best_solution = neighbour_solution;
             best_score = neighbour_score;
         }
+
+    }
+
+    return best_solution;
+}
+
+vector<vector<list<int>>> Graph::getNeighbours(vector<list<int>> solution, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&)) {
+    vector<vector<list<int>>> array;
+
+    for(int i = 0; i < neighborhood_size; i++) {
+        array.push_back((this->*mutation_func)(solution));
+    }
+
+    return array;
+}
+
+template <class Type>
+bool queueContainsElem(queue<Type> queue, Type element) {
+    int iterations = queue.size();
+    bool contains = false;
+
+    for(int i = 0; i < iterations; i++) {
+        vector<list<int>> elem = queue.front();
+        queue.pop();
+
+        if(elem == element)  {
+            contains = true;
+        }
+
+        queue.push(elem);
+    }
+
+    return contains;
+}
+
+vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&),
+                                    int (Graph::*evaluation_func)(const vector<list<int>>&), bool log) {
+    vector<list<int>> best_solution = this->generate_closest_solution();
+    printSolution(best_solution);
+    cout << check_solution(best_solution) << endl;
+    int best_score = (this->*evaluation_func)(best_solution);
+    cout << best_score << endl;
+    queue<vector<list<int>>> tabu_list;
+
+    for(int i = 0; i < iteration_number; i++) {
+        vector<vector<list<int>>> neighbourhood = this->getNeighbours(best_solution, neighborhood_size, (mutation_func));
+        vector<list<int>> best_neighbour_solution;
+        int best_neighbour_score = numeric_limits<int>::min();
+
+        for(const auto& neighbour: neighbourhood) {
+            int neighbour_score = (this->*evaluation_func)(neighbour);
+
+            if ((neighbour_score > best_neighbour_score) && !queueContainsElem(tabu_list, neighbour) ) {
+                best_neighbour_solution = neighbour;
+                best_neighbour_score = neighbour_score;
+            }
+        }
+
+        if(best_neighbour_score > best_score) {
+            best_solution = best_neighbour_solution;
+            best_score = best_neighbour_score;
+        }
+        //add solution to tabu list
+        tabu_list.push(best_neighbour_solution);
+
+        // se tabu_list.size() > max_size_defined
+        // tabu_list.removeFirst()
+        if(tabu_list.size() > tabu_size) { tabu_list.pop(); }
 
     }
 
