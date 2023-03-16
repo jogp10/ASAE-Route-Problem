@@ -3,7 +3,6 @@ project(ASAEinspectionRoute)
 
 #add_subdirectory(matplotplusplus)
 
-
 include(FetchContent)
 FetchContent_Declare(matplotplusplus
         GIT_REPOSITORY https://github.com/alandefreitas/matplotplusplus

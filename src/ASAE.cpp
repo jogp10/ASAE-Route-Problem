@@ -161,7 +161,7 @@ void ASAE::menu() {
     while (option != 5) {
         cout << "1 - Show all establishments" << endl;
         cout << "2 - Show all establishments of a given type" << endl;
-        cout << "3 - Show all establishments of a given type and with a given name" << endl;
+        cout << "3 - Show all establishments of a given type and with a given name // tabu search here" << endl;
         cout << "4 - Show all establishments of a given type and with a given name and with a given opening hour" << endl;
         cout << "5 - Exit" << endl;
         cout << "Option: ";
@@ -178,6 +178,7 @@ void ASAE::menu() {
                 solution = (graph.*(&Graph::hillClimbing))(1000, (&Graph::mutation_solution_6), (&Graph::evaluate_solution), false);
                 break;
             case 3:
+                solution = (graph.*(&Graph::tabuSearch))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), 20, false);
                 break;
             case 4:
                 break;
@@ -189,6 +190,7 @@ void ASAE::menu() {
         }
         Graph::printSolution(solution);
         cout << graph.check_solution(solution) << endl;
+        cout << graph.evaluate_solution(solution) << endl;
         //graph.printDetailedSolution(solution);
     }
 
