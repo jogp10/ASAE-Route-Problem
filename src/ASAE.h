@@ -1,16 +1,18 @@
 #ifndef ASAE_H
 #define ASAE_H
 
-#include "graph/graph.h"
 #include <map>
 #include <iomanip>
 #include <iostream>
 
+#include "graph/graph.h"
+
+
 class ASAE
 {
     Graph graph = Graph(0);
-    string establishmentsFile = "./dataset/establishments.csv";
-    string distancesFile = "./dataset/distances.csv";
+    string establishmentsFile = "dataset/establishments.csv";
+    string distancesFile = "dataset/distances.csv";
     int max_establishments= 0;
 
     /**

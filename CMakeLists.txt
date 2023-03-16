@@ -1,12 +1,18 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.14)
 project(ASAEinspectionRoute)
 
-set(CMAKE_CXX_STANDARD 14)
+#add_subdirectory(matplotplusplus)
 
-find_package(PythonInterp)
-find_package(PythonLibs 2.7)
 
-include_directories(${PYTHON_INCLUDE_DIR})
+include(FetchContent)
+FetchContent_Declare(matplotplusplus
+        GIT_REPOSITORY https://github.com/alandefreitas/matplotplusplus
+        GIT_TAG origin/master) # or whatever tag you want
+FetchContent_GetProperties(matplotplusplus)
+if(NOT matplotplusplus_POPULATED)
+        FetchContent_Populate(matplotplusplus)
+        add_subdirectory(${matplotplusplus_SOURCE_DIR} ${matplotplusplus_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
 
 add_executable(
         ASAEinspectionRoute
@@ -16,7 +22,11 @@ add_executable(
         src/graph/graph.cpp src/graph/graph.h
 
         src/ASAE.cpp src/ASAE.h
-)
+        src/plot.cpp src/plot.h)
 
-target_include_directories(ASAEinspectionRoute PRIVATE ${PYTHON_INCLUDE_DIR})
-target_link_libraries(ASAEinspectionRoute ${PYTHON_LIBRARIES})
+target_link_libraries(ASAEinspectionRoute PUBLIC matplot)
+
+set_target_properties( ASAEinspectionRoute
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../"
+        )
