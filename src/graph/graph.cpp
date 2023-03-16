@@ -779,10 +779,6 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
 
     int generation_no = 0;
 
-    printSolution(best_solution);
-    cout << check_solution(best_solution) << endl;
-    cout << best_score << endl;
-
     while (iteration_number > 0) {
 
         generation_no += 1;
@@ -794,7 +790,7 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
         vector<list<int>> crossover1 = crossovers[0];
         vector<list<int>> crossover2 = crossovers[1];
 
-        int mutation_chance = engine() % 11;
+        int mutation_chance = engine() % 10;
         if(mutation_chance < mutation_probability) {
             crossover1 = (this->*mutation_func)(crossover1);
             crossover2 = (this->*mutation_func)(crossover2);
@@ -815,13 +811,6 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
                 cout << "Score: " << best_score << endl;
             }
         } else iteration_number -= 1;
-
-
-        printSolution(best_solution);
-        cout << check_solution(best_solution) << endl;
-        cout << best_score << endl;
-
-        return best_solution;
     }
 
     printSolution(best_solution);

@@ -210,7 +210,7 @@ void ASAE::menu() {
                 solution = (graph.*(&Graph::tabuSearch))(1000, 20, 5, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
                 break;
             case 5:
-                solution = (graph.*(&Graph::geneticAlgorithm))(1000, 50, 4, 1, (&Graph::crossover_test), (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
+                solution = (graph.*(&Graph::geneticAlgorithm))(1000, 50, 4, 10, (&Graph::crossover_test), (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
                 break;
             default:
                 cout << "Invalid option." << endl;
