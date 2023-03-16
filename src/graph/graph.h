@@ -330,11 +330,13 @@ public:
      */
     vector<list<int>> mutation_solution_6(const vector<list<int>>& solution);
 
+    vector<vector<list<int>>> getNeighbours(vector<list<int>> solution, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&));
+
     vector<list<int>> hillClimbing(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&), bool log=false);
 
     vector<list<int>> simulatedAnnealing(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&), bool log=false);
 
-    void tabuSearch();
+    vector<list<int>> tabuSearch(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&),int max_size_tabu_list, bool log=false);
 
     void geneticAlgorithm(int iteration_number, int population_size, vector<list<int>> (Graph::*crossover_func)(const vector<list<int>>&), vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (*evaluation_func)(const vector<list<int>>&), bool log=false);
 
