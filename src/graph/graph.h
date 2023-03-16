@@ -338,11 +338,23 @@ public:
 
     vector<list<int>> tabuSearch(int iteration_number, int tabu_size, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&), bool log=false);
 
-    void geneticAlgorithm(int iteration_number, int population_size, vector<list<int>> (Graph::*crossover_func)(const vector<list<int>>&), vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (*evaluation_func)(const vector<list<int>>&), bool log=false);
+    vector<list<int>> geneticAlgorithm(int iteration_number, int population_size, int tournament_size, int mutation_probability, vector<vector<list<int>>> (Graph::*crossover_func)(const vector<list<int>>&, const vector<list<int>>&), vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&), bool log=false);
 
     bool check_solution(vector<list<int>> vector1);
 
     void plotGraph();
+
+    vector<vector<list<int>>> generatePopulation(int population_size);
+
+    vector<list<int>> tournamentSelection(vector<vector<list<int>>> population, int size, int (Graph::*evalFunction)(const vector<list<int>>&));
+
+    vector<list<int>> rouletteSelection(vector<vector<list<int>>> population, int (Graph::*evalFunction)(const vector<list<int>>&));
+
+    vector<vector<list<int>>> replace_least_fittest(vector<vector<list<int>>> population, vector<list<int>> new_solution, int (Graph::*evalFunction)(const vector<list<int>>&));
+
+    pair<vector<list<int>>, int> get_greatest_fit(vector<vector<list<int>>> population, int (Graph::*evalFunction)(const vector<list<int>>&));
+
+    vector<vector<list<int>>> crossover_test(const vector<list<int>>& parent1, const vector<list<int>>& parent2);
 };
 
 #endif /* GRAPH_H_ */

@@ -184,12 +184,13 @@ void ASAE::menu() {
 
     cout << endl << "Welcome to the ASAE!" << endl;
     cout << endl;
-    while (option != 5) {
+    while (option != 6) {
         cout << "1 - Show all establishments" << endl;
-        cout << "2 - Show all establishments of a given type" << endl;
-        cout << "3 - Show all establishments of a given type and with a given name // tabu search here" << endl;
-        cout << "4 - Show all establishments of a given type and with a given name and with a given opening hour" << endl;
-        cout << "5 - Exit" << endl;
+        cout << "2 - Hill climbing" << endl;
+        cout << "3 - Simulated annealing" << endl;
+        cout << "4 - Tabu" << endl;
+        cout << "5 - Genetic" << endl;
+        cout << "6 - Exit" << endl;
         cout << "Option: ";
         cin >> option;
 
@@ -210,17 +211,13 @@ void ASAE::menu() {
                 solution = (graph.*(&Graph::tabuSearch))(1000, 20, 5, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
                 break;
             case 5:
+                solution = (graph.*(&Graph::geneticAlgorithm))(1000, 50, 4, 1, (&Graph::crossover_test), (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
                 break;
             default:
                 cout << "Invalid option." << endl;
                 break;
         }
-        Graph::printSolution(solution);
-        cout << graph.check_solution(solution) << endl;
-        cout << graph.evaluate_solution(solution) << endl;
-        //graph.printDetailedSolution(solution);
     }
-
 }
 
 bool ASAE::hasSubstring(const std::string& str)
