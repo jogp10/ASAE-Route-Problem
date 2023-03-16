@@ -327,7 +327,7 @@ Graph::Time Graph::operationTime(int a, int b, Time time, bool log) {
 
     time.addTime({milliseconds_distance, (int) time_distance, 0, 0});
 
-    for(int i = time.hours; i < 24; i++) {
+    for(int i = 0; i < 24; i++) {
         if(nodes[b].opening_hours[time.hours] == 0) {
             time.toNextHour();
         }
@@ -368,7 +368,7 @@ float Graph::totalOperationTime(const vector<list<int>> &solution) {
 }
 
 
-void Graph::printDetailedSolution(const vector<list<int>> &solution) {
+void Graph::printDetailedSolution(const vector<list<int>> &solution, bool log) {
     // For each step in vechicle i, node,time before leaving to node, time of travel distance to node, inspection time, time after inspection
     for (int i = 0; i < solution.size(); ++i) {
         Time t = departure_time;
@@ -377,10 +377,10 @@ void Graph::printDetailedSolution(const vector<list<int>> &solution) {
         auto it = solution[i].begin();
         it++;
         for (; it != solution[i].end(); ++it)  {
+            cout << "Vehicle " << i << " Going to Node " << *it << " " << t.hours << ":" << t.minutes << "h" << endl;
             cout << "Time to travel to Node " << *it << " " << (int) getDistance(last, *it)/60 << "m" << endl;
-            cout << "Vehicle " << i << " Node " << *it << " " << t.hours << ":" << t.minutes << "h" << endl;
             cout << "Time to inspect Node " << *it << ": " << nodes[*it].inspection_time/60 << ":" << nodes[*it].inspection_time%60 << endl << endl;
-            t.addTime(operationTime(last, *it, t));
+            t.addTime(operationTime(last, *it, t, log));
             last = *it;
         }
     }

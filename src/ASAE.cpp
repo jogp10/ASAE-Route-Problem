@@ -134,7 +134,7 @@ ASAE::ASAE()
     //srand(time(nullptr));
     max_establishments = numberOfLines(distancesFile);
 
-    int number_of_establishments = 1001;
+    int number_of_establishments = 100;
 
     this->graph = Graph(number_of_establishments, true, {0, 0, 0, 9}, {0, 0, 0, 8});
 
@@ -146,6 +146,35 @@ ASAE::ASAE()
     solution = graph.generate_random_solution();
     //Graph::printSolution(solution);
 
+    list<int> vehicle1;
+    vehicle1.push_back(0);
+    vehicle1.emplace_back(7);
+    vehicle1.emplace_back(15);
+    vehicle1.emplace_back(4);
+    vehicle1.emplace_back(9);
+    vehicle1.emplace_back(16);
+    vehicle1.emplace_back(18);
+    vehicle1.emplace_back(20);
+    vehicle1.emplace_back(14);
+    vehicle1.emplace_back(12);
+    vehicle1.emplace_back(1);
+    vehicle1.emplace_back(0);
+    list<int> vehicle2;
+
+    vehicle2.emplace_back(0);
+    vehicle2.emplace_back(11);
+    vehicle2.emplace_back(3);
+    vehicle2.emplace_back(13);
+    vehicle2.emplace_back(2);
+    vehicle2.emplace_back(5);
+    vehicle2.emplace_back(6);
+    vehicle2.emplace_back(0);
+
+    vector<list<int>> solution2 = {vehicle1, vehicle2};
+
+    graph.printDetailedSolution(solution2, true);
+    //graph.printSolution(solution2);
+    cout << graph.totalOperationTime(solution2) << endl;
 
     //stop execution
     // Plot establishments in a map
