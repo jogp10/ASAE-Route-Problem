@@ -533,6 +533,21 @@ vector<list<int>> Graph::mutation_solution_6(const vector<list<int>> &solution) 
     }
 }
 
+/*
+ * Crossover 1: Select a midpoint, smaller than the shortest path in the solution, which will be dividing the both
+ * solutions in the midpoint. The two new resultant solutions consist in changing the cuts of the parents solutions.
+ */
+void Graph::crossover_solutions_1(vector<list<int>> father_solution, vector<list<int>> mother_solution) {
+
+}
+
+/*
+ * Crossover 2: Take the middle part of the first parent’s solution between two crossover points and filling the
+ * remaining parts with the nodes from the second parent’s solution, creating the child solutions.
+ */
+void Graph::crossover_solutions_2(vector<list<int>> father_solution, vector<list<int>> mother_solution) {
+
+}
 
 vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
     vector<list<int>> best_solution = this->generate_random_solution();
