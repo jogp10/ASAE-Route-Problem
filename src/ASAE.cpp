@@ -132,7 +132,7 @@ ASAE::ASAE()
     //srand(time(nullptr));
     max_establishments = numberOfLines(distancesFile);
 
-    int number_of_establishments = 200;
+    int number_of_establishments = 1001;
 
     this->graph = Graph(number_of_establishments, true, {0, 0, 0, 9, 0}, {0, 0, 0, 8, 0});
 
@@ -180,7 +180,7 @@ ASAE::ASAE()
 
 void ASAE::menu() {
     int option = 0;
-    drawPlot();
+    //drawPlot();
     cout << endl << "Welcome to the ASAE!" << endl;
     cout << endl;
     while (option != 6) {

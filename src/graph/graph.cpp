@@ -147,28 +147,33 @@ vector<list<int>> Graph::generate_closest_solution(bool log) {
 
     for (auto &t: times) t = departure_time;
     for (auto &n: nodes) n.visited = false;
+    nodes[0].visited = true;
 
     for(int i=0; i<nrVehicles; i++) {
+
+        int limit = 5;
         for(int j=0; j<n-2; j++) {
             int last = solution[i].back();
             int nthClosest = closest_node(last, j+1);
 
             if (nodes[nthClosest].visited) continue;
+            if(limit == 0) break;
 
             if(log) cout << "Vehicle -> " << i << "    Node -> " << last << endl;
             if(log) cout << times[i].hours << ":" << times[i].minutes << "h" << endl;
 
-            Time min_op = minimumOperationTime(last, nthClosest, times[i]);
+            Time min_op = minimumOperationTime(last, nthClosest, times[i], log);
 
             min_op.addTime(times[i]);
             if (limit_time < min_op) {
+                limit--;
                 if(log) cout << "Limit time reached" << endl;
                 continue;
             }
 
             nodes[nthClosest].visited = true;
             solution[i].push_back(nthClosest);
-            Time op = operationTime(last, nthClosest, times[i]);
+            Time op = operationTime(last, nthClosest, times[i], log);
             times[i].addTime(op);
             j=-1;
         }
@@ -693,7 +698,7 @@ void Graph::plotGraph() {
     using namespace matplot;
 
 
-    auto solution = generate_closest_solution();
+    auto solution = generate_random_solution();
 
     figure_handle f = figure(true);
     Geoplot_draw s(*this, f->current_axes());
