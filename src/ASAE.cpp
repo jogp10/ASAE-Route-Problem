@@ -180,7 +180,7 @@ ASAE::ASAE()
 
 void ASAE::menu() {
     int option = 0;
-
+    drawPlot();
     cout << endl << "Welcome to the ASAE!" << endl;
     cout << endl;
     while (option != 5) {
@@ -228,5 +228,7 @@ bool ASAE::hasSubstring(const std::string& str)
 }
 
 void ASAE::drawPlot() {
+
     graph.plotGraph();
 }
+

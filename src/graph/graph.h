@@ -34,7 +34,15 @@ class Graph {
         std::string county;
         std::string parish;
         std::string address;
+
+        const std::string &getAddress() const;
+
         float latitude;
+
+        float getLatitude() const;
+
+        float getLongitude() const;
+
         float longitude;
         int inspection_time;    // in minutes
         float inspection_utility;
@@ -343,6 +351,8 @@ public:
     bool check_solution(std::vector<std::list<int>> vector1);
 
     void plotGraph();
+
+
 };
 
 #endif /* GRAPH_H_ */

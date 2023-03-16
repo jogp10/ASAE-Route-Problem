@@ -19,12 +19,16 @@ using namespace std;
 
 class Geoplot_draw {
 public:
-    Geoplot_draw(Graph graph);
+    Geoplot_draw(Graph graph, axes_handle ax);
     void run(size_t iterations = 100);
 
-    void simple();
+    void draw_all_vehicles(vector<list<int>> solution);
+    void draw_one_vehicle(list<int> solution);
 
 private:
+    Graph graph;
+    axes_handle ax_;
+    line_handle lh_;
     void setup_axes();
     void setup_starting_point(size_t iteration);
     double tour_distance(const vector<size_t> &tour);
@@ -35,16 +39,8 @@ private:
     void draw_if_improvement();
     void draw();
 
-private:
-    Graph graph;
 
-    // Current tour
-    double curr_dist_{0.0};
-    vector<size_t> curr_tour_;
 
-    // Best tour
-    double min_dist_{0.0};
-    vector<size_t> best_tour_;
 
 };
 

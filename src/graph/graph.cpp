@@ -682,71 +682,14 @@ void Graph::plotGraph() {
     // plot establishments (lat, long) in a map
     using namespace matplot;
 
-    /*auto x = std::vector<double>();
-    auto y = std::vector<double>();
-    float max_lat = -100;
-    float max_long = -100;
-    float min_lat = 100;
-    float min_long = 100;
-    for (auto &n: nodes) {
-        x.push_back(n.latitude);
-        y.push_back(n.longitude);
-        if (n.latitude > max_lat) max_lat = n.latitude;
-        if (n.latitude < min_lat) min_lat = n.latitude;
-        if (n.longitude > max_long) max_long = n.longitude;
-        if (n.longitude < min_long) min_long = n.longitude;
-    }
-    cout << "max_lat: " << max_lat << endl;
-    cout << "min_lat: " << min_lat << endl;
-    cout << "max_long: " << max_long << endl;
-    cout << "min_long: " << min_long << endl;
 
-    geoplot(x, y, "g-*");
-    //geolimits({nodes[0].latitude-0.01, nodes[0].latitude+0.01}, {nodes[0].longitude-0.01, nodes[0].longitude+0.01});
-    geolimits({min_lat-0.1, max_lat+0.1}, {min_long-0.1, max_long+0.1});
-
-    show();*/
-    vector<string> names = {
-            "Marigot",        "The Valley",     "Saint John's",    "Buenos Aires",
-            "Oranjestad",     "Nassau",         "Bridgetown",      "Belmopan",
-            "Hamilton",       "La Paz",         "Brasilia",        "Road Town",
-            "Ottawa",         "George Town",    "Santiago",        "Bogota",
-            "San Jose",       "Havana",         "Willemstad",      "Roseau",
-            "Santo Domingo",  "Quito",          "San Salvador",    "Stanley",
-            "Nuuk",           "Saint George's", "Guatemala City",  "Georgetown",
-            "Port-au-Prince", "Tegucigalpa",    "Kingston",        "Mexico City",
-            "Plymouth",       "Managua",        "Panama City",     "Asuncion",
-            "Lima",           "San Juan",       "Gustavia",        "Basseterre",
-            "Castries",       "Saint-Pierre",   "Kingstown",       "Philipsburg",
-            "Paramaribo",     "Port of Spain",  "Grand Turk",      "Washington",
-            "Montevideo",     "Caracas",        "Charlotte Amalie"};
-
-    vector<double> lat = {
-            18.0731,  18.2166, 17.1166, -34.5833, 12.5166, 25.0833, 13.1,
-            17.25,    32.2833, -16.5,   -15.7833, 18.4166, 45.4166, 19.3,
-            -33.45,   4.6,     9.9333,  23.1166,  12.1,    15.3,    18.4666,
-            -0.2166,  13.7,    -51.7,   64.1833,  12.05,   14.6166, 6.8,
-            18.5333,  14.1,    18,      19.4333,  16.7,    12.1333, 8.9666,
-            -25.2666, -12.05,  18.4666, 17.8833,  17.3,    14,      46.7666,
-            13.1333,  18.0166, 5.8333,  10.65,    21.4666, 38.8833, -34.85,
-            10.4833,  18.35};
-
-    vector<double> lon = {
-            -63.0822, -63.0500, -61.8500, -58.6666, -70.0333, -77.3500, -59.6166,
-            -88.7666, -64.7833, -68.1500, -47.9166, -64.6166, -75.7000, -81.3833,
-            -70.6666, -74.0833, -84.0833, -82.3500, -68.9166, -61.4000, -69.9000,
-            -78.5000, -89.2000, -57.8500, -51.7500, -61.7500, -90.5166, -58.1500,
-            -72.3333, -87.2166, -76.8000, -99.1333, -62.2166, -86.2500, -79.5333,
-            -57.6666, -77.0500, -66.1166, -62.8500, -62.7166, -61.0000, -56.1833,
-            -61.2166, -63.0333, -55.1666, -61.5166, -71.1333, -77.0000, -56.1666,
-            -66.8666, -64.9333};
+    auto solution = generate_closest_solution();
 
     figure_handle f = figure(true);
-    Geoplot_draw s(*this);
-    s.simple();
+    Geoplot_draw s(*this, f->current_axes());
+    s.draw_all_vehicles(solution);
 
 
-    return;
 }
 
 
@@ -860,4 +803,16 @@ void Graph::Time::toPreviousHour() {
 
 float Graph::Time::toSeconds() {
     return (float) this->milliseconds / 1000 + this->seconds + this->minutes * 60 + this->hours * 3600 + this->days * 86400;
+}
+
+float Graph::Node::getLatitude() const {
+    return latitude;
+}
+
+float Graph::Node::getLongitude() const {
+    return longitude;
+}
+
+const string &Graph::Node::getAddress() const {
+    return address;
 }
