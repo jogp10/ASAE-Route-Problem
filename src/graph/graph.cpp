@@ -5,6 +5,7 @@
 #include <list>
 #include <algorithm>
 #include <queue>
+#include <set>
 
 // Constructor: nr nodes and direction (default: undirected)
 Graph::Graph(int num, bool dir, Time departure_time, Time max_work_time) : n(num), hasDir(dir), nodes(num), engine(std::random_device{}()) {
@@ -304,7 +305,7 @@ Graph::Time Graph::minimumOperationTime(int a, int b, Time time, bool log) {
     time.addTime({milliseconds_distance, (int) time_distance, 0, 0});
 
     if(nodes[b].opening_hours[time.hours] == 0 && log) cout << "Node " << b << " is closed at " << time.hours << endl;
-    for(int i = time.hours; i < 24; i++) {
+    for(int i = time.hours; i < limit_time.hours+1; i++) {
         if(nodes[b].opening_hours[time.hours] == 0) {
             time.toNextHour();
         }
@@ -533,12 +534,75 @@ vector<list<int>> Graph::mutation_solution_6(const vector<list<int>> &solution) 
     }
 }
 
+/**
+ * Determine shortest path in both solutions to help select midpoint in crossover functions
+ * @param father_solution
+ * @param mother_solution
+ * @return shortest path length
+ */
+int shortest_path_size(vector<list<int>> father_solution, vector<list<int>> mother_solution) {
+    int shortest = INT32_MAX;
+
+    for(int i = 0; i < father_solution.size(); i++) { // both solutions have the same size
+        if(father_solution[i].size() < shortest) shortest = father_solution[i].size();
+        if(mother_solution[i].size() < shortest) shortest = mother_solution[i].size();
+    }
+
+    return shortest;
+}
+
 /*
  * Crossover 1: Select a midpoint, smaller than the shortest path in the solution, which will be dividing the both
  * solutions in the midpoint. The two new resultant solutions consist in changing the cuts of the parents solutions.
  */
 void Graph::crossover_solutions_1(vector<list<int>> father_solution, vector<list<int>> mother_solution) {
+    int midpoint = shortest_path_size(father_solution, mother_solution);
+    vector<list<int>> child1, child2;
 
+    for(int i = 0; i < father_solution.size(); i++) {
+
+        if(i < midpoint) {
+            child1.push_back(father_solution[i]);
+            child2.push_back(mother_solution[i]);
+        }
+        else {
+            child1.push_back(mother_solution[i]);
+            child2.push_back(father_solution[i]);
+        }
+
+    }
+
+    set<int> used_establishments1, repeated_establishments1;
+
+    for(auto van: child1) {
+        for(list<int>::iterator it = van.begin(); it != van.end(); it++) {
+            int previous_size = used_establishments1.size();
+            used_establishments1.insert(*it);
+
+            if(previous_size == used_establishments1.size()) {
+                repeated_establishments1.insert(*it);
+                van.erase(it);
+            }
+        }
+    }
+
+    set<int> used_establishments2, repeated_establishments2;
+
+    for(auto van: child1) {
+        for(list<int>::iterator it = van.begin(); it != van.end(); it++) {
+            int previous_size = used_establishments2.size();
+            used_establishments2.insert(*it);
+
+            if(previous_size == used_establishments2.size()) {
+                repeated_establishments2.insert(*it);
+                van.erase(it);
+            }
+        }
+    }
+
+    //check_solution(child1);
+
+    //return child1, child2
 }
 
 /*
@@ -546,6 +610,9 @@ void Graph::crossover_solutions_1(vector<list<int>> father_solution, vector<list
  * remaining parts with the nodes from the second parent’s solution, creating the child solutions.
  */
 void Graph::crossover_solutions_2(vector<list<int>> father_solution, vector<list<int>> mother_solution) {
+    int midpoint1 = (rand() % (father_solution.size() - 1)) + 0;
+    int midpoint2 = (rand() % (father_solution.size() - 1)) + midpoint1;
+
 
 }
 
