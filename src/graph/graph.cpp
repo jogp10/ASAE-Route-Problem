@@ -1,4 +1,5 @@
 #include "graph.h"
+#include "minHeap.h"
 #include "../matplot/geoplot_draw.h"
 
 #include <random>
@@ -144,9 +145,15 @@ vector<list<int>> Graph::generate_random_solution(bool log) {
 
 vector<list<int>> Graph::generate_closest_solution(bool log) {
     vector<list<int>> solution(nrVehicles, list<int>(1, 0));
+    vector<MinHeap<int, int>> heaps(n, MinHeap<int, int>(n, -1));
 
     for (auto &t: times) t = departure_time;
-    for (auto &n: nodes) n.visited = false;
+    for (auto &n: nodes) {
+        for(auto &e: n.adj) {
+            heaps[n.id].insert(e.dest, e.weight);
+        }
+        n.visited = false;
+    }
     nodes[0].visited = true;
 
     for(int i=0; i<nrVehicles; i++) {
@@ -154,7 +161,7 @@ vector<list<int>> Graph::generate_closest_solution(bool log) {
         int limit = 5;
         for(int j=0; j<n-2; j++) {
             int last = solution[i].back();
-            int nthClosest = closest_node(last, j+1);
+            int nthClosest = heaps[last].removeMin();
 
             if (nodes[nthClosest].visited) continue;
             if(limit == 0) break;

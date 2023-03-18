@@ -20,7 +20,7 @@ add_executable(
         src/graph/graph.cpp src/graph/graph.h
 
         src/ASAE.cpp src/ASAE.h
-        src/matplot/geoplot_draw.cpp src/matplot/geoplot_draw.h)
+        src/matplot/geoplot_draw.cpp src/matplot/geoplot_draw.h src/graph/minHeap.h)
 
 target_link_libraries(ASAEinspectionRoute PUBLIC matplot)
 
