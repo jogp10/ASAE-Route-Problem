@@ -588,7 +588,7 @@ void Graph::crossover_solutions_1(vector<list<int>> father_solution, vector<list
 
     set<int> used_establishments2, repeated_establishments2;
 
-    for(auto van: child1) {
+    for(auto van: child2) {
         for(list<int>::iterator it = van.begin(); it != van.end(); it++) {
             int previous_size = used_establishments2.size();
             used_establishments2.insert(*it);
@@ -612,6 +612,51 @@ void Graph::crossover_solutions_1(vector<list<int>> father_solution, vector<list
 void Graph::crossover_solutions_2(vector<list<int>> father_solution, vector<list<int>> mother_solution) {
     int midpoint1 = (rand() % (father_solution.size() - 1)) + 0;
     int midpoint2 = (rand() % (father_solution.size() - 1)) + midpoint1;
+
+    vector<list<int>> child1, child2;
+
+    for(int i = 0; i < father_solution.size(); i++) {
+        if(i < midpoint1) {
+            child1.push_back(father_solution[i]);
+            child2.push_back(mother_solution[i]);
+        }
+        else if(i > midpoint1 && i < midpoint2) {
+            child1.push_back(mother_solution[i]);
+            child2.push_back(father_solution[i]);
+        }
+        else if(i > midpoint2) {
+            child1.push_back(father_solution[i]);
+            child2.push_back(mother_solution[i]);
+        }
+    }
+
+    set<int> used_establishments1, repeated_establishments1;
+
+    for(auto van: child1) {
+        for(list<int>::iterator it = van.begin(); it != van.end(); it++) {
+            int previous_size = used_establishments1.size();
+            used_establishments1.insert(*it);
+
+            if(previous_size == used_establishments1.size()) {
+                repeated_establishments1.insert(*it);
+                van.erase(it);
+            }
+        }
+    }
+
+    set<int> used_establishments2, repeated_establishments2;
+
+    for(auto van: child2) {
+        for(list<int>::iterator it = van.begin(); it != van.end(); it++) {
+            int previous_size = used_establishments2.size();
+            used_establishments2.insert(*it);
+
+            if(previous_size == used_establishments2.size()) {
+                repeated_establishments2.insert(*it);
+                van.erase(it);
+            }
+        }
+    }
 
 
 }
