@@ -555,7 +555,7 @@ int shortest_path_size(vector<list<int>> father_solution, vector<list<int>> moth
  * Crossover 1: Select a midpoint, smaller than the shortest path in the solution, which will be dividing the both
  * solutions in the midpoint. The two new resultant solutions consist in changing the cuts of the parents solutions.
  */
-void Graph::crossover_solutions_1(vector<list<int>> father_solution, vector<list<int>> mother_solution) {
+pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(vector<list<int>> father_solution, vector<list<int>> mother_solution) {
     int midpoint = shortest_path_size(father_solution, mother_solution);
     vector<list<int>> child1, child2;
 
@@ -582,6 +582,7 @@ void Graph::crossover_solutions_1(vector<list<int>> father_solution, vector<list
             if(previous_size == used_establishments1.size()) {
                 repeated_establishments1.insert(*it);
                 van.erase(it);
+                it = van.begin();
             }
         }
     }
@@ -596,20 +597,27 @@ void Graph::crossover_solutions_1(vector<list<int>> father_solution, vector<list
             if(previous_size == used_establishments2.size()) {
                 repeated_establishments2.insert(*it);
                 van.erase(it);
+                it = van.begin();
             }
         }
     }
 
     //check_solution(child1);
+    cout << "score father: " << this->evaluate_solution(father_solution) << endl;
+    cout << "score mother: " << this->evaluate_solution(mother_solution) << endl;
+    cout << "valid 1: " << this->check_solution(child1) << endl;
+    cout << "score 1: " << this->evaluate_solution(child1) << endl;
+    cout << "valid 2: " << this->check_solution(child2) << endl;
+    cout << "score 2: " << this->evaluate_solution(child2) << endl;
 
-    //return child1, child2
+    return make_pair(child1, child2);
 }
 
 /*
  * Crossover 2: Take the middle part of the first parent’s solution between two crossover points and filling the
  * remaining parts with the nodes from the second parent’s solution, creating the child solutions.
  */
-void Graph::crossover_solutions_2(vector<list<int>> father_solution, vector<list<int>> mother_solution) {
+pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(vector<list<int>> father_solution, vector<list<int>> mother_solution) {
     int midpoint1 = (rand() % (father_solution.size() - 1)) + 0;
     int midpoint2 = (rand() % (father_solution.size() - 1)) + midpoint1;
 
@@ -640,6 +648,7 @@ void Graph::crossover_solutions_2(vector<list<int>> father_solution, vector<list
             if(previous_size == used_establishments1.size()) {
                 repeated_establishments1.insert(*it);
                 van.erase(it);
+                it = van.begin();
             }
         }
     }
@@ -654,11 +663,19 @@ void Graph::crossover_solutions_2(vector<list<int>> father_solution, vector<list
             if(previous_size == used_establishments2.size()) {
                 repeated_establishments2.insert(*it);
                 van.erase(it);
+                it = van.begin();
             }
         }
     }
 
+    cout << "score father: " << this->evaluate_solution(father_solution) << endl;
+    cout << "score mother: " << this->evaluate_solution(mother_solution) << endl;
+    cout << "valid 1: " << this->check_solution(child1) << endl;
+    cout << "score 1: " << this->evaluate_solution(child1) << endl;
+    cout << "valid 2: " << this->check_solution(child2) << endl;
+    cout << "score 2: " << this->evaluate_solution(child2) << endl;
 
+    return make_pair(child1, child2);
 }
 
 vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {

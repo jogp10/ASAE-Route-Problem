@@ -162,12 +162,12 @@ void ASAE::menu() {
         cout << "1 - Show all establishments" << endl;
         cout << "2 - Show all establishments of a given type" << endl;
         cout << "3 - Show all establishments of a given type and with a given name // tabu search here" << endl;
-        cout << "4 - Show all establishments of a given type and with a given name and with a given opening hour" << endl;
+        cout << "4 - Show all establishments of a given type and with a given name and with a given opening hour // crossover testing" << endl;
         cout << "5 - Exit" << endl;
         cout << "Option: ";
         cin >> option;
 
-        vector<list<int>> solution;
+        vector<list<int>> solution, solution1, solution2;
         switch (option) {
             case 0:
                 return;
@@ -181,6 +181,13 @@ void ASAE::menu() {
                 solution = (graph.*(&Graph::tabuSearch))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), 20, false);
                 break;
             case 4:
+                solution1 = (graph.*(&Graph::hillClimbing))(1000, (&Graph::mutation_solution_6), (&Graph::evaluate_solution), false);
+                solution2 = (graph.*(&Graph::tabuSearch))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), 20, false);
+                cout << "step1" << endl;
+                graph.crossover_solutions_1(solution1, solution2);
+                graph.crossover_solutions_2(solution1, solution2);
+                cout << "step2" << endl;
+
                 break;
             case 5:
                 break;

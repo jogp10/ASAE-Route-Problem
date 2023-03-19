@@ -13,6 +13,7 @@
 #include <queue>
 #include <cmath>
 #include <random>
+#include <utility>
 
 using namespace std;
 
@@ -330,9 +331,9 @@ public:
      */
     vector<list<int>> mutation_solution_6(const vector<list<int>>& solution);
 
-    void crossover_solutions_1(vector<list<int>> father_solution, vector<list<int>> mother_solution);
+    pair<vector<list<int>>, vector<list<int>>> crossover_solutions_1(vector<list<int>> father_solution, vector<list<int>> mother_solution);
 
-    void crossover_solutions_2(vector<list<int>> father_solution, vector<list<int>> mother_solution);
+    pair<vector<list<int>>, vector<list<int>>> crossover_solutions_2(vector<list<int>> father_solution, vector<list<int>> mother_solution);
 
     vector<vector<list<int>>> getNeighbours(vector<list<int>> solution, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&));
 
