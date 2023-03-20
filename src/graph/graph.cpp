@@ -549,7 +549,7 @@ vector<list<int>> Graph::mutation_solution_6(const vector<list<int>> &solution) 
 
 
 vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
-    vector<list<int>> best_solution = this->generate_random_solution();
+    vector<list<int>> best_solution = this->generate_closest_solution();
     int best_score = (this->*evaluation_func)(best_solution);
 
     printSolution(best_solution);
@@ -579,7 +579,7 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
 
 
 vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
-    vector<list<int>> best_solution = this->generate_random_solution();
+    vector<list<int>> best_solution = this->generate_closest_solution();
     int best_score = (this->*evaluation_func)(best_solution);
 
     printSolution(best_solution);
@@ -642,7 +642,7 @@ bool queueContainsElem(queue<Type> queue, Type element) {
 
 vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&),
                                     int (Graph::*evaluation_func)(const vector<list<int>>&), bool log) {
-    vector<list<int>> best_solution = this->generate_random_solution();
+    vector<list<int>> best_solution = this->generate_closest_solution();
     int best_score = (this->*evaluation_func)(best_solution);
 
     printSolution(best_solution);
@@ -705,7 +705,7 @@ void Graph::plotGraph() {
     using namespace matplot;
 
 
-    auto solution = generate_random_solution();
+    auto solution = generate_closest_solution();
 
     figure_handle f = figure(true);
     Geoplot_draw s(*this, f->current_axes());
