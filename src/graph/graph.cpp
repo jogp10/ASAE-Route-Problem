@@ -158,8 +158,10 @@ vector<list<int>> Graph::generate_closest_solution(bool log) {
     nodes[0].visited = true;
 
     for(int i=0; i<nrVehicles; i++) {
-
         int limit = 5;
+
+        if(i >= solution.size()) break;
+
         for(int j=0; j<n-2; j++) {
             int last = solution[i].back();
             int nthClosest = heaps[last].removeMin();
