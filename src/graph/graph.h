@@ -1,8 +1,6 @@
 #ifndef GRAPH_H_
 #define GRAPH_H_
 
-
-
 #include <matplot/matplot.h>
 #include <vector>
 #include <list>
@@ -13,8 +11,7 @@
 #include <queue>
 #include <cmath>
 #include <random>
-
-
+#include <utility>
 
 class Graph {
 
@@ -337,6 +334,16 @@ public:
      * @return
      */
     std::vector<std::list<int>> mutation_solution_6(const std::vector<std::list<int>>& solution);
+
+    /**
+     * Fill given solution with more establishments in vans
+     * @param child
+     */
+    void fillSolution(std::vector<std::list<int>> &child);
+
+    std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_1(std::vector<std::list<int>> father_solution, std::vector<std::list<int>> mother_solution);
+
+    std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_2(std::vector<std::list<int>> father_solution, std::vector<std::list<int>> mother_solution);
 
     std::vector<std::vector<std::list<int>>> getNeighbours(std::vector<std::list<int>> solution, int neighborhood_size, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&));
 
