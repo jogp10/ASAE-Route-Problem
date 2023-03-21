@@ -1,8 +1,6 @@
 #ifndef GRAPH_H_
 #define GRAPH_H_
 
-#include "minHeap.h"
-
 #include <matplot/matplot.h>
 #include <vector>
 #include <list>
@@ -15,8 +13,6 @@
 #include <random>
 #include <utility>
 
-using namespace std;
-
 class Graph {
 
     struct Edge {
@@ -25,21 +21,29 @@ class Graph {
     };
 
     struct Node {
-        list<Edge> adj; // The list of outgoing edges (to adjacent nodes)
+        std::list<Edge> adj; // The std::list of outgoing edges (to adjacent nodes)
         int pred = 0;
         bool visited;   // Flag to indicate if the node has been visited
         float dist;
 
         int id;
-        string district;
-        string county;
-        string parish;
-        string address;
+        std::string district;
+        std::string county;
+        std::string parish;
+        std::string address;
+
+        const std::string &getAddress() const;
+
         float latitude;
+
+        float getLatitude() const;
+
+        float getLongitude() const;
+
         float longitude;
         int inspection_time;    // in minutes
         float inspection_utility;
-        vector<int> opening_hours; // vector<int>(24, 0/1) 0 = closed, 1 = open
+        std::vector<int> opening_hours; // std::vector<int>(24, 0/1) 0 = closed, 1 = open
     };
 
     struct Time {
@@ -117,14 +121,14 @@ class Graph {
 
     int n;              // Graph size (vertices are numbered from 1 to n)
     bool hasDir;        // false: undirected; true: directed
-    vector<Node> nodes; // The list of nodes being represented
+    std::vector<Node> nodes; // The std::list of nodes being represented
 
     int nrVehicles;    // Number of vehicles
 
     Time departure_time;    // Time when vehicles start working
     Time max_work_time; // Maximum time vehicles can work
     Time limit_time;    // Time when vehicles stop working
-    vector<Time> times;     // Current times for each vehicle
+    std::vector<Time> times;     // Current times for each vehicle
 
     std::mt19937 engine;
 
@@ -162,13 +166,13 @@ public:
      * @param inspection_time   Inspection Time of Establishment
      * @param opening_hours     Opening Hours of Establishment
      */
-    void setNode(int index, string district, string county, string parish, string address, float latitude, float longitude, float inspection_utility, int inspection_time, vector<int> opening_hours);
+    void setNode(int index, std::string district, std::string county, std::string parish, std::string address, float latitude, float longitude, float inspection_utility, int inspection_time, std::vector<int> opening_hours);
 
     /**
      * Get Nodes
      * @return  Nodes
      */
-    map<int, pair<float, float>> getNodes();
+    std::map<int, std::pair<float, float>> getNodes();
 
     /**
      * Get Node
@@ -183,14 +187,14 @@ public:
      * @param destin    Destination Establishment
      * @return  Path
      */
-    list<int> path(int origin, int destin);
+    std::list<int> path(int origin, int destin);
 
     /**
      * Evaluate Solution
      * @param solution  Solution
      * @return  Solution Value
      */
-    int evaluate_solution(const vector<list<int>>& solution);
+    int evaluate_solution(const std::vector<std::list<int>>& solution);
 
     /**
      * Get Random Node different from idx
@@ -204,7 +208,7 @@ public:
      * @param idx
      * @return
      */
-    int closest_node(int idx, list<int> incompatible) const;
+    int closest_node(int idx, std::list<int> incompatible) const;
 
     /**
      * Get order (th) Closest Node different from idx
@@ -217,13 +221,13 @@ public:
      * Get Random Solution
      * @return  Random Solution
      */
-    vector<list<int>> generate_random_solution(bool log=false);
+    std::vector<std::list<int>> generate_random_solution(bool log=false);
 
     /**
      * Get Solution with closest nodes
      * @return  Random Solution
      */
-    vector<list<int>> generate_closest_solution(bool log=false);
+    std::vector<std::list<int>> generate_closest_solution(bool log=false);
 
     /**
      * Get Distance between two establishments
@@ -242,34 +246,34 @@ public:
      * Display solution
      * @param solution
      */
-    static void printSolution(const vector<list<int>>& solution);
+    static void printSolution(const std::vector<std::list<int>>& solution);
 
     /**
      * Display more details about a solution
      * @param solution
      */
-    void printDetailedSolution(const vector<list<int>>& solution);
+    void printDetailedSolution(const std::vector<std::list<int>>& solution, bool log=false);
 
     /**
      * Get total travel time of a solution
      * @param solution  Solution
      * @return  Total travel time
      */
-    float totalTravelTime(const vector<list<int>>& solution);
+    float totalTravelTime(const std::vector<std::list<int>>& solution, bool log=false);
 
     /**
      * Get total waiting time of a solution
      * @param solution  Solution
      * @return  Total waiting time
      */
-    float totalWaitingTime(const vector<list<int>>& solution);
+    float totalWaitingTime(const std::vector<std::list<int>>& solution, bool log=false);
 
     /**
      * Get total operation time of a solution
      * @param solution  Solution
      * @return  Total operation time
      */
-    float totalOperationTime(const vector<list<int>>& solution);
+    float totalOperationTime(const std::vector<std::list<int>>& solution, bool log=false);
 
     /**
      * Get minimum time required to be able to do dislocation
@@ -294,66 +298,78 @@ public:
      * @param solution
      * @return
      */
-    vector<list<int>> mutation_solution_1(const vector<list<int>>& solution);
+    std::vector<std::list<int>> mutation_solution_1(const std::vector<std::list<int>>& solution);
 
     /**
      * Exchange one establishment for one that didn't appear in the solution
      * @param solution
      * @return
      */
-    vector<list<int>> mutation_solution_2(const vector<list<int>>& solution);
+    std::vector<std::list<int>> mutation_solution_2(const std::vector<std::list<int>>& solution);
 
     /**
       * Generate a new path between two nodes
       * @param solution
       * @return
       */
-    vector<list<int>> mutation_solution_3(const vector<list<int>>& solution);
+    std::vector<std::list<int>> mutation_solution_3(const std::vector<std::list<int>>& solution);
 
     /**
       * Scramble the order of a subset of nodes in a vehicle's path
       * @param solution
       * @return
       */
-    vector<list<int>> mutation_solution_4(const vector<list<int>>& solution);
+    std::vector<std::list<int>> mutation_solution_4(const std::vector<std::list<int>>& solution);
 
     /**
       * Remove a node from a vehicle's path and insert two new nodes
       * @param solution
       * @return
       */
-    vector<list<int>> mutation_solution_5(const vector<list<int>>& solution);
+    std::vector<std::list<int>> mutation_solution_5(const std::vector<std::list<int>>& solution);
 
     /**
      * Choose a random mutation
      * @param solution
      * @return
      */
-    vector<list<int>> mutation_solution_6(const vector<list<int>>& solution);
+    std::vector<std::list<int>> mutation_solution_6(const std::vector<std::list<int>>& solution);
 
     /**
      * Fill given solution with more establishments in vans
      * @param child
      */
-    void fillSolution(vector<list<int>> &child);
+    void fillSolution(std::vector<std::list<int>> &child);
 
-    pair<vector<list<int>>, vector<list<int>>> crossover_solutions_1(vector<list<int>> father_solution, vector<list<int>> mother_solution);
+    std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_1(std::vector<std::list<int>> father_solution, std::vector<std::list<int>> mother_solution);
 
-    pair<vector<list<int>>, vector<list<int>>> crossover_solutions_2(vector<list<int>> father_solution, vector<list<int>> mother_solution);
+    std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_2(std::vector<std::list<int>> father_solution, std::vector<std::list<int>> mother_solution);
 
-    vector<vector<list<int>>> getNeighbours(vector<list<int>> solution, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&));
+    std::vector<std::vector<std::list<int>>> getNeighbours(std::vector<std::list<int>> solution, int neighborhood_size, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&));
 
-    vector<list<int>> hillClimbing(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&), bool log=false);
+    std::vector<std::list<int>> hillClimbing(int iteration_number, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
-    vector<list<int>> simulatedAnnealing(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&), bool log=false);
+    std::vector<std::list<int>> simulatedAnnealing(int iteration_number, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
-    vector<list<int>> tabuSearch(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>>&),int max_size_tabu_list, bool log=false);
+    std::vector<std::list<int>> tabuSearch(int iteration_number, int tabu_size, int neighborhood_size, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
-    void geneticAlgorithm(int iteration_number, int population_size, vector<list<int>> (Graph::*crossover_func)(const vector<list<int>>&), vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (*evaluation_func)(const vector<list<int>>&), bool log=false);
+    std::vector<std::list<int>> geneticAlgorithm(int iteration_number, int population_size, int tournament_size, int mutation_probability, std::vector<std::vector<std::list<int>>> (Graph::*crossover_func)(const std::vector<std::list<int>>&, const std::vector<std::list<int>>&), std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
-    bool check_solution(vector<list<int>> vector1);
+    bool check_solution(std::vector<std::list<int>> vector1);
 
     void plotGraph();
+
+    std::vector<std::vector<std::list<int>>> generatePopulation(int population_size);
+
+    std::vector<std::list<int>> tournamentSelection(std::vector<std::vector<std::list<int>>> population, int size, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
+
+    std::vector<std::list<int>> rouletteSelection(std::vector<std::vector<std::list<int>>> population, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
+
+    std::vector<std::vector<std::list<int>>> replace_least_fittest(std::vector<std::vector<std::list<int>>> population, std::vector<std::list<int>> new_solution, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
+
+    std::pair<std::vector<std::list<int>>, int> get_greatest_fit(std::vector<std::vector<std::list<int>>> population, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
+
+    std::vector<std::vector<std::list<int>>> crossover_test(const std::vector<std::list<int>>& parent1, const std::vector<std::list<int>>& parent2);
 };
 
 #endif /* GRAPH_H_ */

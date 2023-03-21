@@ -40,3 +40,5 @@ cmake-3.20.2
 .ninja_deps
 .ninja_log
 build.ninja
+
+ASAEinspectionRoute

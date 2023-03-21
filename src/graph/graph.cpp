@@ -1,4 +1,6 @@
 #include "graph.h"
+#include "minHeap.h"
+#include "../matplot/geoplot_draw.h"
 
 #include <random>
 #include <utility>
@@ -7,6 +9,7 @@
 #include <queue>
 #include <set>
 
+using namespace std;
 // Constructor: nr nodes and direction (default: undirected)
 Graph::Graph(int num, bool dir, Time departure_time, Time max_work_time) : n(num), hasDir(dir), nodes(num), engine(std::random_device{}()) {
     this->departure_time = departure_time;
@@ -143,31 +146,42 @@ vector<list<int>> Graph::generate_random_solution(bool log) {
 
 vector<list<int>> Graph::generate_closest_solution(bool log) {
     vector<list<int>> solution(nrVehicles, list<int>(1, 0));
+    vector<MinHeap<int, int>> heaps(n, MinHeap<int, int>(n, -1));
 
     for (auto &t: times) t = departure_time;
-    for (auto &n: nodes) n.visited = false;
+    for (auto &n: nodes) {
+        for(auto &e: n.adj) {
+            heaps[n.id].insert(e.dest, e.weight);
+        }
+        n.visited = false;
+    }
+    nodes[0].visited = true;
 
     for(int i=0; i<nrVehicles; i++) {
+
+        int limit = 5;
         for(int j=0; j<n-2; j++) {
             int last = solution[i].back();
-            int nthClosest = closest_node(last, j+1);
+            int nthClosest = heaps[last].removeMin();
 
             if (nodes[nthClosest].visited) continue;
+            if(limit == 0) break;
 
             if(log) cout << "Vehicle -> " << i << "    Node -> " << last << endl;
             if(log) cout << times[i].hours << ":" << times[i].minutes << "h" << endl;
 
-            Time min_op = minimumOperationTime(last, nthClosest, times[i]);
+            Time min_op = minimumOperationTime(last, nthClosest, times[i], log);
 
             min_op.addTime(times[i]);
             if (limit_time < min_op) {
+                limit--;
                 if(log) cout << "Limit time reached" << endl;
                 continue;
             }
 
             nodes[nthClosest].visited = true;
             solution[i].push_back(nthClosest);
-            Time op = operationTime(last, nthClosest, times[i]);
+            Time op = operationTime(last, nthClosest, times[i], log);
             times[i].addTime(op);
             j=-1;
         }
@@ -240,7 +254,7 @@ float Graph::getDistance(int a, int b) {
 }
 
 
-float Graph::totalTravelTime(const vector<list<int>> &solution) {
+float Graph::totalTravelTime(const vector<list<int>> &solution, bool log) {
     float travel_time = 0;
     for (int i = 0; i < solution.size(); ++i) {
         float vehicle_time = 0;
@@ -257,7 +271,7 @@ float Graph::totalTravelTime(const vector<list<int>> &solution) {
 }
 
 
-float Graph::totalWaitingTime(const vector<list<int>> &solution) {
+float Graph::totalWaitingTime(const vector<list<int>> &solution, bool log) {
     float waiting_time = 0;
 
     for (int i = 0; i < solution.size(); ++i) {
@@ -327,16 +341,16 @@ Graph::Time Graph::operationTime(int a, int b, Time time, bool log) {
     int time_inspection = b != 0 ? nodes[b].inspection_time: 0;
     int milliseconds_distance = (int) ((getDistance(a, b) - (float) time_distance) * 1000);
 
-    time.addTime({milliseconds_distance, (int) time_distance, 0, 0});
+    time.addTime({milliseconds_distance, (int) time_distance, 0, 0, 0});
 
-    for(int i = time.hours; i < 24; i++) {
+    for(int i = time.hours; i < limit_time.hours+1; i++) {
         if(nodes[b].opening_hours[time.hours] == 0) {
             time.toNextHour();
         }
         else break;
     }
 
-    if(b!=0)time.addTime({0, 0, time_inspection, 0});
+    if(b!=0)time.addTime({0, 0, time_inspection, 0, 0});
 
     time.subTime(aux);
 
@@ -344,7 +358,7 @@ Graph::Time Graph::operationTime(int a, int b, Time time, bool log) {
 }
 
 
-float Graph::totalOperationTime(const vector<list<int>> &solution) {
+float Graph::totalOperationTime(const vector<list<int>> &solution, bool log) {
     float operation_time = 0;
     int number_above = 0;
     for (int i = 0; i < solution.size(); ++i) {
@@ -370,7 +384,7 @@ float Graph::totalOperationTime(const vector<list<int>> &solution) {
 }
 
 
-void Graph::printDetailedSolution(const vector<list<int>> &solution) {
+void Graph::printDetailedSolution(const vector<list<int>> &solution, bool log) {
     // For each step in vechicle i, node,time before leaving to node, time of travel distance to node, inspection time, time after inspection
     for (int i = 0; i < solution.size(); ++i) {
         Time t = departure_time;
@@ -379,10 +393,10 @@ void Graph::printDetailedSolution(const vector<list<int>> &solution) {
         auto it = solution[i].begin();
         it++;
         for (; it != solution[i].end(); ++it)  {
+            cout << "Vehicle " << i << " Going to Node " << *it << " " << t.hours << ":" << t.minutes << "h" << endl;
             cout << "Time to travel to Node " << *it << " " << (int) getDistance(last, *it)/60 << "m" << endl;
-            cout << "Vehicle " << i << " Node " << *it << " " << t.hours << ":" << t.minutes << "h" << endl;
             cout << "Time to inspect Node " << *it << ": " << nodes[*it].inspection_time/60 << ":" << nodes[*it].inspection_time%60 << endl << endl;
-            t.addTime(operationTime(last, *it, t));
+            t.addTime(operationTime(last, *it, t, log));
             last = *it;
         }
     }
@@ -749,10 +763,12 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(vector<l
 
 vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
     vector<list<int>> best_solution = this->generate_random_solution();
-    printSolution(best_solution);
-    cout << check_solution(best_solution) << endl;
     int best_score = (this->*evaluation_func)(best_solution);
-    cout << best_score << endl;
+
+    printSolution(best_solution);
+    cout << "Solution is valid: " << check_solution(best_solution) << endl;
+    cout << "Score: " << best_score << endl;
+
     int iteration = 0;
 
     while(iteration < iteration_number) {
@@ -768,6 +784,9 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
 
     }
 
+    printSolution(best_solution);
+    cout << "Solution is valid: " << check_solution(best_solution) << endl;
+    cout << "Score: " << best_score << endl;
     return best_solution;
 }
 
@@ -775,6 +794,11 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
 vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
     vector<list<int>> best_solution = this->generate_random_solution();
     int best_score = (this->*evaluation_func)(best_solution);
+
+    printSolution(best_solution);
+    cout << "Solution is valid: " << check_solution(best_solution) << endl;
+    cout << "Score: " << best_score << endl;
+
     int iteration = 0;
     float temperature = 1000;
 
@@ -794,13 +818,16 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<l
 
     }
 
+    printSolution(best_solution);
+    cout << "Solution is valid: " << check_solution(best_solution) << endl;
+    cout << "Score: " << best_score << endl;
     return best_solution;
 }
 
-vector<vector<list<int>>> Graph::getNeighbours(vector<list<int>> solution, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&)) {
+vector<vector<list<int>>> Graph::getNeighbours(vector<list<int>> solution, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&)) {
     vector<vector<list<int>>> array;
 
-    for(int i = 0; i < 5; i++) {
+    for(int i = 0; i < neighborhood_size; i++) {
         array.push_back((this->*mutation_func)(solution));
     }
 
@@ -826,21 +853,23 @@ bool queueContainsElem(queue<Type> queue, Type element) {
     return contains;
 }
 
-vector<list<int>> Graph::tabuSearch(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&),
-                                    int (Graph::*evaluation_func)(const vector<list<int>>&), int max_size_tabu_list, bool log) {
+vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&),
+                                    int (Graph::*evaluation_func)(const vector<list<int>>&), bool log) {
     vector<list<int>> best_solution = this->generate_random_solution();
-    printSolution(best_solution);
-    cout << check_solution(best_solution) << endl;
     int best_score = (this->*evaluation_func)(best_solution);
-    cout << best_score << endl;
+
+    printSolution(best_solution);
+    cout << "Solution is valid: " << check_solution(best_solution) << endl;
+    cout << "Score: " << best_score << endl;
+
     queue<vector<list<int>>> tabu_list;
 
     for(int i = 0; i < iteration_number; i++) {
-        vector<vector<list<int>>> neighbourhood = this->getNeighbours(best_solution, (mutation_func));
+        vector<vector<list<int>>> neighbourhood = this->getNeighbours(best_solution, neighborhood_size, (mutation_func));
         vector<list<int>> best_neighbour_solution;
         int best_neighbour_score = numeric_limits<int>::min();
 
-        for(auto neighbour: neighbourhood) {
+        for(const auto& neighbour: neighbourhood) {
             int neighbour_score = (this->*evaluation_func)(neighbour);
 
             if ((neighbour_score > best_neighbour_score) && !queueContainsElem(tabu_list, neighbour) ) {
@@ -853,15 +882,15 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, vector<list<int>> (Gra
             best_solution = best_neighbour_solution;
             best_score = best_neighbour_score;
         }
-        //add solution to tabu list
         tabu_list.push(best_neighbour_solution);
 
-        // se tabu_list.size() > max_size_defined
-        // tabu_list.removeFirst()
-        if(tabu_list.size() > max_size_tabu_list) { tabu_list.pop(); }
+        if(tabu_list.size() > tabu_size) { tabu_list.pop(); }
 
     }
 
+    printSolution(best_solution);
+    cout << "Solution is valid: " << check_solution(best_solution) << endl;
+    cout << "Score: " << best_score << endl;
     return best_solution;
 }
 
@@ -888,30 +917,179 @@ void Graph::plotGraph() {
     // plot establishments (lat, long) in a map
     using namespace matplot;
 
-    auto x = std::vector<double>();
-    auto y = std::vector<double>();
-    float max_lat = -100;
-    float max_long = -100;
-    float min_lat = 100;
-    float min_long = 100;
-    for (auto &n: nodes) {
-        x.push_back(n.latitude);
-        y.push_back(n.longitude);
-        if (n.latitude > max_lat) max_lat = n.latitude;
-        if (n.latitude < min_lat) min_lat = n.latitude;
-        if (n.longitude > max_long) max_long = n.longitude;
-        if (n.longitude < min_long) min_long = n.longitude;
+
+    auto solution = generate_random_solution();
+
+    figure_handle f = figure(true);
+    Geoplot_draw s(*this, f->current_axes());
+    s.draw_all_vehicles(solution);
+
+
+}
+
+vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_size, int tournament_size, int mutation_probability,
+                                          vector<vector<list<int>>> (Graph::*crossover_func)(const vector<list<int>> &, const vector<list<int>> &),
+                                          vector<list<int>> (Graph::*mutation_func)(const vector<list<int>> &),
+                                          int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
+
+    vector<vector<list<int>>> population = this->generatePopulation(population_size);
+
+    vector<list<int>> best_solution = population[0];
+    int best_score = (this->*evaluation_func)(best_solution);
+    int best_solution_generation = 0;
+
+    printSolution(best_solution);
+    cout << "Solution is valid: " << check_solution(best_solution) << endl;
+    cout << "Score: " << best_score << endl;
+
+    int generation_no = 0;
+
+    while (iteration_number > 0) {
+
+        generation_no += 1;
+
+        vector<list<int>> tournament_winner = tournamentSelection(population, tournament_size, (evaluation_func));
+        vector<list<int>> roulette_winner = rouletteSelection(population, (evaluation_func));
+
+        vector<vector<list<int>>> crossovers = (this->*crossover_func)(tournament_winner, roulette_winner);
+        vector<list<int>> crossover1 = crossovers[0];
+        vector<list<int>> crossover2 = crossovers[1];
+
+        int mutation_chance = engine() % 10;
+        if(mutation_chance < mutation_probability) {
+            crossover1 = (this->*mutation_func)(crossover1);
+            crossover2 = (this->*mutation_func)(crossover2);
+        }
+
+        population = replace_least_fittest(population, crossover1, (evaluation_func));
+        population = replace_least_fittest(population, crossover2, (evaluation_func));
+
+        pair<vector<list<int>>, int> greatest_fit_and_score = get_greatest_fit(population, (evaluation_func));
+
+        if(greatest_fit_and_score.second > best_score) {
+            best_solution = greatest_fit_and_score.first;
+            best_score = greatest_fit_and_score.second;
+            best_solution_generation = generation_no;
+            if (log) {
+                cout << "\nGeneration: " << best_solution_generation << endl;
+                cout << "Solution is valid: " << check_solution(best_solution) << endl;
+                cout << "Score: " << best_score << endl;
+            }
+        } else iteration_number -= 1;
     }
-    cout << "max_lat: " << max_lat << endl;
-    cout << "min_lat: " << min_lat << endl;
-    cout << "max_long: " << max_long << endl;
-    cout << "min_long: " << min_long << endl;
 
-    geoplot(x, y, "g-*");
-    //geolimits({nodes[0].latitude-0.01, nodes[0].latitude+0.01}, {nodes[0].longitude-0.01, nodes[0].longitude+0.01});
-    geolimits({min_lat-0.1, max_lat+0.1}, {min_long-0.1, max_long+0.1});
+    printSolution(best_solution);
+    cout << "Best solution found in generation: " << best_solution_generation << endl;
+    cout << "Solution is valid: " << check_solution(best_solution) << endl;
+    cout << "Score: " << best_score << endl;
+    return best_solution;
+}
 
-    show();
+vector<vector<list<int>>> Graph::generatePopulation(int population_size) {
+    vector<vector<list<int>>> population;
+    for (int i = 0; i < population_size; i++) {
+        population.push_back(this->generate_random_solution());
+    }
+    return population;
+}
+
+vector<list<int>> Graph::tournamentSelection(vector<vector<list<int>>> population, int size,
+                                int (Graph::*evalFunction)(const vector<list<int>> &)) {
+    if(size > population.size()) size = population.size();
+
+    vector<list<int>> best_solution;
+    int best_score;
+
+    for (int i = 0; i < size; i++) {
+        int random_index = engine() % population.size();
+        vector<list<int>> solution = population[random_index];
+        int score = (this->*evalFunction)(solution);
+
+        if (i == 0) {
+            best_score = score;
+            best_solution = solution;
+        } else if (score > best_score) {
+            best_score = score;
+            best_solution = solution;
+        }
+        population.erase(population.begin() + random_index);
+    }
+
+    return best_solution;
+}
+
+vector<list<int>> Graph::rouletteSelection(vector<vector<list<int>>> population, int (Graph::*evalFunction)(const vector<list<int>> &)) {
+
+    vector<list<int>> best_solution = population[0];
+    vector<int> scores;
+
+    for (auto &solution: population) {
+        scores.push_back((this->*evalFunction)(solution));
+    }
+
+    int total_score = 0;
+
+    for (auto &score: scores) {
+        total_score += score;
+    }
+
+    vector<double> probabilities;
+
+    for (auto &score: scores) {
+        probabilities.push_back((double) score / total_score);
+    }
+
+    // Choose random number based on probabilities
+    double random_number = (double) engine() / engine.max();
+
+    double sum = 0;
+    for (int i = 0; i < probabilities.size(); i++) {
+        sum += probabilities[i];
+        if (sum >= random_number) {
+            return population[i];
+        }
+    }
+}
+
+vector<vector<list<int>>> Graph::replace_least_fittest(vector<vector<list<int>>> population, vector<list<int>> new_solution,
+                                                       int (Graph::*evalFunction)(const vector<list<int>> &)) {
+    int least_fit_index = 0;
+    int least_fit_score = (this->*evalFunction)(population[0]);
+
+    for (int i=0; i<population.size(); i++) {
+        int score = (this->*evalFunction)(population[i]);
+        if (score < least_fit_score) {
+            least_fit_score = score;
+            least_fit_index = i;
+        }
+    }
+
+    population[least_fit_index] = std::move(new_solution);
+
+    return population;
+}
+
+pair<vector<list<int>>, int>
+Graph::get_greatest_fit(vector<vector<list<int>>> population, int (Graph::*evalFunction)(const vector<list<int>>&)) {
+    vector<list<int>> best_solution = population[0];
+    int best_score = 0;
+
+    for(auto &solution: population) {
+        int score = (this->*evalFunction)(solution);
+        if(score > best_score) {
+            best_score = score;
+            best_solution = solution;
+        }
+    }
+
+    return make_pair(best_solution, best_score);
+}
+
+vector<vector<list<int>>> Graph::crossover_test(const vector<list<int>> &parent1, const vector<list<int>> &parent2) {
+    vector<list<int>> child1 = parent1;
+    vector<list<int>> child2 = parent2;
+
+    return {child1, child2};
 }
 
 
@@ -1025,4 +1203,16 @@ void Graph::Time::toPreviousHour() {
 
 float Graph::Time::toSeconds() {
     return (float) this->milliseconds / 1000 + this->seconds + this->minutes * 60 + this->hours * 3600 + this->days * 86400;
+}
+
+float Graph::Node::getLatitude() const {
+    return latitude;
+}
+
+float Graph::Node::getLongitude() const {
+    return longitude;
+}
+
+const string &Graph::Node::getAddress() const {
+    return address;
 }
