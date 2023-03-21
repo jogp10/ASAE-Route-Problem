@@ -183,11 +183,10 @@ void ASAE::menu() {
             case 4:
                 solution1 = (graph.*(&Graph::hillClimbing))(1000, (&Graph::mutation_solution_6), (&Graph::evaluate_solution), false);
                 solution2 = (graph.*(&Graph::tabuSearch))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), 20, false);
-                cout << "step1" << endl;
+
                 graph.crossover_solutions_1(solution1, solution2);
                 graph.crossover_solutions_2(solution1, solution2);
-                cout << "step2" << endl;
-
+                
                 break;
             case 5:
                 break;

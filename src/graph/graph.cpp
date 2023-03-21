@@ -551,6 +551,46 @@ int shortest_path_size(vector<list<int>> father_solution, vector<list<int>> moth
     return shortest;
 }
 
+void Graph::fillSolution(vector<list<int>> &child) {
+    vector<MinHeap<int, int>> heaps(n, MinHeap<int, int>(n, -1));
+
+    for (auto &n: nodes) {
+        for(auto &e: n.adj) {
+            heaps[n.id].insert(e.dest, e.weight);
+        }
+        n.visited = false;
+    }
+    nodes[0].visited = true;
+
+    for(int i=0; i<nrVehicles; i++) {
+        int limit = 5;
+
+        if(i >= child.size()) break;
+
+        for(int j=0; j<n-2; j++) {
+            int last = child[i].back();
+            int nthClosest = heaps[last].removeMin();
+
+            if (nodes[nthClosest].visited) continue;
+            if(limit == 0) break;
+
+            Time min_op = minimumOperationTime(last, nthClosest, times[i], false);
+
+            min_op.addTime(times[i]);
+            if (limit_time < min_op) {
+                limit--;
+                continue;
+            }
+
+            nodes[nthClosest].visited = true;
+            child[i].push_back(nthClosest);
+            Time op = operationTime(last, nthClosest, times[i], false);
+            times[i].addTime(op);
+            j=-1;
+        }
+    }
+}
+
 /*
  * Crossover 1: Select a midpoint, smaller than the shortest path in the solution, which will be dividing the both
  * solutions in the midpoint. The two new resultant solutions consist in changing the cuts of the parents solutions.
@@ -572,7 +612,7 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(vector<l
 
     }
 
-    set<int> used_establishments1, repeated_establishments1;
+    set<int> used_establishments1;
 
     for(auto van: child1) {
         for(list<int>::iterator it = van.begin(); it != van.end(); it++) {
@@ -580,14 +620,13 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(vector<l
             used_establishments1.insert(*it);
 
             if(previous_size == used_establishments1.size()) {
-                repeated_establishments1.insert(*it);
                 van.erase(it);
                 it = van.begin();
             }
         }
     }
 
-    set<int> used_establishments2, repeated_establishments2;
+    set<int> used_establishments2;
 
     for(auto van: child2) {
         for(list<int>::iterator it = van.begin(); it != van.end(); it++) {
@@ -595,20 +634,35 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(vector<l
             used_establishments2.insert(*it);
 
             if(previous_size == used_establishments2.size()) {
-                repeated_establishments2.insert(*it);
                 van.erase(it);
                 it = van.begin();
             }
         }
     }
 
-    //check_solution(child1);
+    /*
+    cout << "==== BEFORE ====" << endl;
     cout << "score father: " << this->evaluate_solution(father_solution) << endl;
     cout << "score mother: " << this->evaluate_solution(mother_solution) << endl;
     cout << "valid 1: " << this->check_solution(child1) << endl;
     cout << "score 1: " << this->evaluate_solution(child1) << endl;
     cout << "valid 2: " << this->check_solution(child2) << endl;
     cout << "score 2: " << this->evaluate_solution(child2) << endl;
+
+    fillSolution(child1);
+    fillSolution(child2);
+
+    cout << "==== AFTER ====" << endl;
+    cout << "score father: " << this->evaluate_solution(father_solution) << endl;
+    cout << "score mother: " << this->evaluate_solution(mother_solution) << endl;
+    cout << "valid 1: " << this->check_solution(child1) << endl;
+    cout << "score 1: " << this->evaluate_solution(child1) << endl;
+    cout << "valid 2: " << this->check_solution(child2) << endl;
+    cout << "score 2: " << this->evaluate_solution(child2) << endl;
+    */
+
+    fillSolution(child1);
+    fillSolution(child2);
 
     return make_pair(child1, child2);
 }
@@ -638,7 +692,7 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(vector<l
         }
     }
 
-    set<int> used_establishments1, repeated_establishments1;
+    set<int> used_establishments1;
 
     for(auto van: child1) {
         for(list<int>::iterator it = van.begin(); it != van.end(); it++) {
@@ -646,14 +700,13 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(vector<l
             used_establishments1.insert(*it);
 
             if(previous_size == used_establishments1.size()) {
-                repeated_establishments1.insert(*it);
                 van.erase(it);
                 it = van.begin();
             }
         }
     }
 
-    set<int> used_establishments2, repeated_establishments2;
+    set<int> used_establishments2;
 
     for(auto van: child2) {
         for(list<int>::iterator it = van.begin(); it != van.end(); it++) {
@@ -661,19 +714,35 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(vector<l
             used_establishments2.insert(*it);
 
             if(previous_size == used_establishments2.size()) {
-                repeated_establishments2.insert(*it);
                 van.erase(it);
                 it = van.begin();
             }
         }
     }
 
+    /*
+    cout << "==== BEFORE ====" << endl;
     cout << "score father: " << this->evaluate_solution(father_solution) << endl;
     cout << "score mother: " << this->evaluate_solution(mother_solution) << endl;
     cout << "valid 1: " << this->check_solution(child1) << endl;
     cout << "score 1: " << this->evaluate_solution(child1) << endl;
     cout << "valid 2: " << this->check_solution(child2) << endl;
     cout << "score 2: " << this->evaluate_solution(child2) << endl;
+
+    fillSolution(child1);
+    fillSolution(child2);
+
+    cout << "==== AFTER ====" << endl;
+    cout << "score father: " << this->evaluate_solution(father_solution) << endl;
+    cout << "score mother: " << this->evaluate_solution(mother_solution) << endl;
+    cout << "valid 1: " << this->check_solution(child1) << endl;
+    cout << "score 1: " << this->evaluate_solution(child1) << endl;
+    cout << "valid 2: " << this->check_solution(child2) << endl;
+    cout << "score 2: " << this->evaluate_solution(child2) << endl;
+    */
+
+    fillSolution(child1);
+    fillSolution(child2);
 
     return make_pair(child1, child2);
 }

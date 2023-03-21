@@ -331,6 +331,12 @@ public:
      */
     vector<list<int>> mutation_solution_6(const vector<list<int>>& solution);
 
+    /**
+     * Fill given solution with more establishments in vans
+     * @param child
+     */
+    void fillSolution(vector<list<int>> &child);
+
     pair<vector<list<int>>, vector<list<int>>> crossover_solutions_1(vector<list<int>> father_solution, vector<list<int>> mother_solution);
 
     pair<vector<list<int>>, vector<list<int>>> crossover_solutions_2(vector<list<int>> father_solution, vector<list<int>> mother_solution);
