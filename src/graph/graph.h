@@ -51,11 +51,11 @@ class Graph {
     bool hasDir;        // false: undirected; true: directed
     std::vector<Node> nodes; // The std::list of nodes being represented
 
-    int nrVehicles;    // Number of vehicles
+    int nrVehicles{};    // Number of vehicles
 
-    Time departure_time;    // Time when vehicles start working
-    Time max_work_time; // Maximum time vehicles can work
-    Time limit_time;    // Time when vehicles stop working
+    Time departure_time{};    // Time when vehicles start working
+    Time max_work_time{}; // Maximum time vehicles can work
+    Time limit_time{};    // Time when vehicles stop working
     std::vector<Time> times;     // Current times for each vehicle
 
     std::mt19937 engine;
@@ -122,14 +122,14 @@ public:
      * @param solution  Solution
      * @return  Solution Value
      */
-    int evaluate_solution(const std::vector<std::list<int>>& solution);
+    static int evaluate_solution(const std::vector<std::list<int>>& solution);
 
     /**
      * Get Random Node different from idx
      * @param idx   Index of Establishment
      * @return  Random Node
      */
-    int random_node(int idx) const;
+    int random_node(int idx=0) const;
 
     /**
      * Get Closest Node different from idx and incompatible
@@ -273,7 +273,7 @@ public:
 
     std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_2(std::vector<std::list<int>> father_solution, std::vector<std::list<int>> mother_solution);
 
-    std::vector<std::vector<std::list<int>>> getNeighbours(std::vector<std::list<int>> solution, int neighborhood_size, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&));
+    std::vector<std::vector<std::list<int>>> getNeighbours(const std::vector<std::list<int>>& solution, int neighborhood_size, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&));
 
     std::vector<std::list<int>> hillClimbing(int iteration_number, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 

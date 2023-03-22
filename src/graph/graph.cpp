@@ -70,16 +70,16 @@ void Graph::setNode(int index, string district, string county, string parish, st
     u.inspection_time = inspection_time;
     u.inspection_utility = inspection_utility;
     u.opening_hours = std::move(opening_hours);
-    u.dist = INT_MAX;
+    u.dist = numeric_limits<float>::max();
     nodes[index] = u;
 }
 
 
 int Graph::evaluate_solution(const vector<list<int>>& solution) {
     int bestSolution = 0;
-    for (const auto & i : solution){
-        bestSolution += i.size();
-    }
+    for (const auto &i: solution)
+        bestSolution += (int) i.size();
+
     return bestSolution;
 }
 
@@ -105,8 +105,8 @@ vector<list<int>> Graph::generate_random_solution(bool log) {
     for (auto &n: nodes) n.visited = false;
 
     while (nr_visited < n && max_tries) {
-        int i = engine() % nrVehicles;
-        int j = (engine() % (n - 1)) + 1;
+        int i = (int) engine() % nrVehicles;
+        int j = (int) (engine() % (n - 1)) + 1;
 
         if (nodes[j].visited) {
             max_tries--;
@@ -146,7 +146,7 @@ vector<list<int>> Graph::generate_random_solution(bool log) {
 
 vector<list<int>> Graph::generate_closest_solution(bool log) {
     vector<list<int>> solution(nrVehicles, list<int>(1, 0));
-    vector<MinHeap<int, int>> heaps(n, MinHeap<int, int>(n, -1));
+    vector<MinHeap<int, float>> heaps(n, MinHeap<int, float>(n, -1));
 
     for (auto &t: times) t = departure_time;
     for (auto &n: nodes) {
@@ -216,7 +216,7 @@ void Graph::printSolution(const vector<list<int>> &solution) {
 
 int Graph::closest_node(int idx, list<int> incompatible) const {
     int closest = -1;
-    float min_dist = INT_MAX;
+    float min_dist = numeric_limits<float>::max();
     for(auto e: nodes[idx].adj){
         if(e.weight < min_dist && find(incompatible.begin(), incompatible.end(), e.dest) == incompatible.end() && e.dest > 0){
             min_dist = e.weight;
@@ -231,7 +231,7 @@ int Graph::closest_node(int idx, int order) const {
     order = order > n-2 ? n-2 : order;
 
     vector<int> closest_nodes(order, -1);
-    vector<float> closest_nodes_dist(order, INT_MAX);
+    vector<float> closest_nodes_dist(order, numeric_limits<float>::max());
 
     for(int i = 0; i < order; ++i) {
         for (auto e: nodes[idx].adj) {
@@ -261,9 +261,9 @@ float Graph::totalTravelTime(const vector<list<int>> &solution, bool log) {
     for (int i = 0; i < solution.size(); ++i) {
         float vehicle_time = 0;
         int last = 0;
-        for (auto it = solution[i].begin(); it != solution[i].end(); ++it)  {
-            vehicle_time += getDistance(last, *it);
-            last = *it;
+        for (int it : solution[i])  {
+            vehicle_time += getDistance(last, it);
+            last = it;
         }
         cout << "Vehicle " << i << " total travel time: " << vehicle_time << "s" << endl;
         travel_time += vehicle_time;
@@ -308,9 +308,9 @@ float Graph::totalWaitingTime(const vector<list<int>> &solution, bool log) {
 Time Graph::minimumOperationTime(int a, int b, Time time, bool log) {
     Time aux = time;
 
-    float time_distance = (int) getDistance(a, b);
+    float time_distance = getDistance(a, b);
     int time_inspection = b != 0 ? nodes[b].inspection_time: 0;
-    float time_depot = (int) getDistance(b, 0);
+    float time_depot = getDistance(b, 0);
     int milliseconds_distance = (int) ((getDistance(a, b) - (float) time_distance) * 1000);
     int milliseconds_depot = (int) ((getDistance(b, 0) - (float) time_depot) * 1000);
 
@@ -339,7 +339,7 @@ Time Graph::minimumOperationTime(int a, int b, Time time, bool log) {
 Time Graph::operationTime(int a, int b, Time time, bool log) {
     Time aux = time;
 
-    float time_distance = (int) getDistance(a, b);
+    float time_distance = getDistance(a, b);
     int time_inspection = b != 0 ? nodes[b].inspection_time: 0;
     int milliseconds_distance = (int) ((getDistance(a, b) - (float) time_distance) * 1000);
 
@@ -414,12 +414,12 @@ void Graph::setNrVehicles(int n) {
 
 vector<list<int>> Graph::mutation_solution_1(const vector<list<int>> &solution) {
     vector<list<int>> new_solution = solution;
-    int vehicle = engine() % nrVehicles;
-    int vehicle2 = engine() % nrVehicles;
-    int node = engine() % (new_solution[vehicle].size() - 2) + 1;
-    int node2 = engine() % (new_solution[vehicle2].size() - 2) + 1;
+    int vehicle = (int) engine() % nrVehicles;
+    int vehicle2 = (int) engine() % nrVehicles;
+    int node = (int) (engine() % (new_solution[vehicle].size() - 2) + 1);
+    int node2 = (int) (engine() % (new_solution[vehicle2].size() - 2) + 1);
     while(vehicle == vehicle2 && node ==node2){
-        node2 = engine() % (new_solution[vehicle2].size() - 2) + 1;
+        node2 = (int) (engine() % (new_solution[vehicle2].size() - 2) + 1);
     }
 
 
@@ -437,14 +437,14 @@ vector<list<int>> Graph::mutation_solution_1(const vector<list<int>> &solution) 
 
 vector<list<int>> Graph::mutation_solution_2(const vector<list<int>> &solution) {
     vector<list<int>> new_solution = solution;
-    int vehicle = engine() % nrVehicles;
-    int node = engine() % (new_solution[vehicle].size() - 2) + 1;
-    int node2 = engine() % (nodes.size() - 1) + 1;
+    int vehicle = (int) engine() % nrVehicles;
+    int node = (int) (engine() % (new_solution[vehicle].size() - 2) + 1);
+    int node2 = (int) (engine() % (nodes.size() - 1) + 1);
 
     for (int i = 0; i < new_solution.size(); i++) {
         for (auto it = new_solution[i].begin(); it != new_solution[i].end(); ++it) {
             if (*it == node2) {
-                node2 = engine() % (nodes.size() - 1) + 1;
+                node2 = (int) (engine() % (nodes.size() - 1) + 1);
                 i = -1;
                 break;
             }
@@ -468,15 +468,15 @@ vector<list<int>> Graph::mutation_solution_3(const vector<list<int>>& solution) 
 vector<list<int>> Graph::mutation_solution_4(const vector<list<int>> &solution) {
     vector<list<int>> new_solution = solution;
 
-    int vehicle = engine() % nrVehicles;
-    int node = engine() % (new_solution[vehicle].size() - 2) + 1;
-    int node2 = engine() % (new_solution[vehicle].size() - 2) + 1;
+    int vehicle = (int) engine() % nrVehicles;
+    int node = (int) (engine() % (new_solution[vehicle].size() - 2) + 1);
+    int node2 = (int) (engine() % (new_solution[vehicle].size() - 2) + 1);
 
     if(solution[vehicle].size() < 5) return solution;
 
     while(abs(node - node2) < 2) {
-        node = engine() % (new_solution[vehicle].size() - 2) + 1;
-        node2 = engine() % (new_solution[vehicle].size() - 2) + 1;
+        node = (int) (engine() % (new_solution[vehicle].size() - 2) + 1);
+        node2 = (int) (engine() % (new_solution[vehicle].size() - 2) + 1);
     }
 
     if(node > node2) {
@@ -498,15 +498,15 @@ vector<list<int>> Graph::mutation_solution_4(const vector<list<int>> &solution) 
 vector<list<int>> Graph::mutation_solution_5(const vector<list<int>> &solution) {
     vector<list<int>> new_solution = solution;
 
-    int vehicle = engine() % nrVehicles;
-    int node = engine() % (new_solution[vehicle].size() - 2) + 1;
-    int node2 = engine() % (nodes.size() - 1) + 1;
-    int node3 = engine() % (nodes.size() - 1) + 1;
+    int vehicle = (int) engine() % nrVehicles;
+    int node = (int) (engine() % (new_solution[vehicle].size() - 2) + 1);
+    int node2 = (int) (engine() % (nodes.size() - 1) + 1);
+    int node3 = (int) (engine() % (nodes.size() - 1) + 1);
 
     for (int i = 0; i < new_solution.size(); i++) {
         for (auto it = new_solution[i].begin(); it != new_solution[i].end(); ++it) {
             if (*it == node2) {
-                node2 = engine() % (nodes.size() - 1) + 1;
+                node2 = (int) (engine() % (nodes.size() - 1) + 1);
                 i = -1;
                 break;
             }
@@ -516,7 +516,7 @@ vector<list<int>> Graph::mutation_solution_5(const vector<list<int>> &solution) 
     for (int i = 0; i < new_solution.size(); i++) {
         for (auto it = new_solution[i].begin(); it != new_solution[i].end(); ++it) {
             if (*it == node3 || node2 == node3) {
-                node3 = engine() % (nodes.size() - 1) + 1;
+                node3 = (int) (engine() % (nodes.size() - 1) + 1);
                 i = -1;
                 break;
             }
@@ -533,7 +533,7 @@ vector<list<int>> Graph::mutation_solution_5(const vector<list<int>> &solution) 
 }
 
 vector<list<int>> Graph::mutation_solution_6(const vector<list<int>> &solution) {
-    int mutation = engine() % 5 + 1;
+    int mutation = (int) (engine() % 5 + 1);
     switch (mutation) {
         case 1:
             return mutation_solution_1(solution);
@@ -560,15 +560,15 @@ int shortest_path_size(vector<list<int>> father_solution, vector<list<int>> moth
     int shortest = INT32_MAX;
 
     for(int i = 0; i < father_solution.size(); i++) { // both solutions have the same size
-        if(father_solution[i].size() < shortest) shortest = father_solution[i].size();
-        if(mother_solution[i].size() < shortest) shortest = mother_solution[i].size();
+        if(father_solution[i].size() < shortest) shortest = (int) father_solution[i].size();
+        if(mother_solution[i].size() < shortest) shortest = (int) mother_solution[i].size();
     }
 
     return shortest;
 }
 
 void Graph::fillSolution(vector<list<int>> &child) {
-    vector<MinHeap<int, int>> heaps(n, MinHeap<int, int>(n, -1));
+    vector<MinHeap<int, float>> heaps(n, MinHeap<int, float>(n, -1));
 
     for (auto &n: nodes) {
         for(auto &e: n.adj) {
@@ -631,11 +631,11 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(vector<l
     set<int> used_establishments1;
 
     for(auto van: child1) {
-        for(list<int>::iterator it = van.begin(); it != van.end(); it++) {
-            int previous_size = used_establishments1.size();
+        for(auto it = van.begin(); it != van.end(); it++) {
+            int previous_size = (int) used_establishments1.size();
             used_establishments1.insert(*it);
 
-            if(previous_size == used_establishments1.size()) {
+            if(previous_size == (int) used_establishments1.size()) {
                 van.erase(it);
                 it = van.begin();
             }
@@ -645,8 +645,8 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(vector<l
     set<int> used_establishments2;
 
     for(auto van: child2) {
-        for(list<int>::iterator it = van.begin(); it != van.end(); it++) {
-            int previous_size = used_establishments2.size();
+        for(auto it = van.begin(); it != van.end(); it++) {
+            int previous_size = (int) used_establishments2.size();
             used_establishments2.insert(*it);
 
             if(previous_size == used_establishments2.size()) {
@@ -688,8 +688,8 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(vector<l
  * remaining parts with the nodes from the second parent’s solution, creating the child solutions.
  */
 pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(vector<list<int>> father_solution, vector<list<int>> mother_solution) {
-    int midpoint1 = (rand() % (father_solution.size() - 1)) + 0;
-    int midpoint2 = (rand() % (father_solution.size() - 1)) + midpoint1;
+    int midpoint1 = (int) (engine() % (father_solution.size() - 1)) + 0;
+    int midpoint2 = (int) (engine() % (father_solution.size() - 1)) + midpoint1;
 
     vector<list<int>> child1, child2;
 
@@ -711,8 +711,8 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(vector<l
     set<int> used_establishments1;
 
     for(auto van: child1) {
-        for(list<int>::iterator it = van.begin(); it != van.end(); it++) {
-            int previous_size = used_establishments1.size();
+        for(auto it = van.begin(); it != van.end(); it++) {
+            int previous_size = (int) used_establishments1.size();
             used_establishments1.insert(*it);
 
             if(previous_size == used_establishments1.size()) {
@@ -725,8 +725,8 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(vector<l
     set<int> used_establishments2;
 
     for(auto van: child2) {
-        for(list<int>::iterator it = van.begin(); it != van.end(); it++) {
-            int previous_size = used_establishments2.size();
+        for(auto it = van.begin(); it != van.end(); it++) {
+            int previous_size = (int) used_establishments2.size();
             used_establishments2.insert(*it);
 
             if(previous_size == used_establishments2.size()) {
@@ -813,7 +813,7 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<l
         float r = static_cast <float> (engine()) / static_cast <float> (RAND_MAX);
 
 
-        if((neighbour_score > best_score) or (pow(M_E, (neighbour_score - best_score) / temperature) >= r)) {
+        if((neighbour_score > best_score) or (pow(M_E, (float)(neighbour_score - best_score) / temperature) >= r)) {
             best_solution = neighbour_solution;
             best_score = neighbour_score;
         }
@@ -826,7 +826,7 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<l
     return best_solution;
 }
 
-vector<vector<list<int>>> Graph::getNeighbours(vector<list<int>> solution, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&)) {
+vector<vector<list<int>>> Graph::getNeighbours(const vector<list<int>>& solution, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&)) {
     vector<vector<list<int>>> array;
 
     for(int i = 0; i < neighborhood_size; i++) {
@@ -957,7 +957,7 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
         vector<list<int>> crossover1 = crossovers[0];
         vector<list<int>> crossover2 = crossovers[1];
 
-        int mutation_chance = engine() % 10;
+        int mutation_chance = (int) (engine() % 10);
         if(mutation_chance < mutation_probability) {
             crossover1 = (this->*mutation_func)(crossover1);
             crossover2 = (this->*mutation_func)(crossover2);
@@ -997,20 +997,21 @@ vector<vector<list<int>>> Graph::generatePopulation(int population_size) {
 
 vector<list<int>> Graph::tournamentSelection(vector<vector<list<int>>> population, int size,
                                 int (Graph::*evalFunction)(const vector<list<int>> &)) {
-    if(size > population.size()) size = population.size();
+    if(size > population.size()) size = (int) population.size();
 
     vector<list<int>> best_solution;
     int best_score;
 
     for (int i = 0; i < size; i++) {
-        int random_index = engine() % population.size();
+        int random_index = (int) (engine() % population.size());
         vector<list<int>> solution = population[random_index];
         int score = (this->*evalFunction)(solution);
 
         if (i == 0) {
             best_score = score;
             best_solution = solution;
-        } else if (score > best_score) {
+        }
+        if (score > best_score) {
             best_score = score;
             best_solution = solution;
         }
@@ -1042,7 +1043,7 @@ vector<list<int>> Graph::rouletteSelection(vector<vector<list<int>>> population,
     }
 
     // Choose random number based on probabilities
-    double random_number = (double) engine() / engine.max();
+    double random_number = (double) engine() / std::mt19937::max();
 
     double sum = 0;
     for (int i = 0; i < probabilities.size(); i++) {
@@ -1051,6 +1052,7 @@ vector<list<int>> Graph::rouletteSelection(vector<vector<list<int>>> population,
             return population[i];
         }
     }
+    return {};
 }
 
 vector<vector<list<int>>> Graph::replace_least_fittest(vector<vector<list<int>>> population, vector<list<int>> new_solution,
@@ -1085,13 +1087,6 @@ Graph::get_greatest_fit(vector<vector<list<int>>> population, int (Graph::*evalF
     }
 
     return make_pair(best_solution, best_score);
-}
-
-vector<vector<list<int>>> Graph::crossover_test(const vector<list<int>> &parent1, const vector<list<int>> &parent2) {
-    vector<list<int>> child1 = parent1;
-    vector<list<int>> child2 = parent2;
-
-    return {child1, child2};
 }
 
 
