@@ -192,7 +192,7 @@ void ASAE::menu() {
         cout << "Option: ";
         cin >> option;
 
-        vector<list<int>> solution;
+        vector<list<int>> solution, father, mother;
 
         switch (option) {
             case 0:
@@ -207,7 +207,9 @@ void ASAE::menu() {
                 solution = (graph.*(&Graph::simulatedAnnealing))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
                 break;
             case 4:
-                solution = (graph.*(&Graph::tabuSearch))(1000, 20, 5, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
+                father = (graph.*(&Graph::tabuSearch))(1000, 20, 5, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
+                mother = (graph.*(&Graph::tabuSearch))(1000, 20, 5, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
+                graph.crossover_solutions_2(father, mother);
                 break;
             case 5:
                 solution = (graph.*(&Graph::geneticAlgorithm))(1000, 50, 4, 10, (&Graph::crossover_solutions_1), (&Graph::mutation_solution_5), (&Graph::evaluate_solution), true);
