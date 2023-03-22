@@ -3,11 +3,12 @@
 //
 
 #include <set>
+#include <utility>
 #include "geoplot_draw.h"
 
 
 Geoplot_draw::Geoplot_draw(Graph graph,axes_handle ax)
-        : graph(graph), ax_(ax) {
+        : graph(std::move(graph)), ax_(std::move(ax)) {
 
 }
 
@@ -21,8 +22,7 @@ double Geoplot_draw::tour_distance(const vector<size_t> &tour) {
 }
 
 void Geoplot_draw::draw() {
-    return;
-}
+    }
 
 
 
@@ -30,7 +30,7 @@ void Geoplot_draw::setup_axes() {
 
 }
 
-void Geoplot_draw::draw_all_vehicles(vector<list<int>> solution) {
+void Geoplot_draw::draw_all_vehicles(const vector<list<int>>& solution) {
     auto lats = std::vector<double>();
     auto longs = std::vector<double>();
     auto addresses = std::vector<std::string>();
@@ -40,8 +40,7 @@ void Geoplot_draw::draw_all_vehicles(vector<list<int>> solution) {
     double min_lon = 1000;
 
 
-    for (int i = 0; i < solution.size(); i++){
-        list<int> vehicle_path = solution[i];
+    for (const auto& vehicle_path : solution){
         for (auto &n: vehicle_path){
             auto lat = graph.getNode(n).getLatitude();
             auto lon = graph.getNode(n).getLongitude();
@@ -92,7 +91,7 @@ void Geoplot_draw::draw_all_vehicles(vector<list<int>> solution) {
 
 }
 
-void Geoplot_draw::draw_one_vehicle(list<int> vehicle_path) {
+void Geoplot_draw::draw_one_vehicle(const list<int>& vehicle_path) {
     auto lats = std::vector<double>();
     auto longs = std::vector<double>();
     auto addresses = std::vector<std::string>();

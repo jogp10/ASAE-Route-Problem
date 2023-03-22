@@ -122,7 +122,7 @@ public:
      * @param solution  Solution
      * @return  Solution Value
      */
-    static int evaluate_solution(const std::vector<std::list<int>>& solution);
+    int evaluate_solution(const std::vector<std::list<int>>& solution);
 
     /**
      * Get Random Node different from idx
@@ -269,9 +269,9 @@ public:
      */
     void fillSolution(std::vector<std::list<int>> &child);
 
-    std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_1(std::vector<std::list<int>> father_solution, std::vector<std::list<int>> mother_solution);
+    std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_1(const std::vector<std::list<int>> &father_solution, const std::vector<std::list<int>> &mother_solution);
 
-    std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_2(std::vector<std::list<int>> father_solution, std::vector<std::list<int>> mother_solution);
+    std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_2(const std::vector<std::list<int>> &father_solution, const std::vector<std::list<int>> &mother_solution);
 
     std::vector<std::vector<std::list<int>>> getNeighbours(const std::vector<std::list<int>>& solution, int neighborhood_size, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&));
 
@@ -281,7 +281,7 @@ public:
 
     std::vector<std::list<int>> tabuSearch(int iteration_number, int tabu_size, int neighborhood_size, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
-    std::vector<std::list<int>> geneticAlgorithm(int iteration_number, int population_size, int tournament_size, int mutation_probability, std::vector<std::vector<std::list<int>>> (Graph::*crossover_func)(const std::vector<std::list<int>>&, const std::vector<std::list<int>>&), std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
+    std::vector<std::list<int>> geneticAlgorithm(int iteration_number, int population_size, int tournament_size, int mutation_probability, std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> (Graph::*crossover_func)(const std::vector<std::list<int>>&, const std::vector<std::list<int>>&), std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
     bool check_solution(std::vector<std::list<int>> vector1);
 
@@ -296,8 +296,6 @@ public:
     std::vector<std::vector<std::list<int>>> replace_least_fittest(std::vector<std::vector<std::list<int>>> population, std::vector<std::list<int>> new_solution, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
 
     std::pair<std::vector<std::list<int>>, int> get_greatest_fit(std::vector<std::vector<std::list<int>>> population, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
-
-    std::vector<std::vector<std::list<int>>> crossover_test(const std::vector<std::list<int>>& parent1, const std::vector<std::list<int>>& parent2);
 };
 
 #endif /* GRAPH_H_ */

@@ -22,8 +22,8 @@ public:
     Geoplot_draw(Graph graph, axes_handle ax);
     void run(size_t iterations = 100);
 
-    void draw_all_vehicles(vector<list<int>> solution);
-    void draw_one_vehicle(list<int> solution);
+    void draw_all_vehicles(const vector<list<int>>& solution);
+    void draw_one_vehicle(const list<int>& solution);
 
 private:
     Graph graph;

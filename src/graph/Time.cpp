@@ -1,16 +1,3 @@
-//
-// Created by john on 22-03-2023.
-//
-
-#include <set>
-#include <queue>
-#include <algorithm>
-#include <list>
-#include <utility>
-#include <random>
-#include "../matplot/geoplot_draw.h"
-#include "minHeap.h"
-#include "graph.h"
 #include "Time.h"
 
 void Time::addTime(int milliseconds, int seconds, int minutes, int hours, int days) {

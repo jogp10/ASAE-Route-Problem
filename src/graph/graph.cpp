@@ -105,8 +105,8 @@ vector<list<int>> Graph::generate_random_solution(bool log) {
     for (auto &n: nodes) n.visited = false;
 
     while (nr_visited < n && max_tries) {
-        int i = (int) engine() % nrVehicles;
-        int j = (int) (engine() % (n - 1)) + 1;
+        int i = engine() % nrVehicles;
+        int j = (engine() % (n - 1)) + 1;
 
         if (nodes[j].visited) {
             max_tries--;
@@ -498,15 +498,15 @@ vector<list<int>> Graph::mutation_solution_4(const vector<list<int>> &solution) 
 vector<list<int>> Graph::mutation_solution_5(const vector<list<int>> &solution) {
     vector<list<int>> new_solution = solution;
 
-    int vehicle = (int) engine() % nrVehicles;
-    int node = (int) (engine() % (new_solution[vehicle].size() - 2) + 1);
-    int node2 = (int) (engine() % (nodes.size() - 1) + 1);
-    int node3 = (int) (engine() % (nodes.size() - 1) + 1);
+    int vehicle = engine() % nrVehicles;
+    int node = engine() % (new_solution[vehicle].size() - 2) + 1;
+    int node2 = engine() % (nodes.size() - 1) + 1;
+    int node3 = engine() % (nodes.size() - 1) + 1;
 
     for (int i = 0; i < new_solution.size(); i++) {
         for (auto it = new_solution[i].begin(); it != new_solution[i].end(); ++it) {
             if (*it == node2) {
-                node2 = (int) (engine() % (nodes.size() - 1) + 1);
+                node2 = engine() % (nodes.size() - 1) + 1;
                 i = -1;
                 break;
             }
@@ -611,7 +611,7 @@ void Graph::fillSolution(vector<list<int>> &child) {
  * Crossover 1: Select a midpoint, smaller than the shortest path in the solution, which will be dividing the both
  * solutions in the midpoint. The two new resultant solutions consist in changing the cuts of the parents solutions.
  */
-pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(vector<list<int>> father_solution, vector<list<int>> mother_solution) {
+pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(const vector<list<int>> &father_solution, const vector<list<int>> &mother_solution) {
     int midpoint = shortest_path_size(father_solution, mother_solution);
     vector<list<int>> child1, child2;
 
@@ -687,9 +687,9 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(vector<l
  * Crossover 2: Take the middle part of the first parent’s solution between two crossover points and filling the
  * remaining parts with the nodes from the second parent’s solution, creating the child solutions.
  */
-pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(vector<list<int>> father_solution, vector<list<int>> mother_solution) {
-    int midpoint1 = (int) (engine() % (father_solution.size() - 1)) + 0;
-    int midpoint2 = (int) (engine() % (father_solution.size() - 1)) + midpoint1;
+pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(const vector<list<int>> &father_solution, const vector<list<int>> &mother_solution) {
+    int midpoint1 = engine() % (father_solution.size() - 1) + 0;
+    int midpoint2 = engine() % (father_solution.size() - 1) + midpoint1;
 
     vector<list<int>> child1, child2;
 
@@ -767,7 +767,7 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
     vector<list<int>> best_solution = this->generate_closest_solution();
     int best_score = (this->*evaluation_func)(best_solution);
 
-    printSolution(best_solution);
+    //printSolution(best_solution);
     cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
 
@@ -786,7 +786,7 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
 
     }
 
-    printSolution(best_solution);
+    //printSolution(best_solution);
     cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
     return best_solution;
@@ -797,7 +797,7 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<l
     vector<list<int>> best_solution = this->generate_closest_solution();
     int best_score = (this->*evaluation_func)(best_solution);
 
-    printSolution(best_solution);
+    //printSolution(best_solution);
     cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
 
@@ -820,7 +820,7 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<l
 
     }
 
-    printSolution(best_solution);
+    //printSolution(best_solution);
     cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
     return best_solution;
@@ -860,7 +860,7 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
     vector<list<int>> best_solution = this->generate_closest_solution();
     int best_score = (this->*evaluation_func)(best_solution);
 
-    printSolution(best_solution);
+    //printSolution(best_solution);
     cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
 
@@ -890,7 +890,7 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
 
     }
 
-    printSolution(best_solution);
+    //printSolution(best_solution);
     cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
     return best_solution;
@@ -930,7 +930,7 @@ void Graph::plotGraph() {
 }
 
 vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_size, int tournament_size, int mutation_probability,
-                                          vector<vector<list<int>>> (Graph::*crossover_func)(const vector<list<int>> &, const vector<list<int>> &),
+                                          pair<vector<list<int>>, vector<list<int>>> (Graph::*crossover_func)(const vector<list<int>>&, const vector<list<int>>&),
                                           vector<list<int>> (Graph::*mutation_func)(const vector<list<int>> &),
                                           int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
 
@@ -940,7 +940,7 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
     int best_score = (this->*evaluation_func)(best_solution);
     int best_solution_generation = 0;
 
-    printSolution(best_solution);
+    //printSolution(best_solution);
     cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
 
@@ -953,11 +953,11 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
         vector<list<int>> tournament_winner = tournamentSelection(population, tournament_size, (evaluation_func));
         vector<list<int>> roulette_winner = rouletteSelection(population, (evaluation_func));
 
-        vector<vector<list<int>>> crossovers = (this->*crossover_func)(tournament_winner, roulette_winner);
-        vector<list<int>> crossover1 = crossovers[0];
-        vector<list<int>> crossover2 = crossovers[1];
+        pair<vector<list<int>>, vector<list<int>>> crossovers = (this->*crossover_func)(tournament_winner, roulette_winner);
+        vector<list<int>> crossover1 = crossovers.first;
+        vector<list<int>> crossover2 = crossovers.second;
 
-        int mutation_chance = (int) (engine() % 10);
+        int mutation_chance = engine() % 10;
         if(mutation_chance < mutation_probability) {
             crossover1 = (this->*mutation_func)(crossover1);
             crossover2 = (this->*mutation_func)(crossover2);
@@ -980,7 +980,7 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
         } else iteration_number -= 1;
     }
 
-    printSolution(best_solution);
+    //printSolution(best_solution);
     cout << "Best solution found in generation: " << best_solution_generation << endl;
     cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
