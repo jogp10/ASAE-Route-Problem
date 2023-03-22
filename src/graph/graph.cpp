@@ -160,8 +160,6 @@ vector<list<int>> Graph::generate_closest_solution(bool log) {
     for(int i=0; i<nrVehicles; i++) {
         int limit = 5;
 
-        if(i >= solution.size()) break;
-
         for(int j=0; j<n-2; j++) {
             int last = solution[i].back();
             int nthClosest = heaps[last].removeMin();
@@ -581,8 +579,6 @@ void Graph::fillSolution(vector<list<int>> &child, set<int> used_establishments)
     for(int i=0; i<nrVehicles; i++) {
         int limit = 5;
 
-        if(i >= child.size()) break;
-
         for(int j=0; j<n-2; j++) {
             int last = child[i].back();
             int nthClosest = heaps[last].removeMin();
@@ -597,6 +593,10 @@ void Graph::fillSolution(vector<list<int>> &child, set<int> used_establishments)
                 limit--;
                 continue;
             }
+
+            auto it = used_establishments.find(nthClosest);
+
+            if(it != used_establishments.end()) continue;
 
             nodes[nthClosest].visited = true;
             child[i].push_back(nthClosest);
@@ -631,13 +631,16 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(const ve
     set<int> used_establishments1;
 
     for(auto van: child1) {
-        for(auto it = van.begin(); it != van.end(); it++) {
+        auto it = van.begin();
+        while(it != van.end()) {
             int previous_size = (int) used_establishments1.size();
             used_establishments1.insert(*it);
 
-            if(previous_size == (int) used_establishments1.size()) {
-                van.erase(it);
-                it = van.begin();
+            if(previous_size == used_establishments1.size()) {
+                van.erase(it++);
+            }
+            else {
+                ++it;
             }
         }
     }
@@ -645,13 +648,16 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(const ve
     set<int> used_establishments2;
 
     for(auto van: child2) {
-        for(auto it = van.begin(); it != van.end(); it++) {
+        auto it = van.begin();
+        while(it != van.end()) {
             int previous_size = (int) used_establishments2.size();
             used_establishments2.insert(*it);
 
             if(previous_size == used_establishments2.size()) {
-                van.erase(it);
-                it = van.begin();
+                van.erase(it++);
+            }
+            else {
+                ++it;
             }
         }
     }
@@ -727,7 +733,8 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(const ve
     set<int> used_establishments2;
 
     for(auto van: child2) {
-        for(auto it = van.begin(); it != van.end(); it++) {
+        auto it = van.begin();
+        while(it != van.end()) {
             int previous_size = (int) used_establishments2.size();
             used_establishments2.insert(*it);
 
