@@ -12,6 +12,7 @@
 #include <cmath>
 #include <random>
 #include <utility>
+#include "Time.h"
 
 class Graph {
 
@@ -44,79 +45,6 @@ class Graph {
         int inspection_time;    // in minutes
         float inspection_utility;
         std::vector<int> opening_hours; // std::vector<int>(24, 0/1) 0 = closed, 1 = open
-    };
-
-    struct Time {
-        int milliseconds;
-        int seconds;
-        int minutes;
-        int hours;
-        int days;
-
-        /**
-         * Set time
-         * @param milliseconds
-         * @param seconds
-         * @param minutes
-         * @param hours
-         * @param days
-         */
-        void setTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0, int days = 0);
-
-        /**
-         * Add time
-         * @param milliseconds
-         * @param seconds
-         * @param minutes
-         * @param hours
-         * @param days
-         */
-        void addTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0, int days = 0);
-
-        /**
-         * Add time
-         * @param time
-         */
-        void addTime(Time time);
-
-        /**
-         * Subtract time
-         * @param milliseconds
-         * @param seconds
-         * @param minutes
-         * @param hours
-         * @param days
-         */
-        void subTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0, int days = 0);
-
-        /**
-         * Subtract time
-         * @param time
-         */
-        void subTime(Time time);
-
-        /**
-         * Compare two times
-         * @param rhs
-         * @return
-         */
-        bool operator<(const Time &rhs) const;
-
-        /**
-         * Forward time to next hour
-         */
-        void toNextHour();
-
-        /**
-         * Roll back time to previous hour
-         */
-        void toPreviousHour();
-
-        /**
-         * Convert time to seconds
-         * @return
-         */
-        float toSeconds();
     };
 
     int n;              // Graph size (vertices are numbered from 1 to n)

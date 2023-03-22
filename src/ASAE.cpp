@@ -179,7 +179,7 @@ ASAE::ASAE()
 
 void ASAE::menu() {
     int option = 0;
-    //drawPlot();
+    drawPlot();
     cout << endl << "Welcome to the ASAE!" << endl;
     cout << endl;
     while (option != 6) {
