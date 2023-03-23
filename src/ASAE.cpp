@@ -241,12 +241,9 @@ void ASAE::drawPlot() {
 void ASAE::hill_climbing() {
     string iteration_number, mutation_func, evaluation_func;
     if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
-    cout << "Iteration number: " << iteration_number << endl;
-    cout << "Mutation function: " << mutation_func << endl;
-    cout << "Evaluation function: " << evaluation_func << endl;
 
-    vector<list<int>> solution = (graph.*(&Graph::hillClimbing))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
-    graph.printDetailedSolution(solution, true);
+    vector<list<int>> solution = (graph.*(&Graph::hillClimbing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], false);
+    //graph.printDetailedSolution(solution, true);
     //graph.printSolution(solution);
     cout << graph.totalOperationTime(solution) << endl;
 
@@ -254,7 +251,11 @@ void ASAE::hill_climbing() {
 }
 
 void ASAE::simulated_annealing() {
-    vector<list<int>> solution = (graph.*(&Graph::simulatedAnnealing))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
+
+    string iteration_number, mutation_func, evaluation_func;
+    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+
+    vector<list<int>> solution = (graph.*(&Graph::simulatedAnnealing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], false);
     graph.printDetailedSolution(solution, true);
     //graph.printSolution(solution);
     cout << graph.totalOperationTime(solution) << endl;
@@ -263,14 +264,21 @@ void ASAE::simulated_annealing() {
 
 void ASAE::tabu_search() {
 
-    vector<list<int>> solution = (graph.*(&Graph::tabuSearch))(1000, 20, 5, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
+    string iteration_number, mutation_func, evaluation_func;
+    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+
+    vector<list<int>> solution = (graph.*(&Graph::tabuSearch))(std::stoi(iteration_number), 20, 5, mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], false);
     graph.printDetailedSolution(solution, true);
     //graph.printSolution(solution);
     cout << graph.totalOperationTime(solution) << endl;
 }
 
 void ASAE::genetic() {
-    vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(1000, 50, 4, 10, (&Graph::crossover_solutions_1), (&Graph::mutation_solution_5), (&Graph::evaluate_solution), true);
+
+    string iteration_number, mutation_func, evaluation_func;
+    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+
+    vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), 50, 4, 10, (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], true);
     graph.printDetailedSolution(solution, true);
     //graph.printSolution(solution);
     cout << graph.totalOperationTime(solution) << endl;

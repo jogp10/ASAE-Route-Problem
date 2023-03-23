@@ -78,7 +78,7 @@ void Graph::setNode(int index, string district, string county, string parish, st
 int Graph::evaluate_solution(const vector<list<int>>& solution) {
     int bestSolution = 0;
     for (const auto &i: solution)
-        bestSolution += (int) i.size();
+        bestSolution +=  i.size();
 
     return bestSolution;
 }
@@ -284,8 +284,8 @@ float Graph::totalWaitingTime(const vector<list<int>> &solution, bool log) {
         auto it = solution[i].begin();
         it++;
         for (; it != solution[i].end(); ++it)  {
-            int seconds = (int) getDistance(last, *it);
-            int miliseconds = (int) ((getDistance(last, *it) - (float) seconds) * 1000);
+            int seconds =  getDistance(last, *it);
+            int miliseconds =  ((getDistance(last, *it) - (float) seconds) * 1000);
             time.addTime({miliseconds, seconds, 0, 0});
             while (nodes[*it].opening_hours[time.hours] == 0) {
                 auto aux = time;
@@ -315,10 +315,10 @@ Time Graph::minimumOperationTime(int a, int b, Time time, bool log) {
     int milliseconds_depot = (int) ((getDistance(b, 0) - (float) time_depot) * 1000);
 
     Time w = {0, 0, 0, 0};
-    w.addTime({milliseconds_distance, (int) time_distance, 0, 0});
+    w.addTime({milliseconds_distance,  (int)time_distance, 0, 0});
     if(log)  cout << "Time to travel to Node " << b << ": " << w.hours << ":" << w.minutes << "h" << endl;
 
-    time.addTime({milliseconds_distance, (int) time_distance, 0, 0});
+    time.addTime({milliseconds_distance,  (int)time_distance, 0, 0});
 
     if(nodes[b].opening_hours[time.hours] == 0 && log) cout << "Node " << b << " is closed at " << time.hours << endl;
     for(int i = time.hours; i < limit_time.hours+1; i++) {
@@ -329,7 +329,7 @@ Time Graph::minimumOperationTime(int a, int b, Time time, bool log) {
     }
     if(log) cout << "Node " << b << " is open /(time) " << time.hours << ":" << time.minutes << "h" << endl;
 
-    time.addTime({milliseconds_depot, (int) time_depot, time_inspection, 0});
+    time.addTime({milliseconds_depot,  (int) time_depot, time_inspection, 0});
     if(log) cout << "Inspection time: " << time_inspection/60 << ":" << time_inspection%60 << endl;
     time.subTime(aux);
     return time;
@@ -341,9 +341,9 @@ Time Graph::operationTime(int a, int b, Time time, bool log) {
 
     float time_distance = getDistance(a, b);
     int time_inspection = b != 0 ? nodes[b].inspection_time: 0;
-    int milliseconds_distance = (int) ((getDistance(a, b) - (float) time_distance) * 1000);
+    int milliseconds_distance =  ((getDistance(a, b) - (float) time_distance) * 1000);
 
-    time.addTime({milliseconds_distance, (int) time_distance, 0, 0, 0});
+    time.addTime({milliseconds_distance,  (int)time_distance, 0, 0, 0});
 
     for(int i = time.hours; i < limit_time.hours+1; i++) {
         if(nodes[b].opening_hours[time.hours] == 0) {
@@ -396,7 +396,7 @@ void Graph::printDetailedSolution(const vector<list<int>> &solution, bool log) {
         it++;
         for (; it != solution[i].end(); ++it)  {
             cout << "Vehicle " << i << " Going to Node " << *it << " " << t.hours << ":" << t.minutes << "h" << endl;
-            cout << "Time to travel to Node " << *it << " " << (int) getDistance(last, *it)/60 << "m" << endl;
+            cout << "Time to travel to Node " << *it << " " <<  getDistance(last, *it)/60 << "m" << endl;
             cout << "Time to inspect Node " << *it << ": " << nodes[*it].inspection_time/60 << ":" << nodes[*it].inspection_time%60 << endl << endl;
             t.addTime(operationTime(last, *it, t, log));
             last = *it;
@@ -414,12 +414,12 @@ void Graph::setNrVehicles(int n) {
 
 vector<list<int>> Graph::mutation_solution_1(const vector<list<int>> &solution) {
     vector<list<int>> new_solution = solution;
-    int vehicle = (int) engine() % nrVehicles;
-    int vehicle2 = (int) engine() % nrVehicles;
-    int node = (int) (engine() % (new_solution[vehicle].size() - 2) + 1);
-    int node2 = (int) (engine() % (new_solution[vehicle2].size() - 2) + 1);
+    int vehicle = engine() % nrVehicles;
+    int vehicle2 = engine() % nrVehicles;
+    int node = (engine() % (new_solution[vehicle].size() - 2) + 1);
+    int node2 = (engine() % (new_solution[vehicle2].size() - 2) + 1);
     while(vehicle == vehicle2 && node ==node2){
-        node2 = (int) (engine() % (new_solution[vehicle2].size() - 2) + 1);
+        node2 = (engine() % (new_solution[vehicle2].size() - 2) + 1);
     }
 
 
@@ -437,14 +437,14 @@ vector<list<int>> Graph::mutation_solution_1(const vector<list<int>> &solution) 
 
 vector<list<int>> Graph::mutation_solution_2(const vector<list<int>> &solution) {
     vector<list<int>> new_solution = solution;
-    int vehicle = (int) engine() % nrVehicles;
-    int node = (int) (engine() % (new_solution[vehicle].size() - 2) + 1);
-    int node2 = (int) (engine() % (nodes.size() - 1) + 1);
+    int vehicle =  engine() % nrVehicles;
+    int node =  (engine() % (new_solution[vehicle].size() - 2) + 1);
+    int node2 =  (engine() % (nodes.size() - 1) + 1);
 
     for (int i = 0; i < new_solution.size(); i++) {
         for (auto it = new_solution[i].begin(); it != new_solution[i].end(); ++it) {
             if (*it == node2) {
-                node2 = (int) (engine() % (nodes.size() - 1) + 1);
+                node2 =  (engine() % (nodes.size() - 1) + 1);
                 i = -1;
                 break;
             }
@@ -468,15 +468,15 @@ vector<list<int>> Graph::mutation_solution_3(const vector<list<int>>& solution) 
 vector<list<int>> Graph::mutation_solution_4(const vector<list<int>> &solution) {
     vector<list<int>> new_solution = solution;
 
-    int vehicle = (int) engine() % nrVehicles;
-    int node = (int) (engine() % (new_solution[vehicle].size() - 2) + 1);
-    int node2 = (int) (engine() % (new_solution[vehicle].size() - 2) + 1);
+    int vehicle = engine() % nrVehicles;
+    int node = (engine() % (new_solution[vehicle].size() - 2) + 1);
+    int node2 =(engine() % (new_solution[vehicle].size() - 2) + 1);
 
     if(solution[vehicle].size() < 5) return solution;
 
     while(abs(node - node2) < 2) {
-        node = (int) (engine() % (new_solution[vehicle].size() - 2) + 1);
-        node2 = (int) (engine() % (new_solution[vehicle].size() - 2) + 1);
+        node = (engine() % (new_solution[vehicle].size() - 2) + 1);
+        node2 = (engine() % (new_solution[vehicle].size() - 2) + 1);
     }
 
     if(node > node2) {
@@ -516,7 +516,7 @@ vector<list<int>> Graph::mutation_solution_5(const vector<list<int>> &solution) 
     for (int i = 0; i < new_solution.size(); i++) {
         for (auto it = new_solution[i].begin(); it != new_solution[i].end(); ++it) {
             if (*it == node3 || node2 == node3) {
-                node3 = (int) (engine() % (nodes.size() - 1) + 1);
+                node3 =  (engine() % (nodes.size() - 1) + 1);
                 i = -1;
                 break;
             }
@@ -533,7 +533,7 @@ vector<list<int>> Graph::mutation_solution_5(const vector<list<int>> &solution) 
 }
 
 vector<list<int>> Graph::mutation_solution_6(const vector<list<int>> &solution) {
-    int mutation = (int) (engine() % 5 + 1);
+    int mutation =  (engine() % 5 + 1);
     switch (mutation) {
         case 1:
             return mutation_solution_1(solution);
@@ -560,8 +560,8 @@ int shortest_path_size(vector<list<int>> father_solution, vector<list<int>> moth
     int shortest = INT32_MAX;
 
     for(int i = 0; i < father_solution.size(); i++) { // both solutions have the same size
-        if(father_solution[i].size() < shortest) shortest = (int) father_solution[i].size();
-        if(mother_solution[i].size() < shortest) shortest = (int) mother_solution[i].size();
+        if(father_solution[i].size() < shortest) shortest =  father_solution[i].size();
+        if(mother_solution[i].size() < shortest) shortest =  mother_solution[i].size();
     }
 
     return shortest;
@@ -632,10 +632,10 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(const ve
 
     for(auto van: child1) {
         for(auto it = van.begin(); it != van.end(); it++) {
-            int previous_size = (int) used_establishments1.size();
+            int previous_size =  used_establishments1.size();
             used_establishments1.insert(*it);
 
-            if(previous_size == (int) used_establishments1.size()) {
+            if(previous_size ==  used_establishments1.size()) {
                 van.erase(it);
                 it = van.begin();
             }
@@ -646,7 +646,7 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(const ve
 
     for(auto van: child2) {
         for(auto it = van.begin(); it != van.end(); it++) {
-            int previous_size = (int) used_establishments2.size();
+            int previous_size =  used_establishments2.size();
             used_establishments2.insert(*it);
 
             if(previous_size == used_establishments2.size()) {
@@ -712,7 +712,7 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(const ve
 
     for(auto van: child1) {
         for(auto it = van.begin(); it != van.end(); it++) {
-            int previous_size = (int) used_establishments1.size();
+            int previous_size =  used_establishments1.size();
             used_establishments1.insert(*it);
 
             if(previous_size == used_establishments1.size()) {
@@ -726,7 +726,7 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(const ve
 
     for(auto van: child2) {
         for(auto it = van.begin(); it != van.end(); it++) {
-            int previous_size = (int) used_establishments2.size();
+            int previous_size =  used_establishments2.size();
             used_establishments2.insert(*it);
 
             if(previous_size == used_establishments2.size()) {
@@ -997,13 +997,13 @@ vector<vector<list<int>>> Graph::generatePopulation(int population_size) {
 
 vector<list<int>> Graph::tournamentSelection(vector<vector<list<int>>> population, int size,
                                 int (Graph::*evalFunction)(const vector<list<int>> &)) {
-    if(size > population.size()) size = (int) population.size();
+    if(size > population.size()) size =  population.size();
 
     vector<list<int>> best_solution;
     int best_score;
 
     for (int i = 0; i < size; i++) {
-        int random_index = (int) (engine() % population.size());
+        int random_index =  (engine() % population.size());
         vector<list<int>> solution = population[random_index];
         int score = (this->*evalFunction)(solution);
 

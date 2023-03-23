@@ -16,6 +16,9 @@ class ASAE
     string distancesFile = "dataset/distances.csv";
     int max_establishments= 0;
 
+    vector<vector<std::list<int>>(Graph::*)(const std::vector<std::list<int>>&)> mutation_funcs = {&Graph::mutation_solution_1, &Graph::mutation_solution_2,&Graph::mutation_solution_3, &Graph::mutation_solution_4,&Graph::mutation_solution_5,&Graph::mutation_solution_6};
+    vector<int(Graph::*)(const std::vector<std::list<int>>&)> evaluation_funcs = {&Graph::evaluate_solution};
+
     /**
      * Number lines in file
      * @param myfile file path
