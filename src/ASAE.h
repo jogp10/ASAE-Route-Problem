@@ -53,6 +53,20 @@ public:
     static bool hasSubstring(const string &s);
 
     void drawPlot();
+
+    void hill_climbing();
+
+    void simulated_annealing();
+
+    void tabu_search();
+
+    void genetic();
+
+    bool parseInput(int a, int b, const string &text);
+
+    bool isAllDigits(const string &str);
+
+    bool ask_parameters(string &iteration_number, string &mutation_func, string &evaluation_func);
 };
 
 #endif // ASAE_H
