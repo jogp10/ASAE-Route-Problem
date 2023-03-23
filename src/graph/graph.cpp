@@ -565,8 +565,9 @@ int shortest_path_size(vector<list<int>> father_solution, vector<list<int>> moth
     return shortest;
 }
 
-void Graph::fillSolution(vector<list<int>> &child, set<int> used_establishments) {
+vector<list<int>> Graph::fillSolution(const vector<list<int>> &child) {
     vector<MinHeap<int, float>> heaps(n, MinHeap<int, float>(n, -1));
+    vector<list<int>> new_solution(nrVehicles);
 
     for (auto &n: nodes) {
         for(auto &e: n.adj) {
@@ -574,13 +575,30 @@ void Graph::fillSolution(vector<list<int>> &child, set<int> used_establishments)
         }
         n.visited = false;
     }
-    nodes[0].visited = true;
+    for (auto &t: times) {
+        t = departure_time;
+    }
+
+    for (int i=0; i<nrVehicles; i++) {
+        auto before = child[i].begin();
+        auto it = next(before, 1);
+        new_solution[i].push_back(0);
+
+        for (int j=1; j<child[i].size()-1; j++) {
+            nodes[*it].visited = true;
+            times[i].addTime(operationTime(*before, *it, times[i], false));
+            new_solution[i].push_back(*it);
+
+            before = it;
+            it = next(it, 1);
+        }
+    }
 
     for(int i=0; i<nrVehicles; i++) {
-        int limit = 5;
+        int limit = 3;
 
-        for(int j=0; j<n-2; j++) {
-            int last = child[i].back();
+        for(int j=0; j<n-new_solution[i].size()-2; j++) {
+            int last = new_solution[i].back();
             int nthClosest = heaps[last].removeMin();
 
             if (nodes[nthClosest].visited) continue;
@@ -594,17 +612,19 @@ void Graph::fillSolution(vector<list<int>> &child, set<int> used_establishments)
                 continue;
             }
 
-            auto it = used_establishments.find(nthClosest);
-
-            if(it != used_establishments.end()) continue;
-
             nodes[nthClosest].visited = true;
-            child[i].push_back(nthClosest);
+            new_solution[i].push_back(nthClosest);
             Time op = operationTime(last, nthClosest, times[i], false);
             times[i].addTime(op);
             j=-1;
         }
     }
+
+    for(int i=0; i<nrVehicles; i++) {
+        new_solution[i].push_back(0);
+    }
+
+    return new_solution;
 }
 
 /*
@@ -612,21 +632,12 @@ void Graph::fillSolution(vector<list<int>> &child, set<int> used_establishments)
  * solutions in the midpoint. The two new resultant solutions consist in changing the cuts of the parents solutions.
  */
 pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(const vector<list<int>> &father_solution, const vector<list<int>> &mother_solution) {
-    int midpoint = shortest_path_size(father_solution, mother_solution);
-    vector<list<int>> child1, child2;
+    int midpoint = engine() % (nrVehicles - 2) + 1;
+    vector<list<int>> child1(father_solution.begin(), father_solution.begin()+midpoint), child2(mother_solution.begin(), mother_solution.begin()+midpoint);
 
-    for(int i = 0; i < father_solution.size(); i++) {
+    child1.insert(child1.end(), mother_solution.begin()+midpoint, mother_solution.end());
+    child2.insert(child2.end(), father_solution.begin()+midpoint, father_solution.end());
 
-        if(i < midpoint) {
-            child1.push_back(father_solution[i]);
-            child2.push_back(mother_solution[i]);
-        }
-        else {
-            child1.push_back(mother_solution[i]);
-            child2.push_back(father_solution[i]);
-        }
-
-    }
 
     set<int> used_establishments1;
 
@@ -637,11 +648,10 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(const ve
             used_establishments1.insert(*it);
 
             if(previous_size == used_establishments1.size()) {
-                van.erase(it++);
+                it = van.erase(it);
+                continue;
             }
-            else {
-                ++it;
-            }
+            it++;
         }
     }
 
@@ -654,37 +664,27 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(const ve
             used_establishments2.insert(*it);
 
             if(previous_size == used_establishments2.size()) {
-                van.erase(it++);
+                it = van.erase(it);
+                continue;
             }
-            else {
-                ++it;
-            }
+            it++;
         }
     }
 
-
-    cout << "==== BEFORE ====" << endl;
-    cout << "score father: " << this->evaluate_solution(father_solution) << endl;
-    cout << "score mother: " << this->evaluate_solution(mother_solution) << endl;
-    cout << "valid 1: " << this->check_solution(child1) << endl;
-    cout << "score 1: " << this->evaluate_solution(child1) << endl;
-    cout << "valid 2: " << this->check_solution(child2) << endl;
-    cout << "score 2: " << this->evaluate_solution(child2) << endl;
-
-    fillSolution(child1, used_establishments1);
-    fillSolution(child2, used_establishments2);
-
-    cout << "==== AFTER ====" << endl;
-    cout << "score father: " << this->evaluate_solution(father_solution) << endl;
-    cout << "score mother: " << this->evaluate_solution(mother_solution) << endl;
-    cout << "valid 1: " << this->check_solution(child1) << endl;
-    cout << "score 1: " << this->evaluate_solution(child1) << endl;
-    cout << "valid 2: " << this->check_solution(child2) << endl;
-    cout << "score 2: " << this->evaluate_solution(child2) << endl;
     /*
+    cout << "Father: " << this->evaluate_solution(father_solution) << endl;
+    cout << "Mother: " << this->evaluate_solution(mother_solution) << endl;
+    cout << "Child 1 unfilled: " << this->evaluate_solution(child1) << endl;
+    cout << "Child 2 unfilled: " << this->evaluate_solution(child2) << endl;
+    */
 
-    fillSolution(child1);
-    fillSolution(child2);*/
+    //child1 = fillSolution(child1);
+    //child2 = fillSolution(child2);
+
+    /*
+    cout << "Child 1 filled: " << this->evaluate_solution(child1) << endl;
+    cout << "Child 2 filled: " << this->evaluate_solution(child2) << endl;
+     */
 
     return make_pair(child1, child2);
 }
@@ -694,25 +694,16 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(const ve
  * remaining parts with the nodes from the second parent’s solution, creating the child solutions.
  */
 pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(const vector<list<int>> &father_solution, const vector<list<int>> &mother_solution) {
-    int midpoint1 = engine() % (father_solution.size() - 1) + 0;
-    int midpoint2 = engine() % (father_solution.size() - 1) + midpoint1;
+    int midpoint1 = nrVehicles/3;
+    int midpoint2 = 2*nrVehicles/3;
 
-    vector<list<int>> child1, child2;
+    vector<list<int>> child1(father_solution.begin(), father_solution.begin()+midpoint1), child2(mother_solution.begin(), mother_solution.begin()+midpoint1);
 
-    for(int i = 0; i < father_solution.size(); i++) {
-        if(i < midpoint1) {
-            child1.push_back(father_solution[i]);
-            child2.push_back(mother_solution[i]);
-        }
-        else if(i >= midpoint1 && i <= midpoint2) {
-            child1.push_back(mother_solution[i]);
-            child2.push_back(father_solution[i]);
-        }
-        else if(i > midpoint2) {
-            child1.push_back(father_solution[i]);
-            child2.push_back(mother_solution[i]);
-        }
-    }
+    child1.insert(child1.end(), mother_solution.begin()+midpoint1, mother_solution.begin()+midpoint2);
+    child2.insert(child2.end(), father_solution.begin()+midpoint1, father_solution.begin()+midpoint2);
+
+    child1.insert(child1.end(), father_solution.begin()+midpoint2, father_solution.end());
+    child2.insert(child2.end(), mother_solution.begin()+midpoint2, mother_solution.end());
 
     set<int> used_establishments1;
 
@@ -723,10 +714,10 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(const ve
             used_establishments1.insert(*it);
 
             if(previous_size == used_establishments1.size()) {
-                van.erase(it++);
-            } else {
-                ++it;
+                it = van.erase(it);
+                continue;
             }
+            it++;
         }
     }
 
@@ -739,37 +730,15 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(const ve
             used_establishments2.insert(*it);
 
             if(previous_size == used_establishments2.size()) {
-                van.erase(it++);
+                it = van.erase(it);
+                continue;
             }
-            else {
-                ++it;
-            }
+            it++;
         }
     }
 
-
-    cout << "==== BEFORE ====" << endl;
-    cout << "score father: " << this->evaluate_solution(father_solution) << endl;
-    cout << "score mother: " << this->evaluate_solution(mother_solution) << endl;
-    cout << "valid 1: " << this->check_solution(child1) << endl;
-    cout << "score 1: " << this->evaluate_solution(child1) << endl;
-    cout << "valid 2: " << this->check_solution(child2) << endl;
-    cout << "score 2: " << this->evaluate_solution(child2) << endl;
-
-    fillSolution(child1, used_establishments1);
-    fillSolution(child2, used_establishments2);
-
-    cout << "==== AFTER ====" << endl;
-    cout << "score father: " << this->evaluate_solution(father_solution) << endl;
-    cout << "score mother: " << this->evaluate_solution(mother_solution) << endl;
-    cout << "valid 1: " << this->check_solution(child1) << endl;
-    cout << "score 1: " << this->evaluate_solution(child1) << endl;
-    cout << "valid 2: " << this->check_solution(child2) << endl;
-    cout << "score 2: " << this->evaluate_solution(child2) << endl;
-    /*
-
-    fillSolution(child1, used_establishments1);
-    fillSolution(child2, used_establishments2);*/
+    //child1 = fillSolution(child1);
+    //child2 = fillSolution(child2);
 
     return make_pair(child1, child2);
 }
@@ -951,7 +920,6 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
     int best_score = (this->*evaluation_func)(best_solution);
     int best_solution_generation = 0;
 
-    //printSolution(best_solution);
     cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
 
@@ -964,14 +932,23 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
         vector<list<int>> tournament_winner = tournamentSelection(population, tournament_size, (evaluation_func));
         vector<list<int>> roulette_winner = rouletteSelection(population, (evaluation_func));
 
+        //cout << "Tournament winner: " << (this->*evaluation_func)(tournament_winner) << endl;
+        //cout << "Roulette winner: " << (this->*evaluation_func)(roulette_winner) << endl;
+
         pair<vector<list<int>>, vector<list<int>>> crossovers = (this->*crossover_func)(tournament_winner, roulette_winner);
         vector<list<int>> crossover1 = crossovers.first;
         vector<list<int>> crossover2 = crossovers.second;
+
+        //cout << "Crossover1: " << (this->*evaluation_func)(crossover1) << endl;
+        //cout << "Crossover2: " << (this->*evaluation_func)(crossover2) << endl;
 
         int mutation_chance = engine() % 10;
         if(mutation_chance < mutation_probability) {
             crossover1 = (this->*mutation_func)(crossover1);
             crossover2 = (this->*mutation_func)(crossover2);
+
+            //cout << "Mutation1: " << (this->*evaluation_func)(crossover1) << endl;
+            //cout << "Mutation2: " << (this->*evaluation_func)(crossover2) << endl;
         }
 
         population = replace_least_fittest(population, crossover1, (evaluation_func));
