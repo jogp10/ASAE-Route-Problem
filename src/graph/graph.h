@@ -12,6 +12,7 @@
 #include <cmath>
 #include <random>
 #include <utility>
+#include <set>
 #include "Time.h"
 
 class Graph {
@@ -267,7 +268,7 @@ public:
      * Fill given solution with more establishments in vans
      * @param child
      */
-    void fillSolution(std::vector<std::list<int>> &child);
+    std::vector<std::list<int>> fillSolution(const std::vector<std::list<int>> &child);
 
     std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_1(const std::vector<std::list<int>> &father_solution, const std::vector<std::list<int>> &mother_solution);
 
