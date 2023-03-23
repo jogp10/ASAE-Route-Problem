@@ -772,7 +772,7 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<l
         vector<list<int>> neighbour_solution = (this->*mutation_func)(best_solution);
         int neighbour_score = (this->*evaluation_func)(neighbour_solution);
         float r = static_cast <float> (engine()) / static_cast <float> (RAND_MAX);
-        
+
         if((neighbour_score > best_score) or (pow(M_E, (float)(neighbour_score - best_score) / temperature) >= r)) {
             best_solution = neighbour_solution;
             best_score = neighbour_score;
@@ -915,23 +915,14 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
         vector<list<int>> tournament_winner = tournamentSelection(population, tournament_size, (evaluation_func));
         vector<list<int>> roulette_winner = rouletteSelection(population, (evaluation_func));
 
-        //cout << "Tournament winner: " << (this->*evaluation_func)(tournament_winner) << endl;
-        //cout << "Roulette winner: " << (this->*evaluation_func)(roulette_winner) << endl;
-
         pair<vector<list<int>>, vector<list<int>>> crossovers = (this->*crossover_func)(tournament_winner, roulette_winner);
         vector<list<int>> crossover1 = crossovers.first;
         vector<list<int>> crossover2 = crossovers.second;
-
-        //cout << "Crossover1: " << (this->*evaluation_func)(crossover1) << endl;
-        //cout << "Crossover2: " << (this->*evaluation_func)(crossover2) << endl;
 
         int mutation_chance = engine() % 10;
         if(mutation_chance < mutation_probability) {
             crossover1 = (this->*mutation_func)(crossover1);
             crossover2 = (this->*mutation_func)(crossover2);
-
-            //cout << "Mutation1: " << (this->*evaluation_func)(crossover1) << endl;
-            //cout << "Mutation2: " << (this->*evaluation_func)(crossover2) << endl;
         }
 
         population = replace_least_fittest(population, crossover1, (evaluation_func));
