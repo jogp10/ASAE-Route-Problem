@@ -270,32 +270,129 @@ public:
      */
     std::vector<std::list<int>> fillSolution(const std::vector<std::list<int>> &child);
 
+    /**
+     * Crossover two solutions (father and mother -> child1(father[0:mid], mother[mid:end]) and child2(mother[0:mid], father[mid:end]))
+     * @param father_solution
+     * @param mother_solution
+     * @return
+     */
     std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_1(const std::vector<std::list<int>> &father_solution, const std::vector<std::list<int>> &mother_solution);
 
+
+    /**
+     * Crossover two solutions (father and mother -> child1(father[0:mid1], mother[mid1:mid2], father[mid2:end) and child2(mother[0:mid1], father[mid1:mid2], mother[mid2:end)))
+     * @param father_solution
+     * @param mother_solution
+     * @return
+     */
     std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_2(const std::vector<std::list<int>> &father_solution, const std::vector<std::list<int>> &mother_solution);
 
+    /**
+     * Get neighbours of a solution
+     * @param solution
+     * @param neighborhood_size
+     * @param mutation_func
+     * @return
+     */
     std::vector<std::vector<std::list<int>>> getNeighbours(const std::vector<std::list<int>>& solution, int neighborhood_size, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&));
 
+    /**
+     * Hill climbing algorithm
+     * @param iteration_number
+     * @param mutation_func
+     * @param evaluation_func
+     * @param log
+     * @return
+     */
     std::vector<std::list<int>> hillClimbing(int iteration_number, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
+    /**
+     * Simulated annealing algorithm
+     * @param iteration_number
+     * @param mutation_func
+     * @param evaluation_func
+     * @param log
+     * @return
+     */
     std::vector<std::list<int>> simulatedAnnealing(int iteration_number, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
+    /**
+     * Tabu search algorithm
+     * @param iteration_number
+     * @param tabu_size
+     * @param neighborhood_size
+     * @param mutation_func
+     * @param evaluation_func
+     * @param log
+     * @return
+     */
     std::vector<std::list<int>> tabuSearch(int iteration_number, int tabu_size, int neighborhood_size, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
+    /**
+     * Genetic algorithm
+     * @param iteration_number
+     * @param population_size
+     * @param tournament_size
+     * @param mutation_probability
+     * @param crossover_func
+     * @param mutation_func
+     * @param evaluation_func
+     * @param log
+     * @return
+     */
     std::vector<std::list<int>> geneticAlgorithm(int iteration_number, int population_size, int tournament_size, int mutation_probability, std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> (Graph::*crossover_func)(const std::vector<std::list<int>>&, const std::vector<std::list<int>>&), std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
+    /**
+     * Check if a solution is valid
+     * @param vector1
+     * @return
+     */
     bool check_solution(std::vector<std::list<int>> vector1);
 
+    /**
+     * Plot graph
+     */
     void plotGraph();
 
+    /**
+     * Generate a random population
+     * @param population_size
+     * @return
+     */
     std::vector<std::vector<std::list<int>>> generatePopulation(int population_size);
 
+    /**
+     * Tournament selection
+     * @param population
+     * @param size
+     * @param evalFunction
+     * @return
+     */
     std::vector<std::list<int>> tournamentSelection(std::vector<std::vector<std::list<int>>> population, int size, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
 
+    /**
+     * Roulette selection
+     * @param population
+     * @param evalFunction
+     * @return
+     */
     std::vector<std::list<int>> rouletteSelection(std::vector<std::vector<std::list<int>>> population, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
 
+    /**
+     * Replace least fittest solution
+     * @param population
+     * @param new_solution
+     * @param evalFunction
+     * @return
+     */
     std::vector<std::vector<std::list<int>>> replace_least_fittest(std::vector<std::vector<std::list<int>>> population, std::vector<std::list<int>> new_solution, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
 
+    /**
+     * Get greatest fit solution
+     * @param population
+     * @param evalFunction
+     * @return
+     */
     std::pair<std::vector<std::list<int>>, int> get_greatest_fit(std::vector<std::vector<std::list<int>>> population, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
 };
 
