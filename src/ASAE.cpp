@@ -180,7 +180,7 @@ ASAE::ASAE()
 
 void ASAE::menu() {
     string option = "";
-    //drawPlot();
+    drawPlot();
     cout << endl << "Welcome to the ASAE!" << endl;
     cout << endl;
     while (true) {
@@ -385,6 +385,9 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
     while (true){
         cout << "Evaluation function:" << endl;
         cout << "1 - Sum of the visited Establishments" << endl;
+        cout << "2 - Minimize number of parish transfers" << endl;
+        cout << "3 - Minimize waiting time" << endl;
+        cout << "4 - Minimize travel time" << endl;
         cout << "0 - Back" << endl;
         getline(cin, evaluation_func);
         // Check for CTRL + Z or CTRL + D input to close the program
@@ -394,7 +397,7 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
-        bool correct = parseInput(0,1,evaluation_func);
+        bool correct = parseInput(0,2,evaluation_func);
 
         if(correct){
             if (std::stoi(evaluation_func) == 0) {

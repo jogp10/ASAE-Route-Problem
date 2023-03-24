@@ -75,13 +75,14 @@ void Graph::setNode(int index, string district, string county, string parish, st
 }
 
 
-int Graph::evaluate_solution(const vector<list<int>>& solution) {
+int Graph::evaluate_solution_1(const vector<list<int>>& solution) {
     int bestSolution = 0;
     for (const auto &i: solution)
         bestSolution +=  i.size();
 
     return bestSolution;
 }
+
 
 
 int Graph::random_node(const int idx) const {
@@ -265,10 +266,10 @@ float Graph::totalTravelTime(const vector<list<int>> &solution, bool log) {
             vehicle_time += getDistance(last, it);
             last = it;
         }
-        cout << "Vehicle " << i << " total travel time: " << vehicle_time << "s" << endl;
+        if(log) cout << "Vehicle " << i << " total travel time: " << vehicle_time << "s" << endl;
         travel_time += vehicle_time;
     }
-    cout << "Total travel time: " << travel_time << "s" << endl;
+    if(log) cout << "Total travel time: " << travel_time << "s" << endl;
     return travel_time;
 }
 
@@ -297,10 +298,10 @@ float Graph::totalWaitingTime(const vector<list<int>> &solution, bool log) {
             time.addTime(0, 0, nodes[*it].inspection_time, 0);
             last = *it;
         }
-        cout << "Vehicle " << i << " total waiting time: " << vehicle_time << "s" << endl;
+        if(log) cout << "Vehicle " << i << " total waiting time: " << vehicle_time << "s" << endl;
         waiting_time += vehicle_time;
     }
-    cout << "Total waiting time: " << waiting_time << "s" << endl;
+    if(log) cout << "Total waiting time: " << waiting_time << "s" << endl;
     return waiting_time;
 }
 
@@ -1048,6 +1049,28 @@ pair<vector<list<int>>, int> Graph::get_greatest_fit(vector<vector<list<int>>> p
     }
 
     return make_pair(best_solution, best_score);
+}
+
+int Graph::evaluate_solution_2(const vector<std::list<int>> &solution) {
+    int number_of_exchanges = 0;
+    for(int i=0; i<solution.size(); i++) {
+        auto before = next(solution[i].begin(), 1);
+        auto it = next(before, 1);
+        for(int j=2; j<solution.size()-1; j++) {
+            if (nodes[*before].parish != nodes[*it].parish) {
+                number_of_exchanges -= 1;
+            }
+        }
+    }
+    return number_of_exchanges;
+}
+
+int Graph::evaluate_solution_3(const vector<std::list<int>> &solution) {
+    return -totalWaitingTime(solution, false);
+}
+
+int Graph::evaluate_solution_4(const vector<std::list<int>> &solution) {
+    return -totalTravelTime(solution, false);
 }
 
 

@@ -119,11 +119,32 @@ public:
     std::list<int> path(int origin, int destin);
 
     /**
-     * Evaluate Solution
+     * Maximize number of establishments
      * @param solution  Solution
      * @return  Solution Value
      */
-    int evaluate_solution(const std::vector<std::list<int>>& solution);
+    int evaluate_solution_1(const std::vector<std::list<int>>& solution);
+
+    /**
+     * Minimize parish transfers
+     * @param solution  Solution
+     * @return  Solution Value
+     */
+    int evaluate_solution_2(const std::vector<std::list<int>>& solution);
+
+    /**
+     * Minimize waiting time
+     * @param solution  Solution
+     * @return  Solution Value
+     */
+    int evaluate_solution_3(const std::vector<std::list<int>>& solution);
+
+    /**
+     * Minimize travel time
+     * @param solution  Solution
+     * @return  Solution Value
+     */
+    int evaluate_solution_4(const std::vector<std::list<int>>& solution);
 
     /**
      * Get Random Node different from idx
