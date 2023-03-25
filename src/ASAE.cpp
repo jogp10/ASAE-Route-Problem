@@ -178,6 +178,7 @@ void ASAE::menu() {
                 solution = (graph.*(&Graph::hillClimbing))(1000, (&Graph::mutation_solution_6), (&Graph::evaluate_solution), false);
                 break;
             case 3:
+
                 solution = (graph.*(&Graph::tabuSearch))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), 20, false);
                 break;
             case 4:

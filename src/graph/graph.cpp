@@ -248,10 +248,10 @@ float Graph::totalTravelTime(const vector<list<int>> &solution) {
             vehicle_time += getDistance(last, *it);
             last = *it;
         }
-        cout << "Vehicle " << i << " total travel time: " << vehicle_time << "s" << endl;
+        //cout << "Vehicle " << i << " total travel time: " << vehicle_time << "s" << endl;
         travel_time += vehicle_time;
     }
-    cout << "Total travel time: " << travel_time << "s" << endl;
+    //cout << "Total travel time: " << travel_time << "s" << endl;
     return travel_time;
 }
 
@@ -594,13 +594,12 @@ vector<vector<list<int>>> Graph::getNeighbours(vector<list<int>> solution, vecto
     return array;
 }
 
-template <class Type>
-bool queueContainsElem(queue<Type> queue, Type element) {
+bool queueContainsElem(queue<int> queue, int element) {
     int iterations = queue.size();
     bool contains = false;
 
     for(int i = 0; i < iterations; i++) {
-        vector<list<int>> elem = queue.front();
+        int elem = queue.front();
         queue.pop();
 
         if(elem == element)  {
@@ -617,10 +616,10 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, vector<list<int>> (Gra
                                     int (Graph::*evaluation_func)(const vector<list<int>>&), int max_size_tabu_list, bool log) {
     vector<list<int>> best_solution = this->generate_random_solution();
     printSolution(best_solution);
-    cout << check_solution(best_solution) << endl;
+    //cout << check_solution(best_solution) << endl;
     int best_score = (this->*evaluation_func)(best_solution);
-    cout << best_score << endl;
-    queue<vector<list<int>>> tabu_list;
+    cout << "Best score: " << best_score << endl;
+    queue<int> tabu_list;
 
     for(int i = 0; i < iteration_number; i++) {
         vector<vector<list<int>>> neighbourhood = this->getNeighbours(best_solution, (mutation_func));
@@ -629,8 +628,9 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, vector<list<int>> (Gra
 
         for(auto neighbour: neighbourhood) {
             int neighbour_score = (this->*evaluation_func)(neighbour);
+            int total_travel_time = totalTravelTime(neighbour);
 
-            if ((neighbour_score > best_neighbour_score) && !queueContainsElem(tabu_list, neighbour) ) {
+            if ((neighbour_score > best_neighbour_score) && !queueContainsElem(tabu_list, total_travel_time) ) {
                 best_neighbour_solution = neighbour;
                 best_neighbour_score = neighbour_score;
             }
@@ -641,7 +641,8 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, vector<list<int>> (Gra
             best_score = best_neighbour_score;
         }
         //add solution to tabu list
-        tabu_list.push(best_neighbour_solution);
+        int ttt_best_neighbour = totalTravelTime(best_neighbour_solution);
+        tabu_list.push(ttt_best_neighbour);
 
         // se tabu_list.size() > max_size_defined
         // tabu_list.removeFirst()
