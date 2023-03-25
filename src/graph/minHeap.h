@@ -1,5 +1,5 @@
-#ifndef _MINHEAP_H_
-#define _MINHEAP_H_
+#ifndef ASAEINSPECTIONROUTE_MINHEAP_H
+#define ASAEINSPECTIONROUTE_MINHEAP_H
 
 #include <vector>
 #include <unordered_map>
@@ -12,8 +12,7 @@ using namespace std;
 
 // Binary min-heap to represent integer keys of type K with values (priorities) of type V
 template <class K, class V>
-class MinHeap {                //nodes[w].dist = nodes[u].dist + 1;
-
+class MinHeap {
     struct Node { // An element of the heap: a pair (key, value)
         K key;
         V value;
@@ -33,8 +32,6 @@ public:
     MinHeap(int n, const K& notFound); // Create a min-heap for a max of n pairs (K,V) with notFound returned when empty
     int getSize();              // Return number of elements in the heap
     bool hasKey(const K& key);  // Heap has key?
-    V getValue();  // Get Value
-    V getValue(int k);
     void insert(const K& key, const V& value);      // Insert (key, value) on the heap
     void decreaseKey(const K& key, const V& value); // Decrease value of key
     K removeMin(); // remove and return key with smaller value
@@ -90,18 +87,6 @@ bool MinHeap<K, V>::hasKey(const K& key) {
     return pos.find(key) != pos.end();
 }
 
-template <class K, class V>
-V MinHeap<K, V>::getValue() {
-    return a[1].value;
-}
-
-template <class K, class V>
-V MinHeap<K, V>::getValue(int k) {
-    if(!hasKey(k)) return -1;
-
-    return a[pos.find(k)->second].value;
-}
-
 // Insert (key, value) on the heap
 template <class K, class V>
 void MinHeap<K,V>::insert(const K& key, const V& value) {
@@ -133,4 +118,5 @@ K MinHeap<K,V>::removeMin() {
     return min;
 }
 
-#endif
+
+#endif //ASAEINSPECTIONROUTE_MINHEAP_H

@@ -1,10 +1,8 @@
 #include <fstream>
 #include <vector>
-#include <cmath>
 
 #include "ASAE.h"
 
-using namespace std;
 
 int ASAE::numberOfLines(const string &myFile)
 {
@@ -28,7 +26,7 @@ int ASAE::numberOfLines(const string &myFile)
     return number_of_lines - 1;
 }
 
-void ASAE::readTimeDistances(int n)
+void ASAE::readTimeDistances(const int &n)
 {
         string myFile = distancesFile;
 
@@ -69,9 +67,9 @@ void ASAE::readTimeDistances(int n)
         }
 }
 
-void ASAE::readEstablishments(int n)
+void ASAE::readEstablishments(const int &n)
 {
-    string line, delimiter = ",";
+    string line;
     ifstream file(establishmentsFile);
 
     if (file.is_open())
@@ -136,38 +134,66 @@ ASAE::ASAE()
 
     int number_of_establishments = 1001;
 
-    this->graph = Graph(number_of_establishments, true, {0, 0, 0, 9}, {0, 0, 0, 8});
+    this->graph = Graph(number_of_establishments, true, {0, 0, 0, 9, 0}, {0, 0, 0, 8, 0});
 
     readEstablishments(number_of_establishments);
     readTimeDistances(number_of_establishments);
 
 
     vector<list<int>> solution;
-    solution = graph.generate_random_solution();
-    //Graph::printSolution(solution);
+    /*
+    list<int> vehicle1;
+    vehicle1.push_back(0);
+    vehicle1.emplace_back(7);
+    vehicle1.emplace_back(15);
+    vehicle1.emplace_back(4);
+    vehicle1.emplace_back(9);
+    vehicle1.emplace_back(16);
+    vehicle1.emplace_back(18);
+    vehicle1.emplace_back(20);
+    vehicle1.emplace_back(14);
+    vehicle1.emplace_back(12);
+    vehicle1.emplace_back(1);
+    vehicle1.emplace_back(0);
+    list<int> vehicle2;
 
+    vehicle2.emplace_back(0);
+    vehicle2.emplace_back(11);
+    vehicle2.emplace_back(3);
+    vehicle2.emplace_back(13);
+    vehicle2.emplace_back(2);
+    vehicle2.emplace_back(5);
+    vehicle2.emplace_back(6);
+    vehicle2.emplace_back(0);
+
+    vector<list<int>> solution2 = {vehicle1, vehicle2};
+
+    graph.printDetailedSolution(solution2, true);
+    //graph.printSolution(solution2);
+    cout << graph.totalOperationTime(solution2) << endl;*/
 
     //stop execution
-    // Plot establishments in a map
-    graph.plotGraph();
+
     cout << "Done building graph." << endl;
 }
 
 void ASAE::menu() {
     int option = 0;
-
+    //drawPlot();
     cout << endl << "Welcome to the ASAE!" << endl;
     cout << endl;
-    while (option != 5) {
+    while (option != 6) {
         cout << "1 - Show all establishments" << endl;
-        cout << "2 - Show all establishments of a given type" << endl;
-        cout << "3 - Show all establishments of a given type and with a given name // tabu search here" << endl;
-        cout << "4 - Show all establishments of a given type and with a given name and with a given opening hour" << endl;
-        cout << "5 - Exit" << endl;
+        cout << "2 - Hill climbing" << endl;
+        cout << "3 - Simulated annealing" << endl;
+        cout << "4 - Tabu" << endl;
+        cout << "5 - Genetic" << endl;
+        cout << "0 - Exit" << endl;
         cout << "Option: ";
         cin >> option;
 
         vector<list<int>> solution;
+
         switch (option) {
             case 0:
                 return;
@@ -175,29 +201,31 @@ void ASAE::menu() {
                 graph.showAllEstablishments();
                 break;
             case 2:
-                solution = (graph.*(&Graph::hillClimbing))(1000, (&Graph::mutation_solution_6), (&Graph::evaluate_solution), false);
+                solution = (graph.*(&Graph::hillClimbing))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
                 break;
             case 3:
-
-                solution = (graph.*(&Graph::tabuSearch))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), 20, false);
+                solution = (graph.*(&Graph::simulatedAnnealing))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
                 break;
             case 4:
+                solution = (graph.*(&Graph::tabuSearch))(1000, 20, 5, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
                 break;
             case 5:
+                solution = (graph.*(&Graph::geneticAlgorithm))(1000, 50, 4, 10, (&Graph::crossover_solutions_1), (&Graph::mutation_solution_5), (&Graph::evaluate_solution), true);
                 break;
             default:
                 cout << "Invalid option." << endl;
                 break;
         }
-        Graph::printSolution(solution);
-        cout << graph.check_solution(solution) << endl;
-        cout << graph.evaluate_solution(solution) << endl;
-        //graph.printDetailedSolution(solution);
     }
-
 }
 
 bool ASAE::hasSubstring(const std::string& str)
 {
     return str.find("p_") != std::string::npos;
 }
+
+void ASAE::drawPlot() {
+
+    graph.plotGraph();
+}
+

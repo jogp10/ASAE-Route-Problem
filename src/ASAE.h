@@ -7,6 +7,7 @@
 
 #include "graph/graph.h"
 
+using namespace std;
 
 class ASAE
 {
@@ -25,13 +26,13 @@ class ASAE
     /**
      * Goes to file and reads establishments info, adds them as nodes to graph
      */
-    void readEstablishments(int n);
+    void readEstablishments(const int &n);
 
     /**
      * Goes to file and connects stops and lines, by adding edges to graph
      * @param code Line Code
      */
-    void readTimeDistances(int n);
+    void readTimeDistances(const int &n);
 
 public:
     /**
@@ -50,6 +51,8 @@ public:
      * @return
      */
     static bool hasSubstring(const string &s);
+
+    void drawPlot();
 };
 
 #endif // ASAE_H
