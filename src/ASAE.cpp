@@ -1,5 +1,6 @@
 #include <fstream>
 #include <vector>
+#include <thread>
 
 #include "ASAE.h"
 
@@ -178,11 +179,12 @@ ASAE::ASAE()
 }
 
 void ASAE::menu() {
-    int option = 0;
-    //drawPlot();
+    string option = "";
+    drawPlot();
     cout << endl << "Welcome to the ASAE!" << endl;
     cout << endl;
-    while (option != 6) {
+    while (true) {
+
         cout << "1 - Show all establishments" << endl;
         cout << "2 - Hill climbing" << endl;
         cout << "3 - Simulated annealing" << endl;
@@ -190,31 +192,38 @@ void ASAE::menu() {
         cout << "5 - Genetic" << endl;
         cout << "0 - Exit" << endl;
         cout << "Option: ";
-        cin >> option;
 
-        vector<list<int>> solution;
+        std::getline(std::cin, option);
+        // Check for CTRL + Z or CTRL + D input to close the program
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(0,5,option);
+        if(correct){
+            switch (std::stoi(option)) {
 
-        switch (option) {
-            case 0:
-                return;
-            case 1:
-                graph.showAllEstablishments();
-                break;
-            case 2:
-                solution = (graph.*(&Graph::hillClimbing))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
-                break;
-            case 3:
-                solution = (graph.*(&Graph::simulatedAnnealing))(1000, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
-                break;
-            case 4:
-                solution = (graph.*(&Graph::tabuSearch))(1000, 20, 5, (&Graph::mutation_solution_5), (&Graph::evaluate_solution), false);
-                break;
-            case 5:
-                solution = (graph.*(&Graph::geneticAlgorithm))(1000, 50, 4, 10, (&Graph::crossover_solutions_1), (&Graph::mutation_solution_5), (&Graph::evaluate_solution), true);
-                break;
-            default:
-                cout << "Invalid option." << endl;
-                break;
+                case 1:
+                    graph.showAllEstablishments();
+                    break;
+                case 2:
+
+                    hill_climbing();
+                    break;
+                case 3:
+                    simulated_annealing();
+                    break;
+                case 4:
+                    tabu_search();
+                    break;
+                case 5:
+                    genetic();
+                    break;
+                default:
+                    cout << "Invalid option." << endl;
+                    break;
+            }
         }
     }
 }
@@ -229,3 +238,182 @@ void ASAE::drawPlot() {
     graph.plotGraph();
 }
 
+void ASAE::hill_climbing() {
+    string iteration_number, mutation_func, evaluation_func;
+    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+
+    vector<list<int>> solution = (graph.*(&Graph::hillClimbing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], false);
+    //graph.printDetailedSolution(solution, true);
+    //graph.printSolution(solution);
+    cout << graph.totalOperationTime(solution) << endl;
+
+
+}
+
+void ASAE::simulated_annealing() {
+
+    string iteration_number, mutation_func, evaluation_func;
+    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+
+    vector<list<int>> solution = (graph.*(&Graph::simulatedAnnealing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], false);
+    graph.printDetailedSolution(solution, true);
+    //graph.printSolution(solution);
+    cout << graph.totalOperationTime(solution) << endl;
+
+}
+
+void ASAE::tabu_search() {
+
+    string iteration_number, mutation_func, evaluation_func;
+    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+
+    vector<list<int>> solution = (graph.*(&Graph::tabuSearch))(std::stoi(iteration_number), 20, 5, mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], false);
+    //graph.printDetailedSolution(solution, false);
+    //graph.printSolution(solution);
+    //cout << graph.totalOperationTime(solution) << endl;
+}
+
+void ASAE::genetic() {
+
+    string iteration_number, mutation_func, evaluation_func;
+    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+
+    vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), 50, 4, 10, (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], true);
+    graph.printDetailedSolution(solution, true);
+    //graph.printSolution(solution);
+    cout << graph.totalOperationTime(solution) << endl;
+
+}
+
+/**
+ * Check if a number in the correct interval (a to b) is inputted
+ * @param a
+ * @param text
+ * @return
+ */
+bool ASAE::parseInput(int a, int b, const std::string& text){
+    std::vector<int> values;
+    for(int i = a; i <= b; i++){
+        values.push_back(i);
+    }
+    auto it = values.begin();
+    if (isAllDigits(text)) {
+        it = std::find(values.begin(), values.end(), stoi(text));
+        if (it != values.end()) {
+            return true;
+        } else {
+            std::cout << std::endl << "Input invalido!" << std::endl << std::endl;
+        }
+    } else {
+        std::cout << std::endl << "Input invalido!" << std::endl << std::endl;
+    }
+    return false;
+}
+
+/**
+ * Checks if a string represents a number
+ * @param str
+ * @return
+ */
+bool ASAE::isAllDigits(const std::string &str){
+
+    // Iterates each character in a std::string and checks if it's an integer or not
+    if(str.empty()) return false;
+    for(char c: str){
+        if (!isdigit(c)){
+            return false;
+        }
+    }
+    return true;
+}
+
+
+bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, string &evaluation_func){
+
+    bool back = false;
+    cout << "Insert the parameters for the algorithm" << endl;
+    while(true){
+        cout << "Number of iterations:";
+        std::getline(std::cin, iteration_number);
+        // Check for CTRL + Z or CTRL + D input to close the program
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(1,10000,iteration_number);
+        if(correct){
+            break;
+        }
+        else{
+            cout << "Invalid number of iterations. Insert a number superior from 1 to 10000" << endl;
+            cout << "Recommended number of iterations: 1000" << endl;
+        }
+    }
+    while(true){
+        cout << "Mutation function:" << endl;
+        cout << "1 - Exchange two establishments in a solution" << endl;
+        cout << "2 - Exchange one establishment for one that wasn't visited" << endl;
+        cout << "3 - Generate a new path between two nodes" << endl;
+        cout << "4 - Scramble the order of a subset of nodes in a vehicle's path" << endl;
+        cout << "5 - Remove a node from a vehicle's path and insert two new nodes" << endl;
+        cout << "6 - Choose a random mutation" << endl;
+        cout << "0 - Back" << endl;
+        cout << "Option: ";
+        std::getline(std::cin, mutation_func);
+        // Check for CTRL + Z or CTRL + D input to close the program
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(0,6,mutation_func);
+        if(correct){
+            if (std::stoi(mutation_func) == 0) {
+                back = true;
+            }
+            break;
+        }
+        else{
+            cout << "Invalid mutation function." << endl;
+        }
+    }
+    if(back){
+        return false;
+    }
+
+    while (true){
+        cout << "Evaluation function:" << endl;
+        cout << "1 - Sum of the visited Establishments" << endl;
+        cout << "2 - Minimize number of parish transfers" << endl;
+        cout << "3 - Minimize waiting time" << endl;
+        cout << "4 - Minimize travel time" << endl;
+        cout << "0 - Back" << endl;
+        getline(cin, evaluation_func);
+        // Check for CTRL + Z or CTRL + D input to close the program
+
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(0,2,evaluation_func);
+
+        if(correct){
+            if (std::stoi(evaluation_func) == 0) {
+                back = true;
+            }
+            break;
+        }
+        else{
+            cout << "Invalid evaluation function." << endl;
+        }
+    }
+    if(back){
+        return false;
+    }
+    return true;
+
+
+
+}

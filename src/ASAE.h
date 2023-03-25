@@ -16,6 +16,9 @@ class ASAE
     string distancesFile = "dataset/distances.csv";
     int max_establishments= 0;
 
+    vector<vector<std::list<int>>(Graph::*)(const std::vector<std::list<int>>&)> mutation_funcs = {&Graph::mutation_solution_1, &Graph::mutation_solution_2,&Graph::mutation_solution_3, &Graph::mutation_solution_4,&Graph::mutation_solution_5,&Graph::mutation_solution_6};
+    vector<int(Graph::*)(const std::vector<std::list<int>>&)> evaluation_funcs = {&Graph::evaluate_solution_1};
+
     /**
      * Number lines in file
      * @param myfile file path
@@ -53,6 +56,20 @@ public:
     static bool hasSubstring(const string &s);
 
     void drawPlot();
+
+    void hill_climbing();
+
+    void simulated_annealing();
+
+    void tabu_search();
+
+    void genetic();
+
+    bool parseInput(int a, int b, const string &text);
+
+    bool isAllDigits(const string &str);
+
+    bool ask_parameters(string &iteration_number, string &mutation_func, string &evaluation_func);
 };
 
 #endif // ASAE_H

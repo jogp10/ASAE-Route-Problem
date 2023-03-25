@@ -16,80 +16,80 @@
 #include <vector>
 #include <matplot/matplot.h>
 
-    class Time {
+class Time {
 
-    public:
-        int milliseconds;
-        int seconds;
-        int minutes;
-        int hours;
-        int days;
+public:
+    int milliseconds;
+    int seconds;
+    int minutes;
+    int hours;
+    int days;
 
-/**
- * Add time
- * @param milliseconds
- * @param seconds
- * @param minutes
- * @param hours
- * @param days
- */
-void addTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0, int days = 0);
+    /**
+     * Add time
+     * @param milliseconds
+     * @param seconds
+     * @param minutes
+     * @param hours
+     * @param days
+     */
+    void addTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0, int days = 0);
 
-/**
- * Set time
- * @param milliseconds
- * @param seconds
- * @param minutes
- * @param hours
- * @param days
- */
-void setTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0, int days = 0);
+    /**
+     * Set time
+     * @param milliseconds
+     * @param seconds
+     * @param minutes
+     * @param hours
+     * @param days
+     */
+    void setTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0, int days = 0);
 
-/**
- * Add time
- * @param time
- */
-void addTime(Time time);
+    /**
+     * Add time
+     * @param time
+     */
+    void addTime(Time time);
 
-/**
- * Compare two times
- * @param rhs
- * @return
- */
-bool operator<(const Time &rhs) const;
+    /**
+     * Compare two times
+     * @param rhs
+     * @return
+     */
+    bool operator<(const Time &rhs) const;
 
-/**
- * Subtract time
- * @param time
- */
-void subTime(Time time);
+    /**
+     * Subtract time
+     * @param time
+     */
+    void subTime(Time time);
 
-/**
- * Subtract time
- * @param milliseconds
- * @param seconds
- * @param minutes
- * @param hours
- * @param days
- */
-void subTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0, int days = 0);
+    /**
+     * Subtract time
+     * @param milliseconds
+     * @param seconds
+     * @param minutes
+     * @param hours
+     * @param days
+     */
+    void subTime(int milliseconds = 0, int seconds = 0, int minutes = 0, int hours = 0, int days = 0);
 
-/**
- * Forward time to next hour
- */
-void toNextHour();
+    /**
+     * Forward time to next hour
+     */
+    void toNextHour();
 
-/**
- * Roll back time to previous hour
- */
-void toPreviousHour();
+    /**
+     * Roll back time to previous hour
+     */
+    void toPreviousHour();
 
-/**
- * Convert time to seconds
- * @return
- */
-float toSeconds();
-    };
+    /**
+     * Convert time to seconds
+     * @return
+     */
+    float toSeconds();
+};
 
 
 #endif //ASAEINSPECTIONROUTE_TIME_H
