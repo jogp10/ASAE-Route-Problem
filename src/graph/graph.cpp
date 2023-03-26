@@ -1074,7 +1074,10 @@ int Graph::evaluate_solution_3(const vector<std::list<int>> &solution) {
 }
 
 int Graph::evaluate_solution_4(const vector<std::list<int>> &solution) {
-    return -totalTravelTime(solution, false);
+    auto op = totalOperationTime(solution, false);
+    auto travel = totalTravelTime(solution);
+    auto wait = totalWaitingTime(solution, false);
+    return -abs(travel*100/op-10) -100*abs(wait * 100/op);
 }
 
 

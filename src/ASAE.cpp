@@ -220,6 +220,10 @@ void ASAE::menu() {
                 case 5:
                     genetic();
                     break;
+                case 0:
+                    cout << "Come back any time soon!" << endl;
+                    std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+                    exit(EXIT_SUCCESS); // Closes the terminal window
                 default:
                     cout << "Invalid option." << endl;
                     break;
@@ -246,6 +250,7 @@ void ASAE::hill_climbing() {
     //graph.printDetailedSolution(solution, true);
     //graph.printSolution(solution);
     cout << graph.totalOperationTime(solution) << endl;
+    cout << graph.evaluate_solution_1(solution) << endl;
 
 
 }
@@ -256,9 +261,10 @@ void ASAE::simulated_annealing() {
     if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
 
     vector<list<int>> solution = (graph.*(&Graph::simulatedAnnealing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], false);
-    graph.printDetailedSolution(solution, true);
+    //graph.printDetailedSolution(solution, true);
     //graph.printSolution(solution);
     cout << graph.totalOperationTime(solution) << endl;
+    cout << graph.evaluate_solution_1(solution) << endl;
 
 }
 
@@ -267,10 +273,12 @@ void ASAE::tabu_search() {
     string iteration_number, mutation_func, evaluation_func;
     if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
 
-    vector<list<int>> solution = (graph.*(&Graph::tabuSearch))(std::stoi(iteration_number), 20, 5, mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], false);
+    vector<list<int>> solution = (graph.*(&Graph::tabuSearch))(std::stoi(iteration_number), 20, 3, mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], false);
     //graph.printDetailedSolution(solution, false);
     //graph.printSolution(solution);
-    //cout << graph.totalOperationTime(solution) << endl;
+    cout << graph.totalOperationTime(solution) << endl;
+    cout << graph.evaluate_solution_1(solution) << endl;
+
 }
 
 void ASAE::genetic() {
@@ -279,9 +287,10 @@ void ASAE::genetic() {
     if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
 
     vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), 50, 4, 10, (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], true);
-    graph.printDetailedSolution(solution, true);
+    //graph.printDetailedSolution(solution, true);
     //graph.printSolution(solution);
     cout << graph.totalOperationTime(solution) << endl;
+    cout << graph.evaluate_solution_1(solution) << endl;
 
 }
 
@@ -397,7 +406,7 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
-        bool correct = parseInput(0,2,evaluation_func);
+        bool correct = parseInput(0,4,evaluation_func);
 
         if(correct){
             if (std::stoi(evaluation_func) == 0) {
