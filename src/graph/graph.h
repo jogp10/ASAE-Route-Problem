@@ -61,6 +61,12 @@ class Graph {
 
     std::mt19937 engine;
 
+    std::vector<int> iterations;
+public:
+    const std::vector<int> &getIterations() const;
+
+private:
+
     /**
      * Set number of vehicles
      * @param n
@@ -415,6 +421,8 @@ public:
      * @return
      */
     std::pair<std::vector<std::list<int>>, int> get_greatest_fit(std::vector<std::vector<std::list<int>>> population, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
+
+    void evolutionGraph(std::vector<int> iterations, std::string title);
 };
 
 #endif /* GRAPH_H_ */

@@ -132,3 +132,19 @@ void Geoplot_draw::draw_one_vehicle(const list<int>& vehicle_path) {
     show();
 
 }
+
+void Geoplot_draw::evolution_graph(vector<int> iterations,string title) {
+
+    double max = *max_element(iterations.begin(), iterations.end()) + 10;
+    double min = *min_element(iterations.begin(), iterations.end()) - 10;
+    plot(iterations);
+    yrange(this->ax_,{min,max});
+    this->ax_->title("Initial Score: " + num2str(iterations[0]) + "       Final Score: " + num2str( (int) round(max)));
+
+    this->ax_->xlabel("Number of Iterations");
+    this->ax_->ylabel("Score");
+    this->ax_->font("Calibri");
+    sgtitle(title);
+    ax_->draw();
+    show();
+}

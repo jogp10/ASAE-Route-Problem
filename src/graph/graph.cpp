@@ -903,7 +903,7 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
                                           int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
 
     vector<vector<list<int>>> population = this->generatePopulation(population_size);
-
+    iterations.clear();
     vector<list<int>> best_solution = population[0];
     int best_score = (this->*evaluation_func)(best_solution);
     int best_solution_generation = 0;
@@ -935,6 +935,8 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
 
         pair<vector<list<int>>, int> greatest_fit_and_score = get_greatest_fit(population, (evaluation_func));
 
+        iterations.push_back(greatest_fit_and_score.second);
+
         if(greatest_fit_and_score.second > best_score) {
             best_solution = greatest_fit_and_score.first;
             best_score = greatest_fit_and_score.second;
@@ -943,8 +945,10 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
                 cout << "\nGeneration: " << best_solution_generation << endl;
                 cout << "Solution is valid: " << check_solution(best_solution) << endl;
                 cout << "Score: " << best_score << endl;
+
             }
-        } else iteration_number -= 1;
+        } iteration_number -= 1;
+
     }
 
     cout << "Best solution found in generation: " << best_solution_generation << endl;
@@ -1078,6 +1082,27 @@ int Graph::evaluate_solution_4(const vector<std::list<int>> &solution) {
     auto travel = totalTravelTime(solution);
     auto wait = totalWaitingTime(solution, false);
     return -abs(travel*100/op-10) -100*abs(wait * 100/op);
+}
+
+const vector<int> &Graph::getIterations() const {
+    return iterations;
+}
+
+void Graph::evolutionGraph(std::vector<int> iterations, string title) {
+    using namespace matplot;
+
+    figure_handle f = figure(true);
+    Geoplot_draw s(*this, f->current_axes());
+
+    s.evolution_graph(std::move(iterations), title);
+
+    //plot(iterations);
+    //title(ax1, "Top Plot");
+    //ylabel(ax1, "sin(5x)");
+
+
+
+
 }
 
 

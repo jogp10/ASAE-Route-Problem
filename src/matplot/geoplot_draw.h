@@ -25,6 +25,8 @@ public:
     void draw_all_vehicles(const vector<list<int>>& solution);
     void draw_one_vehicle(const list<int>& solution);
 
+    void evolution_graph(vector<int> vector1, string title);
+
 private:
     Graph graph;
     axes_handle ax_;
@@ -38,8 +40,6 @@ private:
     bool update_if_better(const vector<size_t> &neighbor);
     void draw_if_improvement();
     void draw();
-
-
 
 
 };

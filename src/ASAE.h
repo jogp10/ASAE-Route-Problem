@@ -70,6 +70,12 @@ public:
     bool isAllDigits(const string &str);
 
     bool ask_parameters(string &iteration_number, string &mutation_func, string &evaluation_func);
+
+    bool print_logs();
+
+    bool ask_tabu_parameters(string &tabu_size, string &neighborhood_size);
+
+    void ask_genetic_parameters(string &population_size, string &tournament_size, string &mutation_rate);
 };
 
 #endif // ASAE_H

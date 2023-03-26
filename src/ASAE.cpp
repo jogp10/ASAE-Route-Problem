@@ -180,7 +180,7 @@ ASAE::ASAE()
 
 void ASAE::menu() {
     string option = "";
-    drawPlot();
+
     cout << endl << "Welcome to the ASAE!" << endl;
     cout << endl;
     while (true) {
@@ -208,7 +208,6 @@ void ASAE::menu() {
                     graph.showAllEstablishments();
                     break;
                 case 2:
-
                     hill_climbing();
                     break;
                 case 3:
@@ -219,6 +218,7 @@ void ASAE::menu() {
                     break;
                 case 5:
                     genetic();
+
                     break;
                 case 0:
                     cout << "Come back any time soon!" << endl;
@@ -228,6 +228,9 @@ void ASAE::menu() {
                     cout << "Invalid option." << endl;
                     break;
             }
+        }
+        else{
+            cout << "Invalid option." << endl;
         }
     }
 }
@@ -244,9 +247,14 @@ void ASAE::drawPlot() {
 
 void ASAE::hill_climbing() {
     string iteration_number, mutation_func, evaluation_func;
-    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+    bool logs = false;
 
-    vector<list<int>> solution = (graph.*(&Graph::hillClimbing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], false);
+    // Ask for parameters
+    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+    print_logs() ? logs = true : logs = false;
+
+    // Run hill climbing
+    vector<list<int>> solution = (graph.*(&Graph::hillClimbing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     //graph.printDetailedSolution(solution, true);
     //graph.printSolution(solution);
     cout << graph.totalOperationTime(solution) << endl;
@@ -256,24 +264,34 @@ void ASAE::hill_climbing() {
 }
 
 void ASAE::simulated_annealing() {
-
+    bool logs = false;
     string iteration_number, mutation_func, evaluation_func;
-    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
 
-    vector<list<int>> solution = (graph.*(&Graph::simulatedAnnealing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], false);
+    // Ask for parameters
+    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+    print_logs() ? logs = true : logs = false;
+
+    // Run simulated annealing
+    vector<list<int>> solution = (graph.*(&Graph::simulatedAnnealing))(std::stoi(iteration_number), 0.999, mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     //graph.printDetailedSolution(solution, true);
     //graph.printSolution(solution);
+
     cout << graph.totalOperationTime(solution) << endl;
     cout << graph.evaluate_solution_1(solution) << endl;
 
 }
 
 void ASAE::tabu_search() {
+    bool logs = false;
+    string iteration_number, mutation_func, evaluation_func, tabu_size, neighborhood_size;
 
-    string iteration_number, mutation_func, evaluation_func;
+    // Ask for parameters
     if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+    ask_tabu_parameters(tabu_size, neighborhood_size);
+    print_logs() ? logs = true : logs = false;
 
-    vector<list<int>> solution = (graph.*(&Graph::tabuSearch))(std::stoi(iteration_number), 20, 3, mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], false);
+    // Run tabu search
+    vector<list<int>> solution = (graph.*(&Graph::tabuSearch))(std::stoi(iteration_number), std::stoi(tabu_size), std::stoi(neighborhood_size), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     //graph.printDetailedSolution(solution, false);
     //graph.printSolution(solution);
     cout << graph.totalOperationTime(solution) << endl;
@@ -282,15 +300,27 @@ void ASAE::tabu_search() {
 }
 
 void ASAE::genetic() {
+    bool logs = false;
+    string iteration_number, mutation_func, evaluation_func, population_size, tournament_size, mutation_rate;
 
-    string iteration_number, mutation_func, evaluation_func;
+    // Ask for parameters
     if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+    ask_genetic_parameters(population_size, tournament_size, mutation_rate);
+    print_logs() ? logs = true : logs = false;
 
-    vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), 50, 4, 10, (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], true);
+
+    // Run genetic algorithm
+    cout << (std::stoi(mutation_rate)/10) << endl;
+    vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate)/10, (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     //graph.printDetailedSolution(solution, true);
     //graph.printSolution(solution);
+
+
     cout << graph.totalOperationTime(solution) << endl;
     cout << graph.evaluate_solution_1(solution) << endl;
+
+
+    graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");
 
 }
 
@@ -310,12 +340,9 @@ bool ASAE::parseInput(int a, int b, const std::string& text){
         it = std::find(values.begin(), values.end(), stoi(text));
         if (it != values.end()) {
             return true;
-        } else {
-            std::cout << std::endl << "Input invalido!" << std::endl << std::endl;
         }
-    } else {
-        std::cout << std::endl << "Input invalido!" << std::endl << std::endl;
     }
+
     return false;
 }
 
@@ -342,6 +369,7 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
     bool back = false;
     cout << "Insert the parameters for the algorithm" << endl;
     while(true){
+        cout << "Recommended number of iterations: 1000" << endl;
         cout << "Number of iterations:";
         std::getline(std::cin, iteration_number);
         // Check for CTRL + Z or CTRL + D input to close the program
@@ -350,13 +378,14 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
-        bool correct = parseInput(1,10000,iteration_number);
+        bool correct = parseInput(1,100000,iteration_number);
         if(correct){
             break;
         }
         else{
+            cout << endl;
             cout << "Invalid number of iterations. Insert a number superior from 1 to 10000" << endl;
-            cout << "Recommended number of iterations: 1000" << endl;
+            cout << endl;
         }
     }
     while(true){
@@ -384,7 +413,9 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
             break;
         }
         else{
+            cout << endl;
             cout << "Invalid mutation function." << endl;
+            cout << endl;
         }
     }
     if(back){
@@ -415,7 +446,9 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
             break;
         }
         else{
+            cout << endl;
             cout << "Invalid evaluation function." << endl;
+            cout << endl;
         }
     }
     if(back){
@@ -423,6 +456,146 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
     }
     return true;
 
+}
 
+
+
+bool ASAE::print_logs() {
+    string print_logs;
+
+    while (true){
+        cout << "Do you want to print detailed information?" << endl;
+        cout << "1 - Yes" << endl;
+        cout << "2 - No" << endl;
+        getline(cin, print_logs);
+        // Check for CTRL + Z or CTRL + D input to close the program
+
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(1,2,print_logs);
+
+        if(correct){
+            if (std::stoi(print_logs) == 1) {
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+    }
+    return false;
+}
+
+void ASAE::ask_genetic_parameters(string &population_size, string &tournament_size, string &mutation_rate){
+
+    while(true){
+        cout << "What is the size of the population?" << endl;
+        cout << "Recommended size: 20" << endl;
+        std::getline(std::cin, population_size);
+        // Check for CTRL + Z or CTRL + D input to close the program
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(1,50,population_size);
+        if(correct){
+            break;
+        }
+        else{
+            cout << endl;
+            cout << "Invalid population size. Insert a number from 1 to 50" << endl;
+            cout << endl;
+        }
+    }
+    while(true){
+        cout << "What is the size of the tournament?" << endl;
+
+        cout << "Recommended size: " << std::to_string(std::stoi(population_size)/3) << endl;
+
+        std::getline(std::cin, tournament_size);
+        // Check for CTRL + Z or CTRL + D input to close the program
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(1,std::stoi(population_size),tournament_size);
+        if(correct){
+            break;
+        }
+        else{
+            cout << "Invalid tournament size. Insert a number from 1 to " << population_size << endl;
+
+        }
+    }
+    while(true) {
+        cout << "What is the mutation rate?" << endl;
+        std::getline(std::cin, mutation_rate);
+        // Check for CTRL + Z or CTRL + D input to close the program
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the
+        }
+        bool correct = parseInput(0, 100, mutation_rate);
+        if (correct) {
+            break;
+        } else {
+            cout << endl;
+            cout << "Invalid mutation rate. Insert a number from 0% to 100%" << endl;
+            cout << endl;
+        }
+
+    }
 
 }
+
+bool ASAE::ask_tabu_parameters(string &tabu_size, string &neighborhood_size) {
+
+    while(true){
+        cout << "What is the size of the tabu list?" << endl;
+        cout << "Recommended size: 20" << endl;
+        std::getline(std::cin, tabu_size);
+        // Check for CTRL + Z or CTRL + D input to close the program
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(1,40,tabu_size);
+        if(correct){
+            break;
+        }
+        else{
+            cout << endl;
+            cout << "Invalid tabu list size. Insert a number from 1 to 40" << endl;
+            cout << endl;
+        }
+    }
+    while(true){
+        cout << "What is the size of the neighborhood?" << endl;
+        cout << "Recommended size: 3-5" << endl;
+        std::getline(std::cin, neighborhood_size);
+        // Check for CTRL + Z or CTRL + D input to close the program
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(1,5,neighborhood_size);
+        if(correct){
+            break;
+        }
+        else{
+            cout << endl;
+            cout << "Invalid neighborhood size. Insert a number from 1 to 5" << endl;
+            cout << endl;
+        }
+    }
+
+    return true;
+}
+
