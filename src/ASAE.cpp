@@ -140,41 +140,33 @@ ASAE::ASAE()
     readEstablishments(number_of_establishments);
     readTimeDistances(number_of_establishments);
 
-
-    vector<list<int>> solution;
     /*
+    vector<list<int>> solution;
+
     list<int> vehicle1;
     vehicle1.push_back(0);
-    vehicle1.emplace_back(7);
-    vehicle1.emplace_back(15);
-    vehicle1.emplace_back(4);
-    vehicle1.emplace_back(9);
-    vehicle1.emplace_back(16);
-    vehicle1.emplace_back(18);
-    vehicle1.emplace_back(20);
-    vehicle1.emplace_back(14);
-    vehicle1.emplace_back(12);
-    vehicle1.emplace_back(1);
+    vehicle1.emplace_back(708);
+    vehicle1.emplace_back(463);
+    vehicle1.emplace_back(29);
+    vehicle1.emplace_back(747);
+    vehicle1.emplace_back(603);
+    vehicle1.emplace_back(97);
+    vehicle1.emplace_back(526);
+    vehicle1.emplace_back(490);
+    vehicle1.emplace_back(584);
+    vehicle1.emplace_back(810);
+    vehicle1.emplace_back(521);
+    vehicle1.emplace_back(659);
+    vehicle1.emplace_back(725);
     vehicle1.emplace_back(0);
-    list<int> vehicle2;
 
-    vehicle2.emplace_back(0);
-    vehicle2.emplace_back(11);
-    vehicle2.emplace_back(3);
-    vehicle2.emplace_back(13);
-    vehicle2.emplace_back(2);
-    vehicle2.emplace_back(5);
-    vehicle2.emplace_back(6);
-    vehicle2.emplace_back(0);
 
-    vector<list<int>> solution2 = {vehicle1, vehicle2};
+    vector<list<int>> solution2 = {vehicle1};
 
     graph.printDetailedSolution(solution2, true);
-    //graph.printSolution(solution2);
-    cout << graph.totalOperationTime(solution2) << endl;*/
-
-    //stop execution
-
+    graph.printSolution(solution2);
+    cout << graph.totalOperationTime(solution2) << endl;
+    */
     cout << "Done building graph." << endl;
 }
 
@@ -395,8 +387,8 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
         cout << "Evaluation function:" << endl;
         cout << "1 - Sum of the visited Establishments" << endl;
         cout << "2 - Minimize number of parish transfers" << endl;
-        cout << "3 - Minimize waiting time" << endl;
-        cout << "4 - Minimize travel time" << endl;
+        cout << "3 - Sum of the visited Establishments (penalize invalid solutions)" << endl;
+        cout << "4 - Minimize travel time and waiting time" << endl;
         cout << "0 - Back" << endl;
         getline(cin, evaluation_func);
         // Check for CTRL + Z or CTRL + D input to close the program

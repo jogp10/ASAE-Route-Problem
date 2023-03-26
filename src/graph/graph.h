@@ -175,9 +175,15 @@ public:
 
     /**
      * Get Solution with closest nodes
-     * @return  Random Solution
+     * @return  Solution
      */
     std::vector<std::list<int>> generate_closest_solution(bool log=false);
+
+    /**
+     * Get Solution using a* algorithm
+     * @return  Solution
+     */
+    std::vector<std::list<int>> generate_a_star_solution(bool log=false);
 
     /**
      * Get Distance between two establishments
@@ -307,6 +313,14 @@ public:
      * @return
      */
     std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_2(const std::vector<std::list<int>> &father_solution, const std::vector<std::list<int>> &mother_solution);
+
+    /**
+     * Crossover two solutions (father and mother -> child1(best 5% father and 10% mother) and child2(best 5% mother and 10% father))
+     * @param father_solution
+     * @param mother_solution
+     * @return
+     */
+    std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_3(const std::vector<std::list<int>> &father_solution, const std::vector<std::list<int>> &mother_solution);
 
     /**
      * Get neighbours of a solution

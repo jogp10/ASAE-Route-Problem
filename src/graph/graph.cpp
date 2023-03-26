@@ -83,7 +83,36 @@ int Graph::evaluate_solution_1(const vector<list<int>>& solution) {
     return bestSolution;
 }
 
+int Graph::evaluate_solution_2(const vector<std::list<int>> &solution) {
+    int number_of_exchanges = 0;
+    for(int i=0; i<solution.size(); i++) {
+        auto before = next(solution[i].begin(), 1);
+        auto it = next(before, 1);
+        for(int j=2; j<solution.size()-1; j++) {
+            if (nodes[*it].parish != "" and nodes[*before].parish != nodes[*it].parish) {
+                number_of_exchanges -= 1;
+            }
+        }
+    }
+    return number_of_exchanges;
+}
 
+int Graph::evaluate_solution_3(const vector<std::list<int>> &solution) {
+    if(!check_solution(solution)) return 0;
+
+    int bestSolution = 0;
+    for (const auto &i: solution)
+        bestSolution +=  i.size();
+
+    return bestSolution;
+}
+
+int Graph::evaluate_solution_4(const vector<std::list<int>> &solution) {
+    auto op = totalOperationTime(solution, false);
+    auto travel = totalTravelTime(solution);
+    auto wait = totalWaitingTime(solution, false);
+    return -abs(travel*100/op-10) -100*abs(wait * 100/op);
+}
 
 int Graph::random_node(const int idx) const {
     while (true) {
@@ -290,13 +319,16 @@ float Graph::totalWaitingTime(const vector<list<int>> &solution, bool log) {
             int seconds =  getDistance(last, *it);
             int miliseconds =  ((getDistance(last, *it) - (float) seconds) * 1000);
             time.addTime({miliseconds, seconds, 0, 0});
+
+            auto aux = time;
             while (nodes[*it].opening_hours[time.hours] == 0) {
-                auto aux = time;
                 time.toNextHour();
-                auto diff = time;
-                diff.subTime(aux);
-                vehicle_time += diff.toSeconds();
             }
+
+            auto diff = time;
+            diff.subTime(aux);
+            vehicle_time += diff.toSeconds();
+
             time.addTime(0, 0, nodes[*it].inspection_time, 0);
             last = *it;
         }
@@ -348,7 +380,7 @@ Time Graph::operationTime(int a, int b, Time time, bool log) {
 
     time.addTime({milliseconds_distance,  (int)time_distance, 0, 0, 0});
 
-    for(int i = time.hours; i < limit_time.hours+1; i++) {
+    for(int i = 0; i < 24; i++) {
         if(nodes[b].opening_hours[time.hours] == 0) {
             time.toNextHour();
         }
@@ -571,6 +603,7 @@ vector<list<int>> Graph::fillSolution(const vector<list<int>> &child) {
         }
         n.visited = false;
     }
+
     for (auto &t: times) {
         t = departure_time;
     }
@@ -725,8 +758,62 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(const ve
         }
     }
 
-    //child1 = fillSolution(child1);
-    //child2 = fillSolution(child2);
+    return make_pair(child1, child2);
+}
+
+pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_3(const vector<list<int>> &father_solution, const vector<list<int>> &mother_solution) {
+    int under5percentile = nrVehicles*0.05;
+    int under10percentile = nrVehicles*0.1;
+
+    auto father_ordered = father_solution;
+    auto mother_ordered = mother_solution;
+
+    sort(father_ordered.begin(), father_ordered.end(), [](const list<int> &a, const list<int> &b) {
+        return a.size() < b.size();
+    });
+
+    sort(mother_ordered.begin(), mother_ordered.end(), [](const list<int> &a, const list<int> &b) {
+        return a.size() < b.size();
+    });
+
+    vector<list<int>> child1(100), child2(100);
+
+    auto it = child1.begin();
+    auto it2 = child2.begin();
+
+    for(int i = 0; i < under5percentile; i++) {
+        *it = father_ordered[i];
+        it++;
+        *it2 = mother_ordered[i];
+        it2++;
+    }
+
+    for(int i = under5percentile; i < under10percentile; i++) {
+        *it = mother_ordered[i];
+        it++;
+        *it2 = father_ordered[i];
+        it2++;
+    }
+
+    // remove possible repeated nodes
+    set<int> used_establishments1;
+
+    for(auto van: child1) {
+        auto it = van.begin();
+        while(it != van.end()) {
+            int previous_size = used_establishments1.size();
+            used_establishments1.insert(*it);
+
+            if(previous_size == used_establishments1.size()) {
+                it = van.erase(it);
+                continue;
+            }
+            it++;
+        }
+    }
+
+    fillSolution(child1);
+    fillSolution(child2);
 
     return make_pair(child1, child2);
 }
@@ -924,7 +1011,7 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
         vector<list<int>> crossover1 = crossovers.first;
         vector<list<int>> crossover2 = crossovers.second;
 
-        int mutation_chance = engine() % 10;
+        int mutation_chance = engine() % 101;
         if(mutation_chance < mutation_probability) {
             crossover1 = (this->*mutation_func)(crossover1);
             crossover2 = (this->*mutation_func)(crossover2);
@@ -1055,29 +1142,62 @@ pair<vector<list<int>>, int> Graph::get_greatest_fit(vector<vector<list<int>>> p
     return make_pair(best_solution, best_score);
 }
 
-int Graph::evaluate_solution_2(const vector<std::list<int>> &solution) {
-    int number_of_exchanges = 0;
-    for(int i=0; i<solution.size(); i++) {
-        auto before = next(solution[i].begin(), 1);
-        auto it = next(before, 1);
-        for(int j=2; j<solution.size()-1; j++) {
-            if (nodes[*before].parish != nodes[*it].parish) {
-                number_of_exchanges -= 1;
-            }
+std::vector<std::list<int>> Graph::generate_a_star_solution(bool log) {
+    vector<list<int>> solution(nrVehicles, list<int>(1, 0));
+    vector<MinHeap<int, float>> heaps(n, MinHeap<int, float>(n, -1));
+    vector<int> number_of_open_hours(n, 0);
+
+    for(int i=0; i<n; i++) {
+        for(int j=0; j<24; j++) {
+            if(nodes[i].opening_hours[j]) number_of_open_hours[i]++;
         }
     }
-    return number_of_exchanges;
-}
 
-int Graph::evaluate_solution_3(const vector<std::list<int>> &solution) {
-    return -totalWaitingTime(solution, false);
-}
 
-int Graph::evaluate_solution_4(const vector<std::list<int>> &solution) {
-    auto op = totalOperationTime(solution, false);
-    auto travel = totalTravelTime(solution);
-    auto wait = totalWaitingTime(solution, false);
-    return -abs(travel*100/op-10) -100*abs(wait * 100/op);
+    for (auto &t: times) t = departure_time;
+    for (auto &n: nodes) {
+        for(auto &e: n.adj) {
+            heaps[n.id].insert(e.dest, e.weight - number_of_open_hours[n.id]);
+        }
+        n.visited = false;
+    }
+    nodes[0].visited = true;
+
+    for(int i=0; i<nrVehicles; i++) {
+        int limit = 5;
+
+        if(i >= solution.size()) break;
+
+        for(int j=0; j<n-2; j++) {
+            int last = solution[i].back();
+            int nthClosest = heaps[last].removeMin();
+
+            if (nodes[nthClosest].visited) continue;
+            if(limit == 0) break;
+
+            if(log) cout << "Vehicle -> " << i << "    Node -> " << last << endl;
+            if(log) cout << times[i].hours << ":" << times[i].minutes << "h" << endl;
+
+            Time min_op = minimumOperationTime(last, nthClosest, times[i], log);
+
+            min_op.addTime(times[i]);
+            if (limit_time < min_op) {
+                limit--;
+                if(log) cout << "Limit time reached" << endl;
+                continue;
+            }
+
+            nodes[nthClosest].visited = true;
+            solution[i].push_back(nthClosest);
+            Time op = operationTime(last, nthClosest, times[i], log);
+            times[i].addTime(op);
+            j=-1;
+        }
+    }
+
+    for (int i = 0; i < nrVehicles; ++i) { solution[i].push_back(0); } // add depot to the end of each route
+
+    return solution;
 }
 
 
