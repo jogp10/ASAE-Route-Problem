@@ -1,5 +1,5 @@
 # ia_t03g34_assignment1
-Optimization Meta-Heuristic project from FEUP'S UC RCOM 
+Optimization Meta-Heuristic project from FEUP'S UC IA 
 
 matplotlib used: 
 https://github.com/Cryoris/matplotlib-cpp
