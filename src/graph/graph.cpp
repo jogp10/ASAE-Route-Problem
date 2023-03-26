@@ -760,7 +760,7 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
 }
 
 
-vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
+vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, const int coldness_ratio, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
     vector<list<int>> best_solution = this->generate_closest_solution();
     int best_score = (this->*evaluation_func)(best_solution);
 
@@ -770,7 +770,7 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, vector<l
     float temperature = 1000;
 
     for(int i=0; i<iteration_number; i++) {
-        temperature *= 0.999;
+        temperature *= coldness_ratio;
 
         vector<list<int>> neighbour_solution = (this->*mutation_func)(best_solution);
         int neighbour_score = (this->*evaluation_func)(neighbour_solution);
