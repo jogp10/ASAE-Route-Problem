@@ -244,8 +244,8 @@ void ASAE::hill_climbing() {
     while(true){
 
         string option;
-        cout << "1 - Custom parameters" << endl;
-        cout << "2 - Default parameters" << endl;
+        cout << "1 - Default parameters" << endl;
+        cout << "2 - Custom parameters" << endl;
         cout << "Option: ";
         std::getline(std::cin, option);
         if (std::cin.eof()) {
@@ -256,11 +256,11 @@ void ASAE::hill_climbing() {
         bool correct = parseInput(1,2,option);
         if(correct){
             if(option == "1"){
-                custom = true;
+                custom = false;
                 break;
             }
             else if(option == "2"){
-                custom = false;
+                custom = true;
                 break;
             }
         }
@@ -273,7 +273,7 @@ void ASAE::hill_climbing() {
     }
     else{
         iteration_number = "1000";
-        mutation_func = "6";
+        mutation_func = "5";
         evaluation_func = "1";
     }
 
@@ -295,8 +295,8 @@ void ASAE::simulated_annealing() {
 
     while (true){
         string option;
-        cout << "1 - Custom parameters" << endl;
-        cout << "2 - Default parameters" << endl;
+        cout << "1 - Default parameters" << endl;
+        cout << "2 - Custom parameters" << endl;
         cout << "Option: ";
         std::getline(std::cin, option);
         // Check for CTRL + Z or CTRL + D input to close the program
@@ -309,10 +309,10 @@ void ASAE::simulated_annealing() {
         if(correct){
             switch (std::stoi(option)) {
                 case 1:
-                    custom = true;
+                    custom = false;
                     break;
                 case 2:
-                    custom = false;
+                    custom = true;
                     break;
                 default:
                     cout << "Invalid option." << endl;
@@ -330,7 +330,7 @@ void ASAE::simulated_annealing() {
     }
     else{
         iteration_number = "10000";
-        mutation_func = "6";
+        mutation_func = "5";
         evaluation_func = "1";
     }
 
@@ -359,7 +359,7 @@ void ASAE::tabu_search() {
         if(correct){
             if(std::stoi(answer) == 1){
                 iteration_number = "1000";
-                mutation_func = "6";
+                mutation_func = "5";
                 evaluation_func = "1";
                 tabu_size = "20";
                 neighborhood_size = "4";
@@ -405,7 +405,7 @@ void ASAE::genetic() {
         if(correct){
             if(std::stoi(answer) == 1){
                 iteration_number = "1000";
-                mutation_func = "6";
+                mutation_func = "5";
                 evaluation_func = "1";
                 population_size = "20";
                 tournament_size = "5";
@@ -432,8 +432,7 @@ void ASAE::genetic() {
 
 
     // Run genetic algorithm
-    cout << (std::stoi(mutation_rate)/10) << endl;
-    vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate)/10, (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
+    vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate), (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     //graph.printDetailedSolution(solution, true);
     //graph.printSolution(solution);
 

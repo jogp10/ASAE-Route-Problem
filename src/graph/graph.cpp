@@ -1073,7 +1073,7 @@ vector<list<int>> Graph::rouletteSelection(vector<vector<list<int>>> population,
         scores.push_back((this->*evalFunction)(solution));
     }
 
-    int total_score = 0;
+    int total_score = numeric_limits<float>::min();
 
     for (auto &score: scores) {
         total_score += score;
@@ -1119,7 +1119,7 @@ vector<vector<list<int>>> Graph::replace_least_fittest(vector<vector<list<int>>>
 pair<vector<list<int>>, int> Graph::get_greatest_fit(vector<vector<list<int>>> population,
                                                      int (Graph::*evalFunction)(const vector<list<int>>&)) {
     vector<list<int>> best_solution = population[0];
-    int best_score = 0;
+    int best_score = numeric_limits<float>::min();
 
     for(auto &solution: population) {
         int score = (this->*evalFunction)(solution);
