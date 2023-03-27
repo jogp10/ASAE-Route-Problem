@@ -90,28 +90,15 @@ int Graph::evaluate_solution_2(const vector<std::list<int>> &solution) {
         auto it = next(before, 1);
         for(int j=2; j<solution.size()-1; j++) {
             if (nodes[*it].parish != "" and nodes[*before].parish != nodes[*it].parish) {
-                number_of_exchanges -= 1;
+                number_of_exchanges += 1;
             }
         }
     }
-    return number_of_exchanges;
-}
 
-int Graph::evaluate_solution_3(const vector<std::list<int>> &solution) {
-    if(!check_solution(solution)) return 0;
+    int size_solution = 0;
+    for (int i=0; i<solution.size(); i++) size_solution += solution[i].size();
 
-    int bestSolution = 0;
-    for (const auto &i: solution)
-        bestSolution +=  i.size();
-
-    return bestSolution;
-}
-
-int Graph::evaluate_solution_4(const vector<std::list<int>> &solution) {
-    auto op = totalOperationTime(solution, false);
-    auto travel = totalTravelTime(solution);
-    auto wait = totalWaitingTime(solution, false);
-    return -abs(travel*100/op-10) -100*abs(wait * 100/op);
+    return 100*size_solution -number_of_exchanges/size_solution;
 }
 
 int Graph::random_node(const int idx) const {
@@ -122,7 +109,6 @@ int Graph::random_node(const int idx) const {
         }
     }
 }
-
 
 vector<list<int>> Graph::generate_random_solution(bool log) {
 

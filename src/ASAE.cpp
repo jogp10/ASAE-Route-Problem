@@ -359,10 +359,10 @@ bool ASAE::isAllDigits(const std::string &str){
 bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, string &evaluation_func){
 
     bool back = false;
-    cout << "Insert the parameters for the algorithm" << endl;
+    cout << endl << "Insert the parameters for the algorithm" << endl;
     while(true){
         cout << "Recommended number of iterations: 1000" << endl;
-        cout << "Number of iterations:";
+        cout << "Number of iterations: ";
         std::getline(std::cin, iteration_number);
         // Check for CTRL + Z or CTRL + D input to close the program
         if (std::cin.eof()) {
@@ -381,7 +381,7 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
         }
     }
     while(true){
-        cout << "Mutation function:" << endl;
+        cout << endl << "Mutation function:" << endl;
         cout << "1 - Exchange two establishments in a solution" << endl;
         cout << "2 - Exchange one establishment for one that wasn't visited" << endl;
         cout << "3 - Generate a new path between two nodes" << endl;
@@ -415,11 +415,9 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
     }
 
     while (true){
-        cout << "Evaluation function:" << endl;
+        cout << endl << "Evaluation function:" << endl;
         cout << "1 - Sum of the visited Establishments" << endl;
         cout << "2 - Minimize number of parish transfers" << endl;
-        cout << "3 - Sum of the visited Establishments (penalize invalid solutions)" << endl;
-        cout << "4 - Minimize travel time and waiting time" << endl;
         cout << "0 - Back" << endl;
         getline(cin, evaluation_func);
         // Check for CTRL + Z or CTRL + D input to close the program
@@ -429,7 +427,7 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
-        bool correct = parseInput(0,4,evaluation_func);
+        bool correct = parseInput(0,2,evaluation_func);
 
         if(correct){
             if (std::stoi(evaluation_func) == 0) {
