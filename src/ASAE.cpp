@@ -417,7 +417,7 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
     while (true){
         cout << endl << "Evaluation function:" << endl;
         cout << "1 - Sum of the visited Establishments" << endl;
-        cout << "2 - Minimize number of parish transfers" << endl;
+        cout << "2 - Add Minimizing the number of parish transfers" << endl;
         cout << "0 - Back" << endl;
         getline(cin, evaluation_func);
         // Check for CTRL + Z or CTRL + D input to close the program
