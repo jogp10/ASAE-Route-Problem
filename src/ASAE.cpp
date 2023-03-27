@@ -239,10 +239,44 @@ void ASAE::drawPlot() {
 
 void ASAE::hill_climbing() {
     string iteration_number, mutation_func, evaluation_func;
-    bool logs = false;
+    bool logs = false, custom = false;
 
-    // Ask for parameters
-    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+    while(true){
+
+        string option;
+        cout << "1 - Custom parameters" << endl;
+        cout << "2 - Default parameters" << endl;
+        cout << "Option: ";
+        std::getline(std::cin, option);
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(1,2,option);
+        if(correct){
+            if(option == "1"){
+                custom = true;
+                break;
+            }
+            else if(option == "2"){
+                custom = false;
+                break;
+            }
+        }
+        else{
+            cout << "Invalid option." << endl;
+        }
+    }
+    if(custom){
+        if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+    }
+    else{
+        iteration_number = "1000";
+        mutation_func = "6";
+        evaluation_func = "1";
+    }
+
     print_logs() ? logs = true : logs = false;
 
     // Run hill climbing
@@ -256,11 +290,50 @@ void ASAE::hill_climbing() {
 }
 
 void ASAE::simulated_annealing() {
-    bool logs = false;
+    bool logs = false, custom = false;
     string iteration_number, mutation_func, evaluation_func;
 
-    // Ask for parameters
-    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+    while (true){
+        string option;
+        cout << "1 - Custom parameters" << endl;
+        cout << "2 - Default parameters" << endl;
+        cout << "Option: ";
+        std::getline(std::cin, option);
+        // Check for CTRL + Z or CTRL + D input to close the program
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(1,2,option);
+        if(correct){
+            switch (std::stoi(option)) {
+                case 1:
+                    custom = true;
+                    break;
+                case 2:
+                    custom = false;
+                    break;
+                default:
+                    cout << "Invalid option." << endl;
+                    break;
+            }
+            break;
+        }
+        else{
+            cout << "Invalid option." << endl;
+        }
+    }
+    if (custom){
+        // Ask for parameters
+        if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+    }
+    else{
+        iteration_number = "10000";
+        mutation_func = "6";
+        evaluation_func = "1";
+    }
+
     print_logs() ? logs = true : logs = false;
 
     // Run simulated annealing
@@ -274,12 +347,39 @@ void ASAE::simulated_annealing() {
 }
 
 void ASAE::tabu_search() {
-    bool logs = false;
+    bool logs = false, custom = false;
     string iteration_number, mutation_func, evaluation_func, tabu_size, neighborhood_size;
+    while(true){
+        cout << "1 - Use recommended parameters " << endl;
+        cout << "2 - Use custom parameters " << endl;
+        cout << "Option: ";
+        string answer;
+        std::getline(std::cin, answer);
+        bool correct = parseInput(1,2,answer);
+        if(correct){
+            if(std::stoi(answer) == 1){
+                iteration_number = "1000";
+                mutation_func = "6";
+                evaluation_func = "1";
+                tabu_size = "20";
+                neighborhood_size = "4";
+                break;
+            }
+            else if(std::stoi(answer) == 2){
+                custom = true;
+                break;
+            }
+        }
+        else{
+            cout << "Invalid option." << endl;
+        }
+    }
+    if (custom){
+        // Ask for parameters
+        if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+        ask_tabu_parameters(tabu_size, neighborhood_size);
+    }
 
-    // Ask for parameters
-    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
-    ask_tabu_parameters(tabu_size, neighborhood_size);
     print_logs() ? logs = true : logs = false;
 
     // Run tabu search
@@ -292,12 +392,42 @@ void ASAE::tabu_search() {
 }
 
 void ASAE::genetic() {
-    bool logs = false;
+    bool logs = false, custom = false;
     string iteration_number, mutation_func, evaluation_func, population_size, tournament_size, mutation_rate;
+    // Use recommended parameters
+    while(true){
+        cout << "1 - Use recommended parameters " << endl;
+        cout << "2 - Use custom parameters " << endl;
+        cout << "Option: ";
+        string answer;
+        std::getline(std::cin, answer);
+        bool correct = parseInput(1,2,answer);
+        if(correct){
+            if(std::stoi(answer) == 1){
+                iteration_number = "1000";
+                mutation_func = "6";
+                evaluation_func = "1";
+                population_size = "20";
+                tournament_size = "5";
+                mutation_rate = "10";
+                custom = false;
+                break;
+            }
+            else if(std::stoi(answer) == 2){
+                custom = true;
+                break;
+            }
+        }
+        else{
+            cout << "Invalid option." << endl;
+        }
+    }
+    if (custom){
+        // Ask for parameters
+        if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
+        ask_genetic_parameters(population_size, tournament_size, mutation_rate);
+    }
 
-    // Ask for parameters
-    if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
-    ask_genetic_parameters(population_size, tournament_size, mutation_rate);
     print_logs() ? logs = true : logs = false;
 
 
