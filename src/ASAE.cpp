@@ -175,6 +175,7 @@ void ASAE::menu() {
 
     cout << endl << "Welcome to the ASAE!" << endl;
     cout << endl;
+    compare_algorithms();
     while (true) {
 
         cout << "1 - Show all establishments" << endl;
@@ -432,8 +433,8 @@ void ASAE::genetic() {
 
 
     // Run genetic algorithm
-    cout << (std::stoi(mutation_rate)/10) << endl;
-    vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate)/10, (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
+
+    vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate), (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     //graph.printDetailedSolution(solution, true);
     //graph.printSolution(solution);
 
@@ -721,3 +722,22 @@ bool ASAE::ask_tabu_parameters(string &tabu_size, string &neighborhood_size) {
     return true;
 }
 
+void ASAE::compare_algorithms(){
+
+    (graph.*(&Graph::hillClimbing))(1000,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
+    vector<int> hill_climbing_solution = graph.getIterations();
+
+    (graph.*(&Graph::simulatedAnnealing))(1000,0.999,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
+    vector<int> simulated_annealing_solution = graph.getIterations();
+
+    (graph.*(&Graph::tabuSearch))(1000,20,4,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
+    vector<int> tabu_search_solution = graph.getIterations();
+
+
+    (graph.*(&Graph::geneticAlgorithm))(1000,20,6,10,&Graph::crossover_solutions_1, &Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
+    vector<int> genetic_solution = graph.getIterations();
+
+    graph.compare_algorithms(hill_climbing_solution,simulated_annealing_solution,tabu_search_solution,genetic_solution);
+
+
+}

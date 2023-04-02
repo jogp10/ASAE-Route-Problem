@@ -76,6 +76,8 @@ public:
     bool ask_tabu_parameters(string &tabu_size, string &neighborhood_size);
 
     void ask_genetic_parameters(string &population_size, string &tournament_size, string &mutation_rate);
+
+    void compare_algorithms();
 };
 
 #endif // ASAE_H

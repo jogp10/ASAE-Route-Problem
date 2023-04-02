@@ -825,6 +825,7 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
     cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
 
+    iterations = {};
 
     for(int i=0; i<iteration_number; i++) {
         vector<list<int>> neighbour_solution = (this->*mutation_func)(best_solution);
@@ -839,7 +840,9 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
                 cout << "Score: " << best_score << endl;
             }
         }
+        iterations.push_back(best_score);
     }
+
 
     cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
@@ -856,12 +859,16 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, const in
 
     float temperature = 1000;
 
+    iterations = {};
+
     for(int i=0; i<iteration_number; i++) {
         temperature *= coldness_ratio;
 
         vector<list<int>> neighbour_solution = (this->*mutation_func)(best_solution);
         int neighbour_score = (this->*evaluation_func)(neighbour_solution);
         float r = static_cast <float> (engine()) / static_cast <float> (RAND_MAX);
+
+        iterations.push_back(neighbour_score);
 
         if((neighbour_score > best_score) or (pow(M_E, (float)(neighbour_score - best_score) / temperature) >= r)) {
             best_solution = neighbour_solution;
@@ -916,7 +923,7 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
     //printSolution(best_solution);
     cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
-
+    iterations = {};
     for(int i = 0; i < iteration_number; i++) {
         vector<vector<list<int>>> neighbourhood = this->getNeighbours(best_solution, neighborhood_size, (mutation_func));
         vector<list<int>> best_neighbour_solution;
@@ -932,9 +939,12 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
             }
         }
 
+
         if(best_neighbour_score > best_score) {
             best_solution = best_neighbour_solution;
             best_score = best_neighbour_score;
+
+
 
             if (log) {
                 cout << "Iteration: " << i << endl;
@@ -942,6 +952,7 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
             }
         }
 
+        iterations.push_back(best_score);
         //add solution to tabu list
         int ttt_best_neighbour = totalTravelTime(best_neighbour_solution);
         tabu_list.push(ttt_best_neighbour);
@@ -949,6 +960,7 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
         if(tabu_list.size() > tabu_size) { tabu_list.pop(); }
 
     }
+
 
     cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
@@ -990,7 +1002,7 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
                                           int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
 
     vector<vector<list<int>>> population = this->generatePopulation(population_size);
-    iterations.clear();
+    iterations = {};
     vector<list<int>> best_solution = population[0];
     int best_score = (this->*evaluation_func)(best_solution);
     int best_solution_generation = 0;
@@ -1022,7 +1034,7 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
 
         pair<vector<list<int>>, int> greatest_fit_and_score = get_greatest_fit(population, (evaluation_func));
 
-        iterations.push_back(greatest_fit_and_score.second);
+
 
         if(greatest_fit_and_score.second > best_score) {
             best_solution = greatest_fit_and_score.first;
@@ -1035,6 +1047,7 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
 
             }
         } iteration_number -= 1;
+        iterations.push_back(best_score);
 
     }
 
@@ -1224,6 +1237,18 @@ void Graph::evolutionGraph(std::vector<int> iterations, string title) {
 
 
 }
+
+void Graph::compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
+                               std::vector<int> sol3, std::vector<int> sol4) {
+    using namespace matplot;
+
+        figure_handle f = figure();
+        Geoplot_draw s(*this);
+
+        s.compare_algorithms(sol1, sol2,sol3,sol4);
+
+}
+
 
 
 float Graph::Node::getLatitude() const {

@@ -20,12 +20,16 @@ using namespace std;
 class Geoplot_draw {
 public:
     Geoplot_draw(Graph graph, axes_handle ax);
+    Geoplot_draw(Graph graph);
     void run(size_t iterations = 100);
 
     void draw_all_vehicles(const vector<list<int>>& solution);
     void draw_one_vehicle(const list<int>& solution);
 
     void evolution_graph(vector<int> vector1, string title);
+
+    void compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
+                            std::vector<int> sol3, std::vector<int> sol4);
 
 private:
     Graph graph;

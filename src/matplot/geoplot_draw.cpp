@@ -9,9 +9,11 @@
 
 Geoplot_draw::Geoplot_draw(Graph graph,axes_handle ax)
         : graph(std::move(graph)), ax_(std::move(ax)) {
-
 }
 
+Geoplot_draw::Geoplot_draw(Graph graph)
+        : graph(std::move(graph)) {
+}
 
 
 
@@ -148,3 +150,47 @@ void Geoplot_draw::evolution_graph(vector<int> iterations,string title) {
     ax_->draw();
     show();
 }
+
+void Geoplot_draw::compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
+                                      std::vector<int> sol3, std::vector<int> sol4) {
+
+    using namespace matplot;
+
+    //auto x = linspace(0, 100);
+
+    for(int i = 0; i < sol1.size(); i++){
+       cout << sol1[i] << " " << sol2[i] << " " << sol3[i] << " " << sol4[i] << endl;
+    }
+    auto x = linspace(1, 99);
+
+
+
+    /*plot(x, sol1);
+
+    hold(on);
+    plot(x, sol2);
+
+    plot(x, sol3);
+
+    plot(x, sol4);
+
+    hold(off);
+    auto lgd = legend("Hill Climbing", "Simulated Annealing", "Genetic Algorithm", "Tabu Search");
+    //lgd->location(legend::general_alignment::bottomleft);
+    //lgd->box(false);
+
+
+    show();*/
+    tiledlayout(1, 1);
+
+    auto ax1 = nexttile();
+    vector<vector<int>> data = {sol4, sol1, sol2, sol3};
+    plot(ax1, data);
+
+    legend(ax1, "Hill Climbing", "Simulated Annealing", "Genetic Algorithm", "Tabu Search");
+
+
+    show();
+
+}
+

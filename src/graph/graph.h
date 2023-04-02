@@ -62,8 +62,7 @@ class Graph {
     std::mt19937 engine;
 
     std::vector<int> iterations;
-public:
-    const std::vector<int> &getIterations() const;
+
 
 private:
 
@@ -437,6 +436,11 @@ public:
     std::pair<std::vector<std::list<int>>, int> get_greatest_fit(std::vector<std::vector<std::list<int>>> population, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
 
     void evolutionGraph(std::vector<int> iterations, std::string title);
+
+    void compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
+                            std::vector<int> sol3, std::vector<int> sol4);
+
+    const std::vector<int> &getIterations() const;
 };
 
 #endif /* GRAPH_H_ */
