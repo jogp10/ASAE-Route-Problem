@@ -354,7 +354,7 @@ public:
      * @param log
      * @return
      */
-    std::vector<std::list<int>> simulatedAnnealing(int iteration_number, int coldness_ratio, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
+    std::vector<std::list<int>> simulatedAnnealing(int iteration_number, float coldness_ratio, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
     /**
      * Tabu search algorithm

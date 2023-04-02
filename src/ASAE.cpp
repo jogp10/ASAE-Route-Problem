@@ -175,7 +175,6 @@ void ASAE::menu() {
 
     cout << endl << "Welcome to the ASAE!" << endl;
     cout << endl;
-    compare_algorithms();
     while (true) {
 
         cout << "1 - Show all establishments" << endl;
@@ -245,8 +244,8 @@ void ASAE::hill_climbing() {
     while(true){
 
         string option;
-        cout << "1 - Custom parameters" << endl;
-        cout << "2 - Default parameters" << endl;
+        cout << "1 - Default parameters" << endl;
+        cout << "2 - Custom parameters" << endl;
         cout << "Option: ";
         std::getline(std::cin, option);
         if (std::cin.eof()) {
@@ -257,11 +256,11 @@ void ASAE::hill_climbing() {
         bool correct = parseInput(1,2,option);
         if(correct){
             if(option == "1"){
-                custom = true;
+                custom = false;
                 break;
             }
             else if(option == "2"){
-                custom = false;
+                custom = true;
                 break;
             }
         }
@@ -274,7 +273,7 @@ void ASAE::hill_climbing() {
     }
     else{
         iteration_number = "1000";
-        mutation_func = "6";
+        mutation_func = "5";
         evaluation_func = "1";
     }
 
@@ -296,8 +295,8 @@ void ASAE::simulated_annealing() {
 
     while (true){
         string option;
-        cout << "1 - Custom parameters" << endl;
-        cout << "2 - Default parameters" << endl;
+        cout << "1 - Default parameters" << endl;
+        cout << "2 - Custom parameters" << endl;
         cout << "Option: ";
         std::getline(std::cin, option);
         // Check for CTRL + Z or CTRL + D input to close the program
@@ -310,10 +309,10 @@ void ASAE::simulated_annealing() {
         if(correct){
             switch (std::stoi(option)) {
                 case 1:
-                    custom = true;
+                    custom = false;
                     break;
                 case 2:
-                    custom = false;
+                    custom = true;
                     break;
                 default:
                     cout << "Invalid option." << endl;
@@ -331,7 +330,7 @@ void ASAE::simulated_annealing() {
     }
     else{
         iteration_number = "10000";
-        mutation_func = "6";
+        mutation_func = "5";
         evaluation_func = "1";
     }
 
@@ -360,7 +359,7 @@ void ASAE::tabu_search() {
         if(correct){
             if(std::stoi(answer) == 1){
                 iteration_number = "1000";
-                mutation_func = "6";
+                mutation_func = "5";
                 evaluation_func = "1";
                 tabu_size = "20";
                 neighborhood_size = "4";
@@ -406,7 +405,7 @@ void ASAE::genetic() {
         if(correct){
             if(std::stoi(answer) == 1){
                 iteration_number = "1000";
-                mutation_func = "6";
+                mutation_func = "5";
                 evaluation_func = "1";
                 population_size = "20";
                 tournament_size = "5";
@@ -433,7 +432,6 @@ void ASAE::genetic() {
 
 
     // Run genetic algorithm
-
     vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate), (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     //graph.printDetailedSolution(solution, true);
     //graph.printSolution(solution);
@@ -490,10 +488,10 @@ bool ASAE::isAllDigits(const std::string &str){
 bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, string &evaluation_func){
 
     bool back = false;
-    cout << "Insert the parameters for the algorithm" << endl;
+    cout << endl << "Insert the parameters for the algorithm" << endl;
     while(true){
         cout << "Recommended number of iterations: 1000" << endl;
-        cout << "Number of iterations:";
+        cout << "Number of iterations: ";
         std::getline(std::cin, iteration_number);
         // Check for CTRL + Z or CTRL + D input to close the program
         if (std::cin.eof()) {
@@ -512,7 +510,7 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
         }
     }
     while(true){
-        cout << "Mutation function:" << endl;
+        cout << endl << "Mutation function:" << endl;
         cout << "1 - Exchange two establishments in a solution" << endl;
         cout << "2 - Exchange one establishment for one that wasn't visited" << endl;
         cout << "3 - Generate a new path between two nodes" << endl;
@@ -546,11 +544,9 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
     }
 
     while (true){
-        cout << "Evaluation function:" << endl;
+        cout << endl << "Evaluation function:" << endl;
         cout << "1 - Sum of the visited Establishments" << endl;
-        cout << "2 - Minimize number of parish transfers" << endl;
-        cout << "3 - Sum of the visited Establishments (penalize invalid solutions)" << endl;
-        cout << "4 - Minimize travel time and waiting time" << endl;
+        cout << "2 - Add Minimizing the number of parish transfers" << endl;
         cout << "0 - Back" << endl;
         getline(cin, evaluation_func);
         // Check for CTRL + Z or CTRL + D input to close the program
@@ -560,7 +556,7 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
-        bool correct = parseInput(0,4,evaluation_func);
+        bool correct = parseInput(0,2,evaluation_func);
 
         if(correct){
             if (std::stoi(evaluation_func) == 0) {
