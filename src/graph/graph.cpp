@@ -1165,13 +1165,13 @@ void Graph::evolutionGraph(std::vector<int> iterations, string title) {
 
 
 void Graph::compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
-                               std::vector<int> sol3, std::vector<int> sol4) {
+                               std::vector<int> sol3, std::vector<int> sol4, int num_iterations) {
     using namespace matplot;
 
         figure_handle f = figure();
         Geoplot_draw s(*this);
 
-        s.compare_algorithms(sol1, sol2,sol3,sol4);
+        s.compare_algorithms(sol1, sol2,sol3,sol4,num_iterations);
 }
 
 const vector<int> &Graph::getIterations() const { return iterations; }

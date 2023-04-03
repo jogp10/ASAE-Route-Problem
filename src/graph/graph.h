@@ -418,7 +418,7 @@ public:
      * @param sol4
      */
     void compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
-                            std::vector<int> sol3, std::vector<int> sol4);
+                            std::vector<int> sol3, std::vector<int> sol4, int iterations);
 
     /**
      * Get iterations

@@ -674,30 +674,32 @@ bool ASAE::ask_tabu_parameters(string &tabu_size, string &neighborhood_size) {
 
 
 void ASAE::compare_algorithms(){
-
-    (graph.*(&Graph::hillClimbing))(1000,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
+    int num_iterations = 500;
+    (graph.*(&Graph::hillClimbing))(num_iterations,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
     vector<int> hill_climbing_solution = graph.getIterations();
 
-    (graph.*(&Graph::simulatedAnnealing))(1000,0.999,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
+    (graph.*(&Graph::simulatedAnnealing))(num_iterations,0.999,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
     vector<int> simulated_annealing_solution = graph.getIterations();
 
-    (graph.*(&Graph::tabuSearch))(1000,20,4,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
+    (graph.*(&Graph::tabuSearch))(num_iterations,20,4,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
     vector<int> tabu_search_solution = graph.getIterations();
 
 
-    (graph.*(&Graph::geneticAlgorithm))(1000,20,6,10,&Graph::crossover_solutions_1, &Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
+    (graph.*(&Graph::geneticAlgorithm))(num_iterations,20,6,10,&Graph::crossover_solutions_1, &Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
     vector<int> genetic_solution = graph.getIterations();
 
-    graph.compare_algorithms(hill_climbing_solution,simulated_annealing_solution,tabu_search_solution,genetic_solution);
-}
+    graph.compare_algorithms(hill_climbing_solution,simulated_annealing_solution,tabu_search_solution,genetic_solution, num_iterations);
 
+
+}
 
 void ASAE::plots() {
     string option;
     while(true){
         cout << "Plot of Initial Solution using:" << endl;
-        cout << "1 - Greedy Algorythm" << endl;
-        cout << "2 - Random Algorythm" << endl;
+        cout << "1 - Greedy Algorithm" << endl;
+        cout << "2 - Random Algorithm" << endl;
+        cout << "3 - Compare Algorithms" << endl;
         cout << "0 - Back to Main Menu" << endl;
 
         std::getline(std::cin, option);
@@ -707,7 +709,7 @@ void ASAE::plots() {
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
-        bool correct = parseInput(0,2,option);
+        bool correct = parseInput(0,3,option);
         if(correct){
             switch (std::stoi(option)) {
                 case 1:
@@ -715,6 +717,9 @@ void ASAE::plots() {
                     break;
                 case 2:
                     graph.plot_initial_solution(graph.generate_random_solution(false));
+                    break;
+                case 3:
+                    compare_algorithms();
                     break;
                 case 0:
                     return;
