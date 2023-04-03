@@ -696,8 +696,8 @@ void ASAE::plots() {
     string option;
     while(true){
         cout << "Plot of Initial Solution using:" << endl;
-        cout << "1 - Greedy Algorythm" << endl;
-        cout << "2 - Random Algorythm" << endl;
+        cout << "1 - Greedy Algorithm" << endl;
+        cout << "2 - Random Algorithm" << endl;
         cout << "0 - Back to Main Menu" << endl;
 
         std::getline(std::cin, option);
