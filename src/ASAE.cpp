@@ -261,7 +261,7 @@ void ASAE::hill_climbing() {
     vector<list<int>> solution = (graph.*(&Graph::hillClimbing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) {graph.evolutionGraph(graph.getIterations(), "Hill Climbing");std::string opt; std::getline(std::cin, opt);};
+    if(logs) graph.evolutionGraph(graph.getIterations(), "Hill Climbing");std::string opt; std::getline(std::cin, opt);
 }
 
 
@@ -316,7 +316,7 @@ void ASAE::simulated_annealing() {
     vector<list<int>> solution = (graph.*(&Graph::simulatedAnnealing))(std::stoi(iteration_number), 0.999, mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) {graph.evolutionGraph(graph.getIterations(), "Simulated Annealing");std::string opt; std::getline(std::cin, opt);};
+    if(logs) graph.evolutionGraph(graph.getIterations(), "Simulated Annealing");std::string opt; std::getline(std::cin, opt);
 }
 
 
@@ -360,7 +360,7 @@ void ASAE::tabu_search() {
     vector<list<int>> solution = (graph.*(&Graph::tabuSearch))(std::stoi(iteration_number), std::stoi(tabu_size), std::stoi(neighborhood_size), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) {graph.evolutionGraph(graph.getIterations(), "Tabu Search");std::string opt; std::getline(std::cin, opt);};
+    if(logs) graph.evolutionGraph(graph.getIterations(), "Tabu Search");std::string opt; std::getline(std::cin, opt);
 }
 
 
@@ -408,7 +408,7 @@ void ASAE::genetic() {
     vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate), (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) {graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);};
+    if(logs) graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);
 }
 
 
@@ -433,11 +433,11 @@ bool ASAE::isAllDigits(const std::string &str){
 
     // Iterates each character in a std::string and checks if it's an integer or not
     if(str.empty()) return false;
-    for(char c: str){
-        if (!isdigit(c)){
+    for (char c: str)
+        if (!isdigit(c)) {
             return false;
         }
-    }
+
     return true;
 }
 
@@ -735,7 +735,7 @@ void ASAE::plots() {
 
 void ASAE::setMaxEstablishments(const int &n) { max_establishments = n; }
 
-int ASAE::getEstablishments(const int &n) { return max_establishments; }
+int ASAE::getEstablishments(const int &n) const { return max_establishments; }
 
 
 void ASAE::printEndAlgorithm(const vector<list<int>>& s, int number_of_iterations, int iterations_to_reach_optimal, float total_time, float time_to_reach_optimal) {

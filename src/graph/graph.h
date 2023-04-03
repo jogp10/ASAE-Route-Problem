@@ -37,7 +37,7 @@ class Graph {
         float longitude;
 
         int inspection_time;    // in minutes
-        int inspection_utility;
+        float inspection_utility;
         std::vector<int> opening_hours; // std::vector<int>(24, 0/1) 0 = closed, 1 = open
 
         float getLatitude() const;
@@ -333,7 +333,7 @@ public:
      * @param element
      * @return
      */
-    bool queueContainsElem(std::queue<int> queue, int element);
+    static bool queueContainsElem(std::queue<int> queue, int element);
 
 
     /**
@@ -360,7 +360,7 @@ public:
     /**
      * Plot graph of initial solution
      */
-    void plot_initial_solution(std::vector<std::list<int>> solution);
+    void plot_initial_solution(const std::vector<std::list<int>>& solution);
 
     /**
      * Generate a random population
@@ -430,7 +430,7 @@ public:
      * Get number of iteration, where was found the last optimal solution
      * @return
      */
-    int getIterationsOptimal();
+    int getIterationsOptimal() const;
 
     /**
      * Get runtime

@@ -251,8 +251,8 @@ float Graph::totalWaitingTime(const vector<list<int>> &solution, bool log) {
         it++;
         for (; it != solution[i].end(); ++it)  {
             int seconds =  getDistance(last, *it);
-            int miliseconds =  ((getDistance(last, *it) - (float) seconds) * 1000);
-            time.addTime({miliseconds, seconds, 0, 0});
+            int milliseconds =  ((getDistance(last, *it) - (float) seconds) * 1000);
+            time.addTime({milliseconds, seconds, 0, 0});
 
             auto aux = time;
             while (nodes[*it].opening_hours[time.hours] == 0) {
@@ -361,13 +361,13 @@ float Graph::totalOperationTime(const vector<list<int>> &solution, bool log) {
 
 
 void Graph::printDetailedSolution(const vector<list<int>> &solution) {
-    for (int i = 0; i < solution.size(); ++i) {
+    for (const auto & i : solution) {
         Time t = departure_time;
         int last = 0;
 
-        auto it = solution[i].begin();
+        auto it = i.begin();
         it++;
-        for (; it != solution[i].end(); ++it)  {
+        for (; it != i.end(); ++it)  {
             t.addTime(operationTime(last, *it, t, true));
             last = *it;
         }
@@ -739,7 +739,7 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_3(const ve
 
 
 bool Graph::check_solution(vector<list<int>> solution) {
-    // check if hours of path doesn't exceed 8 hours
+    // check if hours of path don't exceed 8 hours
     for (auto &t: times) t = departure_time;
     for (int i = 0; i < solution.size(); i++) {
         for (auto it = solution[i].begin(); it != solution[i].end(); ++it) {
@@ -867,7 +867,7 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
         }
 
         iterations.push_back(best_score);
-        //add solution to tabu list
+        //add a solution to tabu list
         int ttt_best_neighbour = totalTravelTime(best_neighbour_solution);
         tabu_list.push(ttt_best_neighbour);
 
@@ -1136,7 +1136,7 @@ std::vector<std::list<int>> Graph::generate_a_star_solution(bool log) {
 }
 
 
-void Graph::plot_initial_solution(vector<list<int>> solution) {
+void Graph::plot_initial_solution(const vector<list<int>>& solution) {
     // plot establishments (lat, long) in a map
     using namespace matplot;
 
@@ -1152,15 +1152,7 @@ void Graph::evolutionGraph(std::vector<int> iterations, string title) {
     figure_handle f = figure(true);
     Geoplot_draw s(*this, f->current_axes());
 
-    s.evolution_graph(std::move(iterations), title);
-
-    //plot(iterations);
-    //title(ax1, "Top Plot");
-    //ylabel(ax1, "sin(5x)");
-
-
-
-
+    s.evolution_graph(std::move(iterations), std::move(title));
 }
 
 
@@ -1171,12 +1163,12 @@ void Graph::compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
         figure_handle f = figure();
         Geoplot_draw s(*this);
 
-        s.compare_algorithms(sol1, sol2,sol3,sol4,num_iterations);
+        s.compare_algorithms(std::move(sol1), std::move(sol2),std::move(sol3),std::move(sol4),num_iterations);
 }
 
 const vector<int> &Graph::getIterations() const { return iterations; }
 
-int Graph::getIterationsOptimal() { return iterations_optimal; }
+int Graph::getIterationsOptimal() const { return iterations_optimal; }
 
 float Graph::getRuntimeOptimal() { return std::chrono::duration_cast<std::chrono::milliseconds>(optimal_time - start_time).count(); }
 

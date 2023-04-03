@@ -46,13 +46,13 @@ class ASAE
 
     void setMaxEstablishments(const int &n);
 
-    int getEstablishments(const int &n);
+    int getEstablishments(const int &n) const;
 
 public:
     /**
      * ASAE Constructor
      */
-    ASAE(int max_establishments = -1);
+    explicit ASAE(int max_establishments = -1);
 
     /**
      * ASAE menu display
@@ -85,22 +85,22 @@ public:
      * @param text
      * @return
      */
-    bool parseInput(int a, int b, const string &text);
+    static bool parseInput(int a, int b, const string &text);
 
     /**
      * Checks if a string represents a number
      * @param str
      * @return
      */
-    bool isAllDigits(const string &str);
+    static bool isAllDigits(const string &str);
 
-    bool ask_parameters(string &iteration_number, string &mutation_func, string &evaluation_func);
+    static bool ask_parameters(string &iteration_number, string &mutation_func, string &evaluation_func);
 
-    bool ask_tabu_parameters(string &tabu_size, string &neighborhood_size);
+    static bool ask_tabu_parameters(string &tabu_size, string &neighborhood_size);
 
-    void ask_genetic_parameters(string &population_size, string &tournament_size, string &mutation_rate);
+    static void ask_genetic_parameters(string &population_size, string &tournament_size, string &mutation_rate);
 
-    bool print_logs();
+    static bool print_logs();
 
     void printEndAlgorithm(const vector<list<int>>& s, int number_of_iterations, int iterations_to_reach_optimal, float total_time, float time_to_reach_optimal);
 
