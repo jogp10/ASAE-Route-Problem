@@ -207,6 +207,13 @@ void Graph::printSolution(const vector<list<int>> &solution) {
     }
 }
 
+std::list<int> Graph::getVehiclePath(int vehicle, const vector<std::list<int>> &solution) {
+    if (vehicle < solution.size()) {
+        return solution[vehicle];
+    }
+    return std::list<int>();
+}
+
 
 float Graph::getDistance(int a, int b) {
     for (auto e: nodes[a].adj) {
@@ -1181,6 +1188,14 @@ void Graph::endTimer() { end_time = std::chrono::high_resolution_clock::now(); }
 void Graph::updateTimer(int i) {
     iterations_optimal = i;
     optimal_time = std::chrono::high_resolution_clock::now();
+}
+
+void Graph::plot_vehicle_from_solution(std::vector<std::list<int>> vector1, int i) {
+    using namespace matplot;
+
+    figure_handle f = figure(true);
+    Geoplot_draw s(*this, f->current_axes());
+    s.draw_one_vehicle(getVehiclePath(i, vector1));
 }
 
 float Graph::Node::getLatitude() const { return latitude; }

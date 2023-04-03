@@ -176,6 +176,14 @@ public:
     void printDetailedSolution(const std::vector<std::list<int>>& solution);
 
     /**
+     * Get path of a vehicle
+     * @param vehicle
+     * @param solution
+     * @return
+     */
+    std::list<int> getVehiclePath(int vehicle, const std::vector<std::list<int>>& solution);
+
+    /**
      * Get total travel time of a solution
      * @param solution  Solution
      * @return  Total travel time
@@ -459,6 +467,8 @@ public:
      * @param iteration of newer best solution
      */
     void updateTimer(int i);
+
+    void plot_vehicle_from_solution(std::vector<std::list<int>> vector1, int i);
 };
 
 #endif /* GRAPH_H_ */

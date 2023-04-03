@@ -700,6 +700,7 @@ void ASAE::plots() {
         cout << "1 - Greedy Algorithm" << endl;
         cout << "2 - Random Algorithm" << endl;
         cout << "3 - Compare Algorithms" << endl;
+        cout << "4 - Vehicle 1 from greedy algorithm" << endl;
         cout << "0 - Back to Main Menu" << endl;
 
         std::getline(std::cin, option);
@@ -709,7 +710,7 @@ void ASAE::plots() {
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
-        bool correct = parseInput(0,3,option);
+        bool correct = parseInput(0,4,option);
         if(correct){
             switch (std::stoi(option)) {
                 case 1:
@@ -720,6 +721,9 @@ void ASAE::plots() {
                     break;
                 case 3:
                     compare_algorithms();
+                    break;
+                case 4:
+                    graph.plot_vehicle_from_solution(graph.generate_closest_solution(false),1);
                     break;
                 case 0:
                     return;

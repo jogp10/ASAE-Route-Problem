@@ -98,7 +98,7 @@ void Geoplot_draw::draw_one_vehicle(const list<int>& vehicle_path) {
     for (auto &n: vehicle_path){
         auto lat = graph.getNode(n).getLatitude();
         auto lon = graph.getNode(n).getLongitude();
-        auto address = graph.getNode(n).getAddress();
+        auto address = to_string(n);
 
         lats.push_back(lat);
         longs.push_back(lon);
