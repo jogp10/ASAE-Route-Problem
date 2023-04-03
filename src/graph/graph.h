@@ -392,7 +392,7 @@ public:
     /**
      * Plot graph
      */
-    void plotGraph();
+    void plot_initial_solution(std::vector<std::list<int>> solution);
 
     /**
      * Generate a random population

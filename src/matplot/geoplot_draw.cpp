@@ -17,12 +17,6 @@ Geoplot_draw::Geoplot_draw(Graph graph)
 
 
 
-
-
-double Geoplot_draw::tour_distance(const vector<size_t> &tour) {
-    return -1;
-}
-
 void Geoplot_draw::draw() {
     }
 
@@ -86,8 +80,6 @@ void Geoplot_draw::draw_all_vehicles(const vector<list<int>>& solution) {
     this->ax_->font("Calibri");
     sgtitle("Random Solution");
     ax_->draw();
-
-
 
     show();
 

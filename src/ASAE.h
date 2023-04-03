@@ -78,6 +78,8 @@ public:
     void ask_genetic_parameters(string &population_size, string &tournament_size, string &mutation_rate);
 
     void compare_algorithms();
+
+    void plots();
 };
 
 #endif // ASAE_H

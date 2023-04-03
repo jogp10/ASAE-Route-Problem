@@ -182,6 +182,7 @@ void ASAE::menu() {
         cout << "3 - Simulated annealing" << endl;
         cout << "4 - Tabu" << endl;
         cout << "5 - Genetic" << endl;
+        cout << "6 - Plots" << endl;
         cout << "0 - Exit" << endl;
         cout << "Option: ";
 
@@ -192,7 +193,7 @@ void ASAE::menu() {
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
-        bool correct = parseInput(0,5,option);
+        bool correct = parseInput(0,6,option);
         if(correct){
             switch (std::stoi(option)) {
 
@@ -210,7 +211,8 @@ void ASAE::menu() {
                     break;
                 case 5:
                     genetic();
-
+                case 6:
+                    plots();
                     break;
                 case 0:
                     cout << "Come back any time soon!" << endl;
@@ -234,7 +236,7 @@ bool ASAE::hasSubstring(const std::string& str)
 
 void ASAE::drawPlot() {
 
-    graph.plotGraph();
+
 }
 
 void ASAE::hill_climbing() {
@@ -734,6 +736,44 @@ void ASAE::compare_algorithms(){
     vector<int> genetic_solution = graph.getIterations();
 
     graph.compare_algorithms(hill_climbing_solution,simulated_annealing_solution,tabu_search_solution,genetic_solution);
+
+
+}
+
+void ASAE::plots() {
+    string option;
+    while(true){
+        cout << "Plot of Initial Solution using:" << endl;
+        cout << "1 - Greedy Algorythm" << endl;
+        cout << "2 - Random Algorythm" << endl;
+        cout << "0 - Back to Main Menu" << endl;
+
+        std::getline(std::cin, option);
+        // Check for CTRL + Z or CTRL + D input to close the program
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(0,2,option);
+        if(correct){
+            switch (std::stoi(option)) {
+                case 1:
+
+                    graph.plot_initial_solution(graph.generate_closest_solution(false));
+                    break;
+                case 2:
+                    graph.plot_initial_solution(graph.generate_random_solution(false));
+                    break;
+                case 0:
+                    return;
+            }
+        }
+        else{
+            cout << endl;
+            cout << "Invalid option. Insert a number from 0 to 2" << endl;
+        }
+    }
 
 
 }
