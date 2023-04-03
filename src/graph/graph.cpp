@@ -971,11 +971,10 @@ bool Graph::check_solution(vector<list<int>> solution) {
     return true;
 }
 
-void Graph::plotGraph() {
+void Graph::plot_initial_solution(vector<list<int>> solution) {
     // plot establishments (lat, long) in a map
     using namespace matplot;
 
-    auto solution = generate_closest_solution();
 
     figure_handle f = figure(true);
     Geoplot_draw s(*this, f->current_axes());
