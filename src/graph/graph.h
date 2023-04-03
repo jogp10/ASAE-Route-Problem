@@ -213,7 +213,7 @@ public:
      * Display more details about a solution
      * @param solution
      */
-    void printDetailedSolution(const std::vector<std::list<int>>& solution, bool log=false);
+    void printDetailedSolution(const std::vector<std::list<int>>& solution);
 
     /**
      * Get total travel time of a solution

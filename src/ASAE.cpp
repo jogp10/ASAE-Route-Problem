@@ -27,6 +27,7 @@ int ASAE::numberOfLines(const string &myFile)
     return number_of_lines - 1;
 }
 
+
 void ASAE::readTimeDistances(const int &n)
 {
         string myFile = distancesFile;
@@ -67,6 +68,7 @@ void ASAE::readTimeDistances(const int &n)
             }
         }
 }
+
 
 void ASAE::readEstablishments(const int &n)
 {
@@ -128,9 +130,9 @@ void ASAE::readEstablishments(const int &n)
     }
 }
 
+
 ASAE::ASAE()
 {
-    //srand(time(nullptr));
     max_establishments = numberOfLines(distancesFile);
 
     int number_of_establishments = 1001;
@@ -140,38 +142,12 @@ ASAE::ASAE()
     readEstablishments(number_of_establishments);
     readTimeDistances(number_of_establishments);
 
-    /*
-    vector<list<int>> solution;
-
-    list<int> vehicle1;
-    vehicle1.push_back(0);
-    vehicle1.emplace_back(708);
-    vehicle1.emplace_back(463);
-    vehicle1.emplace_back(29);
-    vehicle1.emplace_back(747);
-    vehicle1.emplace_back(603);
-    vehicle1.emplace_back(97);
-    vehicle1.emplace_back(526);
-    vehicle1.emplace_back(490);
-    vehicle1.emplace_back(584);
-    vehicle1.emplace_back(810);
-    vehicle1.emplace_back(521);
-    vehicle1.emplace_back(659);
-    vehicle1.emplace_back(725);
-    vehicle1.emplace_back(0);
-
-
-    vector<list<int>> solution2 = {vehicle1};
-
-    graph.printDetailedSolution(solution2, true);
-    graph.printSolution(solution2);
-    cout << graph.totalOperationTime(solution2) << endl;
-    */
     cout << "Done building graph." << endl;
 }
 
+
 void ASAE::menu() {
-    string option = "";
+    string option;
 
     cout << endl << "Welcome to the ASAE!" << endl;
     cout << endl;
@@ -190,7 +166,7 @@ void ASAE::menu() {
         // Check for CTRL + Z or CTRL + D input to close the program
         if (std::cin.eof()) {
             std::cout << "Come back any time soon!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
         bool correct = parseInput(0,6,option);
@@ -216,7 +192,7 @@ void ASAE::menu() {
                     break;
                 case 0:
                     cout << "Come back any time soon!" << endl;
-                    std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+                    std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
                     exit(EXIT_SUCCESS); // Closes the terminal window
                 default:
                     cout << "Invalid option." << endl;
@@ -229,15 +205,12 @@ void ASAE::menu() {
     }
 }
 
+
 bool ASAE::hasSubstring(const std::string& str)
 {
     return str.find("p_") != std::string::npos;
 }
 
-void ASAE::drawPlot() {
-
-
-}
 
 void ASAE::hill_climbing() {
     string iteration_number, mutation_func, evaluation_func;
@@ -252,7 +225,7 @@ void ASAE::hill_climbing() {
         std::getline(std::cin, option);
         if (std::cin.eof()) {
             std::cout << "Come back any time soon!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
         bool correct = parseInput(1,2,option);
@@ -283,13 +256,8 @@ void ASAE::hill_climbing() {
 
     // Run hill climbing
     vector<list<int>> solution = (graph.*(&Graph::hillClimbing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
-    //graph.printDetailedSolution(solution, true);
-    //graph.printSolution(solution);
-    cout << graph.totalOperationTime(solution) << endl;
-    cout << graph.evaluate_solution_1(solution) << endl;
-
-
 }
+
 
 void ASAE::simulated_annealing() {
     bool logs = false, custom = false;
@@ -304,7 +272,7 @@ void ASAE::simulated_annealing() {
         // Check for CTRL + Z or CTRL + D input to close the program
         if (std::cin.eof()) {
             std::cout << "Come back any time soon!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
         bool correct = parseInput(1,2,option);
@@ -331,7 +299,7 @@ void ASAE::simulated_annealing() {
         if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
     }
     else{
-        iteration_number = "10000";
+        iteration_number = "1000";
         mutation_func = "5";
         evaluation_func = "1";
     }
@@ -340,13 +308,8 @@ void ASAE::simulated_annealing() {
 
     // Run simulated annealing
     vector<list<int>> solution = (graph.*(&Graph::simulatedAnnealing))(std::stoi(iteration_number), 0.999, mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
-    //graph.printDetailedSolution(solution, true);
-    //graph.printSolution(solution);
-
-    cout << graph.totalOperationTime(solution) << endl;
-    cout << graph.evaluate_solution_1(solution) << endl;
-
 }
+
 
 void ASAE::tabu_search() {
     bool logs = false, custom = false;
@@ -386,12 +349,8 @@ void ASAE::tabu_search() {
 
     // Run tabu search
     vector<list<int>> solution = (graph.*(&Graph::tabuSearch))(std::stoi(iteration_number), std::stoi(tabu_size), std::stoi(neighborhood_size), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
-    //graph.printDetailedSolution(solution, false);
-    //graph.printSolution(solution);
-    cout << graph.totalOperationTime(solution) << endl;
-    cout << graph.evaluate_solution_1(solution) << endl;
-
 }
+
 
 void ASAE::genetic() {
     bool logs = false, custom = false;
@@ -435,17 +394,9 @@ void ASAE::genetic() {
 
     // Run genetic algorithm
     vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate), (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
-    //graph.printDetailedSolution(solution, true);
-    //graph.printSolution(solution);
-
-
-    cout << graph.totalOperationTime(solution) << endl;
-    cout << graph.evaluate_solution_1(solution) << endl;
-
-
     graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");
-
 }
+
 
 /**
  * Check if a number in the correct interval (a to b) is inputted
@@ -498,7 +449,7 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
         // Check for CTRL + Z or CTRL + D input to close the program
         if (std::cin.eof()) {
             std::cout << "Come back any time soon!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
         bool correct = parseInput(1,100000,iteration_number);
@@ -525,7 +476,7 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
         // Check for CTRL + Z or CTRL + D input to close the program
         if (std::cin.eof()) {
             std::cout << "Come back any time soon!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
         bool correct = parseInput(0,6,mutation_func);
@@ -555,7 +506,7 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
 
         if (std::cin.eof()) {
             std::cout << "Come back any time soon!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
         bool correct = parseInput(0,2,evaluation_func);
@@ -576,9 +527,7 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
         return false;
     }
     return true;
-
 }
-
 
 
 bool ASAE::print_logs() {
@@ -593,7 +542,7 @@ bool ASAE::print_logs() {
 
         if (std::cin.eof()) {
             std::cout << "Come back any time soon!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
         bool correct = parseInput(1,2,print_logs);
@@ -607,8 +556,8 @@ bool ASAE::print_logs() {
             }
         }
     }
-    return false;
 }
+
 
 void ASAE::ask_genetic_parameters(string &population_size, string &tournament_size, string &mutation_rate){
 
@@ -619,7 +568,7 @@ void ASAE::ask_genetic_parameters(string &population_size, string &tournament_si
         // Check for CTRL + Z or CTRL + D input to close the program
         if (std::cin.eof()) {
             std::cout << "Come back any time soon!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
         bool correct = parseInput(1,50,population_size);
@@ -641,7 +590,7 @@ void ASAE::ask_genetic_parameters(string &population_size, string &tournament_si
         // Check for CTRL + Z or CTRL + D input to close the program
         if (std::cin.eof()) {
             std::cout << "Come back any time soon!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
         bool correct = parseInput(1,std::stoi(population_size),tournament_size);
@@ -659,7 +608,7 @@ void ASAE::ask_genetic_parameters(string &population_size, string &tournament_si
         // Check for CTRL + Z or CTRL + D input to close the program
         if (std::cin.eof()) {
             std::cout << "Come back any time soon!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the
         }
         bool correct = parseInput(0, 100, mutation_rate);
         if (correct) {
@@ -669,10 +618,9 @@ void ASAE::ask_genetic_parameters(string &population_size, string &tournament_si
             cout << "Invalid mutation rate. Insert a number from 0% to 100%" << endl;
             cout << endl;
         }
-
     }
-
 }
+
 
 bool ASAE::ask_tabu_parameters(string &tabu_size, string &neighborhood_size) {
 
@@ -683,7 +631,7 @@ bool ASAE::ask_tabu_parameters(string &tabu_size, string &neighborhood_size) {
         // Check for CTRL + Z or CTRL + D input to close the program
         if (std::cin.eof()) {
             std::cout << "Come back any time soon!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
         bool correct = parseInput(1,40,tabu_size);
@@ -703,7 +651,7 @@ bool ASAE::ask_tabu_parameters(string &tabu_size, string &neighborhood_size) {
         // Check for CTRL + Z or CTRL + D input to close the program
         if (std::cin.eof()) {
             std::cout << "Come back any time soon!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
         bool correct = parseInput(1,5,neighborhood_size);
@@ -716,9 +664,9 @@ bool ASAE::ask_tabu_parameters(string &tabu_size, string &neighborhood_size) {
             cout << endl;
         }
     }
-
     return true;
 }
+
 
 void ASAE::compare_algorithms(){
 
@@ -736,9 +684,8 @@ void ASAE::compare_algorithms(){
     vector<int> genetic_solution = graph.getIterations();
 
     graph.compare_algorithms(hill_climbing_solution,simulated_annealing_solution,tabu_search_solution,genetic_solution);
-
-
 }
+
 
 void ASAE::plots() {
     string option;
@@ -752,7 +699,7 @@ void ASAE::plots() {
         // Check for CTRL + Z or CTRL + D input to close the program
         if (std::cin.eof()) {
             std::cout << "Come back any time soon!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 seconds before closing the window
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
         bool correct = parseInput(0,2,option);
@@ -774,6 +721,4 @@ void ASAE::plots() {
             cout << "Invalid option. Insert a number from 0 to 2" << endl;
         }
     }
-
-
 }
