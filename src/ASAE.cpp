@@ -259,6 +259,8 @@ void ASAE::hill_climbing() {
 
     // Run hill climbing
     vector<list<int>> solution = (graph.*(&Graph::hillClimbing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
+    printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
+
     if(logs) {graph.evolutionGraph(graph.getIterations(), "Hill Climbing");std::string opt; std::getline(std::cin, opt);};
 }
 
@@ -312,6 +314,8 @@ void ASAE::simulated_annealing() {
 
     // Run simulated annealing
     vector<list<int>> solution = (graph.*(&Graph::simulatedAnnealing))(std::stoi(iteration_number), 0.999, mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
+    printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
+
     if(logs) {graph.evolutionGraph(graph.getIterations(), "Simulated Annealing");std::string opt; std::getline(std::cin, opt);};
 }
 
@@ -354,6 +358,8 @@ void ASAE::tabu_search() {
 
     // Run tabu search
     vector<list<int>> solution = (graph.*(&Graph::tabuSearch))(std::stoi(iteration_number), std::stoi(tabu_size), std::stoi(neighborhood_size), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
+    printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
+
     if(logs) {graph.evolutionGraph(graph.getIterations(), "Tabu Search");std::string opt; std::getline(std::cin, opt);};
 }
 
@@ -400,6 +406,8 @@ void ASAE::genetic() {
 
     // Run genetic algorithm
     vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate), (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
+    printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
+
     if(logs) {graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);};
 }
 
@@ -729,4 +737,28 @@ void ASAE::plots() {
             cout << "Invalid option. Insert a number from 0 to 2" << endl;
         }
     }
+}
+
+
+void ASAE::printEndAlgorithm(const vector<list<int>>& s, int number_of_iterations, int iterations_to_reach_optimal, float total_time, float time_to_reach_optimal) {
+    cout << "\nThe best solution found is: " << endl;
+    Graph::printSolution(s);
+
+    cout << endl;
+
+    cout << "Total operation time (from all vehicles): " << Time::toString({0, (int) graph.totalOperationTime(s), 0, 0, 0}) << endl;
+    cout << "Total travel time: " << Time::toString({0, (int) graph.totalTravelTime(s), 0, 0, 0}) << endl;
+    cout << "Total waiting time: " << Time::toString({0, (int) graph.totalWaitingTime(s), 0, 0, 0}) << endl;
+
+    cout << endl;
+
+    cout << "Total time to reach optimal solution: " << Time::toString({(int) time_to_reach_optimal, 0, 0, 0, 0}) << endl;
+    cout << "Total time to execute all iterations: " << Time::toString({(int) total_time, 0, 0, 0, 0}) << endl;
+
+    cout << endl;
+
+    cout << "Number of iterations to reach optimal solution: " << iterations_to_reach_optimal << endl;
+    cout << "Total number of iterations executed: " << number_of_iterations << endl;
+
+    cout << endl;
 }

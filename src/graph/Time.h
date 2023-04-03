@@ -80,15 +80,16 @@ public:
     void toNextHour();
 
     /**
-     * Roll back time to previous hour
-     */
-    void toPreviousHour();
-
-    /**
      * Convert time to seconds
      * @return
      */
     float toSeconds();
+
+    /**
+     * Convert time to string
+     * @return
+     */
+    static std::string toString(Time t);
 };
 
 

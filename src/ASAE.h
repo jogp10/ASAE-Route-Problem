@@ -37,6 +37,13 @@ class ASAE
      */
     void readTimeDistances(const int &n);
 
+    /**
+     * Checks if string has substring "p_"
+     * @param s
+     * @return
+     */
+    static bool hasSubstring(const string &s);
+
 public:
     /**
      * ASAE Constructor
@@ -49,20 +56,23 @@ public:
     void menu();
 
     /**
-     * Checks if string has substring "p_"
-     * @param s
-     * @return
+     * Hill Climbing Algorithm
      */
-    static bool hasSubstring(const string &s);
-
-    void drawPlot();
-
     void hill_climbing();
 
+    /**
+     * Simulated Annealing Algorithm
+     */
     void simulated_annealing();
 
+    /**
+     * Tabu Search Algorithm
+     */
     void tabu_search();
 
+    /**
+     * Genetic Algorithm
+     */
     void genetic();
 
     bool parseInput(int a, int b, const string &text);
@@ -71,11 +81,13 @@ public:
 
     bool ask_parameters(string &iteration_number, string &mutation_func, string &evaluation_func);
 
-    bool print_logs();
-
     bool ask_tabu_parameters(string &tabu_size, string &neighborhood_size);
 
     void ask_genetic_parameters(string &population_size, string &tournament_size, string &mutation_rate);
+
+    bool print_logs();
+
+    void printEndAlgorithm(const vector<list<int>>& s, int number_of_iterations, int iterations_to_reach_optimal, float total_time, float time_to_reach_optimal);
 
     void compare_algorithms();
 

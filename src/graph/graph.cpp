@@ -31,15 +31,6 @@ void Graph::addEdge(int src, int dest, float weight) {
 }
 
 
-map<int, pair<float, float>> Graph::getNodes(){
-    map<int, pair<float, float>> localizations;
-    for(int i=1; i<nodes.size(); ++i){
-        localizations.insert(make_pair(i, make_pair(nodes[i].latitude, nodes[i].longitude)));
-    }
-    return localizations;
-}
-
-
 Graph::Node Graph::getNode(int at){
     return nodes[at];
 }
@@ -71,7 +62,6 @@ void Graph::setNode(int index, string district, string county, string parish, st
     u.inspection_time = inspection_time;
     u.inspection_utility = inspection_utility;
     u.opening_hours = std::move(opening_hours);
-    u.dist = numeric_limits<float>::max();
     nodes[index] = u;
 }
 
@@ -748,7 +738,28 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_3(const ve
 }
 
 
+bool Graph::check_solution(vector<list<int>> solution) {
+    // check if hours of path doesn't exceed 8 hours
+    for (auto &t: times) t = departure_time;
+    for (int i = 0; i < solution.size(); i++) {
+        for (auto it = solution[i].begin(); it != solution[i].end(); ++it) {
+            if(it == solution[i].begin()) continue;
+            else {
+                int node1 = *prev(it);
+                int node2 = *it;
+                auto d = operationTime(node1, node2, times[i]);
+                times[i].addTime(d);
+            }
+        }
+        if(limit_time < times[i] ) return false;
+    }
+    return true;
+}
+
+
 vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
+    startTimer();
+
     vector<list<int>> best_solution = this->generate_closest_solution();
     int best_score = (this->*evaluation_func)(best_solution);
 
@@ -763,6 +774,7 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
         if(neighbour_score > best_score) {
             best_solution = neighbour_solution;
             best_score = neighbour_score;
+            updateTimer(i);
 
             if (log) {
                 cout << "Iteration: " << i;
@@ -772,12 +784,16 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
         iterations.push_back(best_score);
     }
 
+    endTimer();
+
     cout << "Final Score: " << best_score << endl;
     return best_solution;
 }
 
 
 vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, const float coldness_ratio, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
+    startTimer();
+
     vector<list<int>> best_solution = this->generate_closest_solution();
     int best_score = (this->*evaluation_func)(best_solution);
     cout << "Initial Score: " << best_score << endl;
@@ -797,6 +813,7 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, const fl
         if((neighbour_score > best_score) or (pow(M_E, (float)(neighbour_score - best_score) / temperature) >= r)) {
             best_solution = neighbour_solution;
             best_score = neighbour_score;
+            updateTimer(i);
 
             if (log) {
                 cout << "Iteration: " << i;
@@ -805,43 +822,17 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, const fl
         }
     }
 
+    endTimer();
+
     cout << "Final Score: " << best_score << endl;
     return best_solution;
 }
 
 
-vector<vector<list<int>>> Graph::getNeighbours(const vector<list<int>>& solution, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&)) {
-    vector<vector<list<int>>> array;
-
-    for(int i = 0; i < neighborhood_size; i++) {
-        array.push_back((this->*mutation_func)(solution));
-    }
-
-    return array;
-}
-
-
-bool queueContainsElem(queue<int> queue, int element) {
-    int iterations = queue.size();
-    bool contains = false;
-
-    for(int i = 0; i < iterations; i++) {
-        int elem = queue.front();
-        queue.pop();
-
-        if(elem == element)  {
-            contains = true;
-        }
-
-        queue.push(elem);
-    }
-
-    return contains;
-}
-
-
 vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&),
                                     int (Graph::*evaluation_func)(const vector<list<int>>&), bool log) {
+    startTimer();
+
     vector<list<int>> best_solution = this->generate_closest_solution();
     int best_score = (this->*evaluation_func)(best_solution);
     queue<int> tabu_list;
@@ -867,6 +858,7 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
         if(best_neighbour_score > best_score) {
             best_solution = best_neighbour_solution;
             best_score = best_neighbour_score;
+            updateTimer(i);
 
             if (log) {
                 cout << "Iteration: " << i;
@@ -882,37 +874,40 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
         if(tabu_list.size() > tabu_size) { tabu_list.pop(); }
     }
 
+    endTimer();
+
     cout << "Final Score: " << best_score << endl;
     return best_solution;
 }
 
 
-bool Graph::check_solution(vector<list<int>> solution) {
-    // check if hours of path doesn't exceed 8 hours
-    for (auto &t: times) t = departure_time;
-    for (int i = 0; i < solution.size(); i++) {
-        for (auto it = solution[i].begin(); it != solution[i].end(); ++it) {
-            if(it == solution[i].begin()) continue;
-            else {
-                int node1 = *prev(it);
-                int node2 = *it;
-                auto d = operationTime(node1, node2, times[i]);
-                times[i].addTime(d);
-            }
-        }
-        if(limit_time < times[i] ) return false;
+vector<vector<list<int>>> Graph::getNeighbours(const vector<list<int>>& solution, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&)) {
+    vector<vector<list<int>>> array;
+
+    for(int i = 0; i < neighborhood_size; i++) {
+        array.push_back((this->*mutation_func)(solution));
     }
-    return true;
+
+    return array;
 }
 
 
-void Graph::plot_initial_solution(vector<list<int>> solution) {
-    // plot establishments (lat, long) in a map
-    using namespace matplot;
+bool Graph::queueContainsElem(queue<int> queue, int element) {
+    int iterations = queue.size();
+    bool contains = false;
 
-    figure_handle f = figure(true);
-    Geoplot_draw s(*this, f->current_axes());
-    s.draw_all_vehicles(solution);
+    for(int i = 0; i < iterations; i++) {
+        int elem = queue.front();
+        queue.pop();
+
+        if(elem == element)  {
+            contains = true;
+        }
+
+        queue.push(elem);
+    }
+
+    return contains;
 }
 
 
@@ -920,6 +915,7 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
                                           pair<vector<list<int>>, vector<list<int>>> (Graph::*crossover_func)(const vector<list<int>>&, const vector<list<int>>&),
                                           vector<list<int>> (Graph::*mutation_func)(const vector<list<int>> &),
                                           int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
+    startTimer();
 
     vector<vector<list<int>>> population = this->generatePopulation(population_size);
     iterations = {};
@@ -957,6 +953,8 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
             best_solution = greatest_fit_and_score.first;
             best_score = greatest_fit_and_score.second;
             best_solution_generation = generation_no;
+            updateTimer(generation_no);
+
             if (log) {
                 cout << "\nGeneration: " << best_solution_generation << endl;
                 cout << "New Score: " << best_score << endl;
@@ -966,6 +964,8 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
         iterations.push_back(best_score);
 
     }
+
+    endTimer();
 
     cout << "Best solution found in generation: " << best_solution_generation << endl;
     cout << "Final Score: " << best_score << endl;
@@ -1136,8 +1136,13 @@ std::vector<std::list<int>> Graph::generate_a_star_solution(bool log) {
 }
 
 
-const vector<int> &Graph::getIterations() const {
-    return iterations;
+void Graph::plot_initial_solution(vector<list<int>> solution) {
+    // plot establishments (lat, long) in a map
+    using namespace matplot;
+
+    figure_handle f = figure(true);
+    Geoplot_draw s(*this, f->current_axes());
+    s.draw_all_vehicles(solution);
 }
 
 
@@ -1167,20 +1172,27 @@ void Graph::compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
         Geoplot_draw s(*this);
 
         s.compare_algorithms(sol1, sol2,sol3,sol4);
-
 }
 
+const vector<int> &Graph::getIterations() const { return iterations; }
 
-float Graph::Node::getLatitude() const {
-    return latitude;
+int Graph::getIterationsOptimal() { return iterations_optimal; }
+
+float Graph::getRuntimeOptimal() { return std::chrono::duration_cast<std::chrono::milliseconds>(optimal_time - start_time).count(); }
+
+float Graph::getRuntime() { return std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count(); }
+
+void Graph::startTimer() { start_time = std::chrono::high_resolution_clock::now(); }
+
+void Graph::endTimer() { end_time = std::chrono::high_resolution_clock::now(); }
+
+void Graph::updateTimer(int i) {
+    iterations_optimal = i;
+    optimal_time = std::chrono::high_resolution_clock::now();
 }
 
+float Graph::Node::getLatitude() const { return latitude; }
 
-float Graph::Node::getLongitude() const {
-    return longitude;
-}
+float Graph::Node::getLongitude() const { return longitude; }
 
-
-const string &Graph::Node::getAddress() const {
-    return address;
-}
+const string &Graph::Node::getAddress() const { return address; }
