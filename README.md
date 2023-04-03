@@ -17,7 +17,11 @@ https://github.com/Cryoris/matplotlib-cpp
 ## Usage
 
 ```bash
-cmake . && make && ../ASAEInspectionRoute
+cmake . && make
+```
+
+```bash
+../ASAEInspectionRoute
 ```
 
 ## Authors
