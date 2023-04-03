@@ -412,12 +412,6 @@ void ASAE::genetic() {
 }
 
 
-/**
- * Check if a number in the correct interval (a to b) is inputted
- * @param a
- * @param text
- * @return
- */
 bool ASAE::parseInput(int a, int b, const std::string& text){
     std::vector<int> values;
     for(int i = a; i <= b; i++){
@@ -435,11 +429,6 @@ bool ASAE::parseInput(int a, int b, const std::string& text){
 }
 
 
-/**
- * Checks if a string represents a number
- * @param str
- * @return
- */
 bool ASAE::isAllDigits(const std::string &str){
 
     // Iterates each character in a std::string and checks if it's an integer or not

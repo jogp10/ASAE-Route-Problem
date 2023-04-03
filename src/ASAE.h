@@ -75,8 +75,19 @@ public:
      */
     void genetic();
 
+    /**
+     * Check if a number in the correct interval (a to b) is inputted
+     * @param a
+     * @param text
+     * @return
+     */
     bool parseInput(int a, int b, const string &text);
 
+    /**
+     * Checks if a string represents a number
+     * @param str
+     * @return
+     */
     bool isAllDigits(const string &str);
 
     bool ask_parameters(string &iteration_number, string &mutation_func, string &evaluation_func);
