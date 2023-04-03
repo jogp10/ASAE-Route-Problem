@@ -88,17 +88,30 @@ void Time::toNextHour() {
     this->milliseconds = 0;
 }
 
-void Time::toPreviousHour() {
-    this->hours--;
-    if (this->hours < 0) {
-        this->hours = 23;
-        this->days--;
-    }
-    this->minutes = 0;
-    this->seconds = 0;
-    this->milliseconds = 0;
-}
-
 float Time::toSeconds() {
     return (float) this->milliseconds / 1000 + this->seconds + this->minutes * 60 + this->hours * 3600 + this->days * 86400;
+}
+
+std::string Time::toString(Time t) {
+    std::string time = "";
+    t.addTime(0, 0, 0, 0, 0);
+    if (t.days > 0) {
+        time += std::to_string(t.days) + "d ";
+    }
+    if (t.hours > 0) {
+        time += std::to_string(t.hours) + "h ";
+    }
+    if (t.minutes > 0) {
+        time += std::to_string(t.minutes) + "m ";
+    }
+    if (t.seconds > 0) {
+        time += std::to_string(t.seconds) + "s ";
+    }
+    if (t.milliseconds > 0) {
+        time += std::to_string(t.milliseconds) + "ms ";
+    }
+    if (time != "") {
+        return time;
+    }
+    return "0ms";
 }

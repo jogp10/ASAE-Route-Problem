@@ -26,7 +26,6 @@ class Graph {
         std::list<Edge> adj; // The std::list of outgoing edges (to adjacent nodes)
         int pred = 0;
         bool visited;   // Flag to indicate if the node has been visited
-        float dist;
 
         int id;
         std::string district;
@@ -34,18 +33,16 @@ class Graph {
         std::string parish;
         std::string address;
 
-        const std::string &getAddress() const;
-
         float latitude;
+        float longitude;
+
+        int inspection_time;    // in minutes
+        int inspection_utility;
+        std::vector<int> opening_hours; // std::vector<int>(24, 0/1) 0 = closed, 1 = open
 
         float getLatitude() const;
-
         float getLongitude() const;
-
-        float longitude;
-        int inspection_time;    // in minutes
-        float inspection_utility;
-        std::vector<int> opening_hours; // std::vector<int>(24, 0/1) 0 = closed, 1 = open
+        const std::string &getAddress() const;
     };
 
     int n;              // Graph size (vertices are numbered from 1 to n)
@@ -62,6 +59,10 @@ class Graph {
     std::mt19937 engine;
 
     std::vector<int> iterations;
+    int iterations_optimal{};
+    std::chrono::time_point<std::chrono::system_clock> start_time;
+    std::chrono::time_point<std::chrono::system_clock> end_time;
+    std::chrono::time_point<std::chrono::system_clock> optimal_time;
 
 
 private:
@@ -103,12 +104,6 @@ public:
     void setNode(int index, std::string district, std::string county, std::string parish, std::string address, float latitude, float longitude, float inspection_utility, int inspection_time, std::vector<int> opening_hours);
 
     /**
-     * Get Nodes
-     * @return  Nodes
-     */
-    std::map<int, std::pair<float, float>> getNodes();
-
-    /**
      * Get Node
      * @param at    Id of establishment
      * @return  Node
@@ -136,41 +131,6 @@ public:
      * @return  Solution Value
      */
     int evaluate_solution_2(const std::vector<std::list<int>>& solution);
-
-    /**
-     * Minimize waiting time
-     * @param solution  Solution
-     * @return  Solution Value
-     */
-    int evaluate_solution_3(const std::vector<std::list<int>>& solution);
-
-    /**
-     * Minimize travel time
-     * @param solution  Solution
-     * @return  Solution Value
-     */
-    int evaluate_solution_4(const std::vector<std::list<int>>& solution);
-
-    /**
-     * Get Random Node different from idx
-     * @param idx   Index of Establishment
-     * @return  Random Node
-     */
-    int random_node(int idx=0) const;
-
-    /**
-     * Get Closest Node different from idx and incompatible
-     * @param idx
-     * @return
-     */
-    int closest_node(int idx, std::list<int> incompatible) const;
-
-    /**
-     * Get order (th) Closest Node different from idx
-     * @param idx
-     * @return
-     */
-    int closest_node(int idx, int order=1) const;
 
     /**
      * Get Random Solution
@@ -213,7 +173,7 @@ public:
      * Display more details about a solution
      * @param solution
      */
-    void printDetailedSolution(const std::vector<std::list<int>>& solution, bool log=false);
+    void printDetailedSolution(const std::vector<std::list<int>>& solution);
 
     /**
      * Get total travel time of a solution
@@ -310,7 +270,6 @@ public:
      */
     std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_1(const std::vector<std::list<int>> &father_solution, const std::vector<std::list<int>> &mother_solution);
 
-
     /**
      * Crossover two solutions (father and mother -> child1(father[0:mid1], mother[mid1:mid2], father[mid2:end) and child2(mother[0:mid1], father[mid1:mid2], mother[mid2:end)))
      * @param father_solution
@@ -369,6 +328,15 @@ public:
     std::vector<std::list<int>> tabuSearch(int iteration_number, int tabu_size, int neighborhood_size, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
 
     /**
+     * Check if a queue contains a given element
+     * @param queue
+     * @param element
+     * @return
+     */
+    bool queueContainsElem(std::queue<int> queue, int element);
+
+
+    /**
      * Genetic algorithm
      * @param iteration_number
      * @param population_size
@@ -384,13 +352,13 @@ public:
 
     /**
      * Check if a solution is valid
-     * @param vector1
+     * @param solution
      * @return
      */
-    bool check_solution(std::vector<std::list<int>> vector1);
+    bool check_solution(std::vector<std::list<int>> solution);
 
     /**
-     * Plot graph
+     * Plot graph of initial solution
      */
     void plot_initial_solution(std::vector<std::list<int>> solution);
 
@@ -435,12 +403,62 @@ public:
      */
     std::pair<std::vector<std::list<int>>, int> get_greatest_fit(std::vector<std::vector<std::list<int>>> population, int (Graph::*evalFunction)(const std::vector<std::list<int>>&));
 
+    /**
+     * Plot evolution graph
+     * @param iterations
+     * @param title
+     */
     void evolutionGraph(std::vector<int> iterations, std::string title);
 
+    /**
+     * Compare algorithms
+     * @param sol1
+     * @param sol2
+     * @param sol3
+     * @param sol4
+     */
     void compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
                             std::vector<int> sol3, std::vector<int> sol4, int iterations);
 
+    /**
+     * Get iterations
+     * @return
+     */
     const std::vector<int> &getIterations() const;
+
+    /**
+     * Get number of iteration, where was found the last optimal solution
+     * @return
+     */
+    int getIterationsOptimal();
+
+    /**
+     * Get runtime
+     * @return
+     */
+    float getRuntime();
+
+    /**
+     * Get runtime of the last optimal solution
+     * @return
+     */
+    float getRuntimeOptimal();
+
+    /**
+     * Start timer
+     */
+    void startTimer();
+
+    /**
+     * End timer
+     */
+    void endTimer();
+
+    /**
+     * Update timer
+     * @param iteration of newer best solution
+     */
+    void updateTimer(int i);
 };
 
 #endif /* GRAPH_H_ */
