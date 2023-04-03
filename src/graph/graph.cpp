@@ -908,9 +908,7 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
     int best_score = (this->*evaluation_func)(best_solution);
     queue<int> tabu_list;
 
-    //printSolution(best_solution);
-    cout << "Solution is valid: " << check_solution(best_solution) << endl;
-    cout << "Score: " << best_score << endl;
+    cout << "Initial Score: " << best_score << endl;
     iterations = {};
     for(int i = 0; i < iteration_number; i++) {
         vector<vector<list<int>>> neighbourhood = this->getNeighbours(best_solution, neighborhood_size, (mutation_func));
@@ -927,16 +925,13 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
             }
         }
 
-
         if(best_neighbour_score > best_score) {
             best_solution = best_neighbour_solution;
             best_score = best_neighbour_score;
 
-
-
             if (log) {
-                cout << "Iteration: " << i << endl;
-                cout << "Score: " << best_score << endl;
+                cout << "Iteration: " << i;
+                cout << ", New Score: " << best_score << endl;
             }
         }
 
@@ -949,8 +944,6 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
 
     }
 
-
-    cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
     return best_solution;
 }
