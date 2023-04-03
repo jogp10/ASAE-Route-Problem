@@ -131,11 +131,11 @@ void ASAE::readEstablishments(const int &n)
 }
 
 
-ASAE::ASAE()
+ASAE::ASAE(int maxEstablishments)
 {
     max_establishments = numberOfLines(distancesFile);
 
-    int number_of_establishments = 1001;
+    int number_of_establishments = maxEstablishments == -1 ? max_establishments : maxEstablishments;
 
     this->graph = Graph(number_of_establishments, true, {0, 0, 0, 9, 0}, {0, 0, 0, 8, 0});
 
@@ -727,6 +727,10 @@ void ASAE::plots() {
         }
     }
 }
+
+void ASAE::setMaxEstablishments(const int &n) { max_establishments = n; }
+
+int ASAE::getEstablishments(const int &n) { return max_establishments; }
 
 
 void ASAE::printEndAlgorithm(const vector<list<int>>& s, int number_of_iterations, int iterations_to_reach_optimal, float total_time, float time_to_reach_optimal) {
