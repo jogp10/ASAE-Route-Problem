@@ -175,7 +175,9 @@ void ASAE::menu() {
 
     cout << endl << "Welcome to the ASAE!" << endl;
     cout << endl;
+
     while (true) {
+
 
         cout << "1 - Show all establishments" << endl;
         cout << "2 - Hill climbing" << endl;
@@ -211,6 +213,7 @@ void ASAE::menu() {
                     break;
                 case 5:
                     genetic();
+                    break;
                 case 6:
                     plots();
                     break;
@@ -288,6 +291,7 @@ void ASAE::hill_climbing() {
     cout << graph.totalOperationTime(solution) << endl;
     cout << graph.evaluate_solution_1(solution) << endl;
 
+    if(logs) {graph.evolutionGraph(graph.getIterations(), "Hill Climbing");std::string opt; std::getline(std::cin, opt);};
 
 }
 
@@ -331,7 +335,7 @@ void ASAE::simulated_annealing() {
         if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
     }
     else{
-        iteration_number = "10000";
+        iteration_number = "1000";
         mutation_func = "5";
         evaluation_func = "1";
     }
@@ -346,6 +350,7 @@ void ASAE::simulated_annealing() {
     cout << graph.totalOperationTime(solution) << endl;
     cout << graph.evaluate_solution_1(solution) << endl;
 
+    if(logs) {graph.evolutionGraph(graph.getIterations(), "Simulated Annealing");std::string opt; std::getline(std::cin, opt);};
 }
 
 void ASAE::tabu_search() {
@@ -390,6 +395,8 @@ void ASAE::tabu_search() {
     //graph.printSolution(solution);
     cout << graph.totalOperationTime(solution) << endl;
     cout << graph.evaluate_solution_1(solution) << endl;
+
+    if(logs) {graph.evolutionGraph(graph.getIterations(), "Tabu Search");std::string opt; std::getline(std::cin, opt);};
 
 }
 
@@ -443,7 +450,7 @@ void ASAE::genetic() {
     cout << graph.evaluate_solution_1(solution) << endl;
 
 
-    graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");
+    if(logs) {graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);};
 
 }
 
@@ -588,6 +595,7 @@ bool ASAE::print_logs() {
         cout << "Do you want to print detailed information?" << endl;
         cout << "1 - Yes" << endl;
         cout << "2 - No" << endl;
+        cout << "Option:";
         getline(cin, print_logs);
         // Check for CTRL + Z or CTRL + D input to close the program
 
@@ -759,7 +767,6 @@ void ASAE::plots() {
         if(correct){
             switch (std::stoi(option)) {
                 case 1:
-
                     graph.plot_initial_solution(graph.generate_closest_solution(false));
                     break;
                 case 2:
@@ -768,6 +775,7 @@ void ASAE::plots() {
                 case 0:
                     return;
             }
+            std::getline(std::cin, option);
         }
         else{
             cout << endl;
