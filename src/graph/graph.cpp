@@ -282,10 +282,12 @@ float Graph::totalTravelTime(const vector<list<int>> &solution, bool log) {
             last = it;
         }
 
-        //cout << "Vehicle " << i << " total travel time: " << vehicle_time << "s" << endl;
+        if (log)
+            cout << "Vehicle " << i << " total travel time: " << vehicle_time << "s" << endl;
         travel_time += vehicle_time;
     }
-    //cout << "Total travel time: " << travel_time << "s" << endl;
+    if (log)
+        cout << "Total travel time: " << travel_time << "s" << endl;
 
     return travel_time;
 }
@@ -397,12 +399,15 @@ float Graph::totalOperationTime(const vector<list<int>> &solution, bool log) {
 
         t.subTime(departure_time);
         float vehicle_time = t.toSeconds();
-        //cout << "Vehicle " << i << " total operation time: " << vehicle_time << "s" << endl;
+        if (log)
+            cout << "Vehicle " << i << " total operation time: " << vehicle_time << "s" << endl;
         operation_time += vehicle_time;
         if(vehicle_time > 28800) number_above++;
     }
-    //cout << "Total operation time: " << operation_time << "s" << endl;
-    //cout << "Number of vehicles above 8h: " << number_above << endl;
+    if (log) {
+        cout << "Total operation time: " << operation_time << "s" << endl;
+        cout << "Number of vehicles above 8h: " << number_above << endl;
+    }
     return operation_time;
 }
 
@@ -808,7 +813,6 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
     vector<list<int>> best_solution = this->generate_closest_solution();
     int best_score = (this->*evaluation_func)(best_solution);
 
-    cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
 
     iterations = {};
@@ -822,15 +826,13 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
             best_score = neighbour_score;
 
             if (log) {
-                cout << "Iteration: " << i << endl;
-                cout << "Score: " << best_score << endl;
+                cout << "Iteration: " << i;
+                cout << ", New Score: " << best_score << endl;
             }
         }
         iterations.push_back(best_score);
     }
 
-
-    cout << "Solution is valid: " << check_solution(best_solution) << endl;
     cout << "Score: " << best_score << endl;
     return best_solution;
 }
@@ -861,8 +863,8 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, const fl
             best_score = neighbour_score;
 
             if (log) {
-                cout << "Iteration: " << i << endl;
-                cout << "Score: " << best_score << endl;
+                cout << "Iteration: " << i;
+                cout << ", New Score: " << best_score << endl;
             }
         }
     }
