@@ -151,7 +151,9 @@ void ASAE::menu() {
 
     cout << endl << "Welcome to the ASAE!" << endl;
     cout << endl;
+
     while (true) {
+
 
         cout << "1 - Show all establishments" << endl;
         cout << "2 - Hill climbing" << endl;
@@ -187,6 +189,7 @@ void ASAE::menu() {
                     break;
                 case 5:
                     genetic();
+                    break;
                 case 6:
                     plots();
                     break;
@@ -256,6 +259,7 @@ void ASAE::hill_climbing() {
 
     // Run hill climbing
     vector<list<int>> solution = (graph.*(&Graph::hillClimbing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
+    if(logs) {graph.evolutionGraph(graph.getIterations(), "Hill Climbing");std::string opt; std::getline(std::cin, opt);};
 }
 
 
@@ -308,6 +312,7 @@ void ASAE::simulated_annealing() {
 
     // Run simulated annealing
     vector<list<int>> solution = (graph.*(&Graph::simulatedAnnealing))(std::stoi(iteration_number), 0.999, mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
+    if(logs) {graph.evolutionGraph(graph.getIterations(), "Simulated Annealing");std::string opt; std::getline(std::cin, opt);};
 }
 
 
@@ -349,6 +354,7 @@ void ASAE::tabu_search() {
 
     // Run tabu search
     vector<list<int>> solution = (graph.*(&Graph::tabuSearch))(std::stoi(iteration_number), std::stoi(tabu_size), std::stoi(neighborhood_size), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
+    if(logs) {graph.evolutionGraph(graph.getIterations(), "Tabu Search");std::string opt; std::getline(std::cin, opt);};
 }
 
 
@@ -394,7 +400,7 @@ void ASAE::genetic() {
 
     // Run genetic algorithm
     vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate), (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
-    graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");
+    if(logs) {graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);};
 }
 
 
@@ -419,6 +425,7 @@ bool ASAE::parseInput(int a, int b, const std::string& text){
 
     return false;
 }
+
 
 /**
  * Checks if a string represents a number
@@ -537,6 +544,7 @@ bool ASAE::print_logs() {
         cout << "Do you want to print detailed information?" << endl;
         cout << "1 - Yes" << endl;
         cout << "2 - No" << endl;
+        cout << "Option: ";
         getline(cin, print_logs);
         // Check for CTRL + Z or CTRL + D input to close the program
 
@@ -706,7 +714,6 @@ void ASAE::plots() {
         if(correct){
             switch (std::stoi(option)) {
                 case 1:
-
                     graph.plot_initial_solution(graph.generate_closest_solution(false));
                     break;
                 case 2:
@@ -715,6 +722,7 @@ void ASAE::plots() {
                 case 0:
                     return;
             }
+            std::getline(std::cin, option);
         }
         else{
             cout << endl;

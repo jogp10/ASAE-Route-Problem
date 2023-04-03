@@ -932,7 +932,6 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
     int generation_no = 0;
 
     while (iteration_number > 0) {
-
         generation_no += 1;
 
         vector<list<int>> tournament_winner = tournamentSelection(population, tournament_size, (evaluation_func));
@@ -954,14 +953,13 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
         pair<vector<list<int>>, int> greatest_fit_and_score = get_greatest_fit(population, (evaluation_func));
 
 
-
         if(greatest_fit_and_score.second > best_score) {
             best_solution = greatest_fit_and_score.first;
             best_score = greatest_fit_and_score.second;
             best_solution_generation = generation_no;
             if (log) {
                 cout << "\nGeneration: " << best_solution_generation << endl;
-                cout << "Score: " << best_score << endl;
+                cout << "New Score: " << best_score << endl;
 
             }
         } iteration_number -= 1;
