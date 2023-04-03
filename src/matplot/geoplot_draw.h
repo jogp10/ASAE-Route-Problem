@@ -29,7 +29,7 @@ public:
     void evolution_graph(vector<int> vector1, string title);
 
     void compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
-                            std::vector<int> sol3, std::vector<int> sol4);
+                            std::vector<int> sol3, std::vector<int> sol4, int num_iterations);
 
 private:
     Graph graph;

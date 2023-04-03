@@ -144,43 +144,37 @@ void Geoplot_draw::evolution_graph(vector<int> iterations,string title) {
 }
 
 void Geoplot_draw::compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
-                                      std::vector<int> sol3, std::vector<int> sol4) {
+                                      std::vector<int> sol3, std::vector<int> sol4, int num_iterations) {
 
     using namespace matplot;
 
-    //auto x = linspace(0, 100);
-
     for(int i = 0; i < sol1.size(); i++){
-       cout << sol1[i] << " " << sol2[i] << " " << sol3[i] << " " << sol4[i] << endl;
+        cout << sol1[i] << " " << sol2[i] << " " << sol3[i] << " " << sol4[i] << endl;
     }
-    auto x = linspace(1, 99);
 
-
-
-    /*plot(x, sol1);
-
-    hold(on);
-    plot(x, sol2);
-
-    plot(x, sol3);
-
-    plot(x, sol4);
-
-    hold(off);
-    auto lgd = legend("Hill Climbing", "Simulated Annealing", "Genetic Algorithm", "Tabu Search");
-    //lgd->location(legend::general_alignment::bottomleft);
-    //lgd->box(false);
-
-
-    show();*/
     tiledlayout(1, 1);
 
     auto ax1 = nexttile();
+
     vector<vector<int>> data = {sol4, sol1, sol2, sol3};
-    plot(ax1, data);
 
-    legend(ax1, "Hill Climbing", "Simulated Annealing", "Genetic Algorithm", "Tabu Search");
 
+    //min of all
+    double min = *min_element(sol4.begin(), sol4.end());
+
+
+    std::vector<std::string> newcolors = {"red","black","blue", "magenta"};
+    std::vector<std::string> newcolors2 = {"#FF0000", "#FF8800", "#0000FF",
+                                          "#00BB00"};
+    colororder(newcolors2);
+
+    auto p = plot(ax1, data);
+
+    ax1->title( "Algorithm Comparison");
+    auto t = text(ax1, num_iterations-(num_iterations*0.3), min+30, "Hill Climbing")->color("#FF8800").font_size(11).font("Calibri");
+    auto t2 = text(ax1, num_iterations-(num_iterations*0.3), min+20, "Simulated Annealing")->color( "#0000FF").font_size(11).font("Calibri");
+    auto t3 = text(ax1, num_iterations-(num_iterations*0.3), min+10, "Tabu Search")->color("#00BB00").font_size(11).font("Calibri");
+    auto t4 = text(ax1, num_iterations-(num_iterations*0.3), min, "Genetic Algorithm")->color("#FF0000").font_size(11).font("Calibri");
 
     show();
 

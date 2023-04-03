@@ -438,7 +438,7 @@ public:
     void evolutionGraph(std::vector<int> iterations, std::string title);
 
     void compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
-                            std::vector<int> sol3, std::vector<int> sol4);
+                            std::vector<int> sol3, std::vector<int> sol4, int iterations);
 
     const std::vector<int> &getIterations() const;
 };
