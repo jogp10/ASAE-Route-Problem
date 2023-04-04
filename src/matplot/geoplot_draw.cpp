@@ -4,6 +4,7 @@
 
 #include <set>
 #include <utility>
+#include <string>
 #include "geoplot_draw.h"
 
 
@@ -26,7 +27,7 @@ void Geoplot_draw::setup_axes() {
 
 }
 
-void Geoplot_draw::draw_all_vehicles(const vector<list<int>>& solution) {
+void Geoplot_draw::draw_all_vehicles(const vector<list<int>>& solution, string title) {
     auto lats = std::vector<double>();
     auto longs = std::vector<double>();
     auto addresses = std::vector<std::string>();
@@ -78,7 +79,9 @@ void Geoplot_draw::draw_all_vehicles(const vector<list<int>>& solution) {
     this->ax_->xlabel("Longitude");
     this->ax_->ylabel("Latitude");
     this->ax_->font("Calibri");
-    sgtitle("Random Solution");
+
+    sgtitle(title);
+
     ax_->draw();
 
     show();

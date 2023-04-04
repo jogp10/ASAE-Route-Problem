@@ -742,10 +742,10 @@ void ASAE::plots() {
         if(correct){
             switch (std::stoi(option)) {
                 case 1:
-                    graph.plot_initial_solution(graph.generate_closest_solution(false));
+                    graph.plot_initial_solution(graph.generate_closest_solution(false), "Greedy Solution");
                     break;
                 case 2:
-                    graph.plot_initial_solution(graph.generate_random_solution(false));
+                    graph.plot_initial_solution(graph.generate_random_solution(false), "Random Solution");
                     break;
                 case 3:
                     compare_algorithms();

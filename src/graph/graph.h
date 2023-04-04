@@ -13,6 +13,7 @@
 #include <random>
 #include <utility>
 #include <set>
+#include <string>
 #include "Time.h"
 
 class Graph {
@@ -362,7 +363,7 @@ public:
     /**
      * Plot graph of initial solution
      */
-    void plot_initial_solution(const std::vector<std::list<int>>& solution);
+    void plot_initial_solution(const std::vector<std::list<int>>& solution, std::string title);
 
     /**
      * Generate a random population

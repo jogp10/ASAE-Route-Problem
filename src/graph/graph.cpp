@@ -1105,13 +1105,13 @@ std::vector<std::list<int>> Graph::generate_a_star_solution(bool log) {
 }
 
 
-void Graph::plot_initial_solution(const vector<list<int>>& solution) {
+void Graph::plot_initial_solution(const vector<list<int>>& solution, string title) {
     // plot establishments (lat, long) in a map
     using namespace matplot;
 
     figure_handle f = figure(true);
     Geoplot_draw s(*this, f->current_axes());
-    s.draw_all_vehicles(solution);
+    s.draw_all_vehicles(solution, std::move(title));
 }
 
 

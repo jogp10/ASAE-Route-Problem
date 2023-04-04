@@ -23,7 +23,7 @@ public:
     Geoplot_draw(Graph graph);
     void run(size_t iterations = 100);
 
-    void draw_all_vehicles(const vector<list<int>>& solution);
+    void draw_all_vehicles(const vector<list<int>>& solution, string title="Solution");
     void draw_one_vehicle(const list<int>& solution);
 
     void evolution_graph(vector<int> vector1, string title);
