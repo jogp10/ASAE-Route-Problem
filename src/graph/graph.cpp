@@ -1169,9 +1169,9 @@ void Graph::compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
     using namespace matplot;
 
         figure_handle f = figure();
-        Geoplot_draw s(*this);
+        Geoplot_draw plot(*this);
 
-        s.compare_algorithms(sol1, sol2,sol3,sol4,num_iterations);
+        plot.compare_algorithms(sol1, sol2,sol3,sol4,num_iterations);
 }
 
 const vector<int> &Graph::getIterations() const { return iterations; }
