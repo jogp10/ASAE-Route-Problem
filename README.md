@@ -14,14 +14,18 @@ https://github.com/Cryoris/matplotlib-cpp
    - brew install gnuplot (mac)
    - http://www.gnuplot.info/download.html (windows)
 
-## Usage
+## Installation
 
 ```bash
-cmake . && make
+mkdir build
+```
+```bash
+cd build && cmake .. && make
 ```
 
 ```bash
-./ASAEInspectionRoute
+./ASAEInspectionRoute 
+(inside build folder)
 ```
 
 ## Authors
