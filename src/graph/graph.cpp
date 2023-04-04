@@ -764,7 +764,7 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, const fl
     int best_score = (this->*evaluation_func)(best_solution);
     cout << "Initial Score: " << best_score << endl;
 
-    float temperature = 10;
+    float temperature = 1000;
 
     iterations = {};
 
