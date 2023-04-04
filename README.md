@@ -21,7 +21,7 @@ cmake . && make
 ```
 
 ```bash
-../ASAEInspectionRoute
+./ASAEInspectionRoute
 ```
 
 ## Authors
