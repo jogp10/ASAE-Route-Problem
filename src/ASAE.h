@@ -17,6 +17,7 @@ class ASAE
     int max_establishments= 0;
 
     vector<vector<std::list<int>>(Graph::*)(const std::vector<std::list<int>>&)> mutation_funcs = {&Graph::mutation_solution_1, &Graph::mutation_solution_2,&Graph::mutation_solution_3, &Graph::mutation_solution_4,&Graph::mutation_solution_5,&Graph::mutation_solution_6};
+    vector<pair<vector<std::list<int>>, vector<list<int>>>(Graph::*)(const std::vector<std::list<int>>&, const std::vector<std::list<int>>&)> crossover_funcs = {&Graph::crossover_solutions_1, &Graph::crossover_solutions_2};
     vector<int(Graph::*)(const std::vector<std::list<int>>&)> evaluation_funcs = {&Graph::evaluate_solution_1, &Graph::evaluate_solution_2};
 
     /**
@@ -98,7 +99,7 @@ public:
 
     static bool ask_tabu_parameters(string &tabu_size, string &neighborhood_size);
 
-    static void ask_genetic_parameters(string &population_size, string &tournament_size, string &mutation_rate);
+    static void ask_genetic_parameters(string &population_size, string &tournament_size, string &mutation_rate, string &crossover_func);
 
     static bool print_logs();
 

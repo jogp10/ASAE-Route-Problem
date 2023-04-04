@@ -45,10 +45,7 @@ class Graph {
         const std::string &getAddress() const;
     };
 
-    int n;
-
-private:
-    // Graph size (vertices are numbered from 1 to n)
+    int n;              // Graph size (vertices are numbered from 1 to n)
     bool hasDir;        // false: undirected; true: directed
     std::vector<Node> nodes; // The std::list of nodes being represented
 
@@ -290,14 +287,6 @@ public:
      * @return
      */
     std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_2(const std::vector<std::list<int>> &father_solution, const std::vector<std::list<int>> &mother_solution);
-
-    /**
-     * Crossover two solutions (father and mother -> child1(best 5% father and 10% mother) and child2(best 5% mother and 10% father))
-     * @param father_solution
-     * @param mother_solution
-     * @return
-     */
-    std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> crossover_solutions_3(const std::vector<std::list<int>> &father_solution, const std::vector<std::list<int>> &mother_solution);
 
     /**
      * Get neighbours of a solution
