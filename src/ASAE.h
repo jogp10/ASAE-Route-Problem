@@ -107,6 +107,8 @@ public:
     void compare_algorithms();
 
     void plots();
+
+    int askVehicleToPlot();
 };
 
 #endif // ASAE_H

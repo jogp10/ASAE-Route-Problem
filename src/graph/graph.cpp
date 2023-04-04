@@ -90,7 +90,7 @@ int Graph::evaluate_solution_2(const vector<std::list<int>> &solution) {
     int size_solution = 0;
     for (const auto & i : solution) size_solution += i.size();
 
-    return 100*size_solution -number_of_exchanges/size_solution;
+    return 100*size_solution + (100 - number_of_exchanges/size_solution);
 }
 
 
@@ -514,15 +514,20 @@ vector<list<int>> Graph::mutation_solution_5(const vector<list<int>> &solution) 
 
 vector<list<int>> Graph::mutation_solution_6(const vector<list<int>> &solution) {
     int mutation =  (engine() % 5 + 1);
+    auto s = solution;
     switch (mutation) {
         case 1:
-            return mutation_solution_1(solution);
+            s = mutation_solution_1(solution);
+            return mutation_solution_5(s);
         case 2:
-            return mutation_solution_2(solution);
+            s = mutation_solution_2(solution);
+            return mutation_solution_5(s);
         case 3:
-            return mutation_solution_3(solution);
+            s = mutation_solution_3(solution);
+            return mutation_solution_5(s);
         case 4:
-            return mutation_solution_4(solution);
+            s = mutation_solution_4(solution);
+            return mutation_solution_5(s);
         case 5:
             return mutation_solution_5(solution);
         default:
@@ -794,6 +799,7 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
     endTimer();
 
     cout << "Final Score: " << best_score << endl;
+    last_solution = best_solution;
     return best_solution;
 }
 
@@ -832,6 +838,7 @@ vector<list<int>> Graph::simulatedAnnealing(const int iteration_number, const fl
     endTimer();
 
     cout << "Final Score: " << best_score << endl;
+    last_solution = best_solution;
     return best_solution;
 }
 
@@ -884,6 +891,7 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
     endTimer();
 
     cout << "Final Score: " << best_score << endl;
+    last_solution = best_solution;
     return best_solution;
 }
 
@@ -976,6 +984,7 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
 
     cout << "Best solution found in generation: " << best_solution_generation << endl;
     cout << "Final Score: " << best_score << endl;
+    last_solution = best_solution;
     return best_solution;
 }
 
@@ -1195,8 +1204,20 @@ void Graph::plot_vehicle_from_solution(std::vector<std::list<int>> vector1, int 
 
     figure_handle f = figure(true);
     Geoplot_draw s(*this, f->current_axes());
+    if (i == -1) {
+        s.draw_all_vehicles(vector1);
+        return;
+    }
+    else if (i < 0 || i >= vector1.size()
+                || vector1[i].empty())
+        return;
+
     s.draw_one_vehicle(getVehiclePath(i, vector1));
 }
+
+std::vector<std::list<int>> Graph::getLastSolution() { return last_solution; }
+
+int Graph::getMaxVehicles() { return nrVehicles; }
 
 float Graph::Node::getLatitude() const { return latitude; }
 

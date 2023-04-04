@@ -64,6 +64,8 @@ class Graph {
     std::chrono::time_point<std::chrono::system_clock> end_time;
     std::chrono::time_point<std::chrono::system_clock> optimal_time;
 
+    std::vector<std::list<int>> last_solution;
+
 
 private:
 
@@ -469,6 +471,10 @@ public:
     void updateTimer(int i);
 
     void plot_vehicle_from_solution(std::vector<std::list<int>> vector1, int i);
+
+    std::vector<std::list<int>> getLastSolution();
+
+    int getMaxVehicles();
 };
 
 #endif /* GRAPH_H_ */
