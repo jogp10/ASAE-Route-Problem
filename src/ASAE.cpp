@@ -159,8 +159,9 @@ void ASAE::menu() {
         cout << "3 - Simulated annealing" << endl;
         cout << "4 - Tabu" << endl;
         cout << "5 - Genetic" << endl;
-        cout << "6 - Plots" << endl;
-        cout << "7 - Change number of establishments" << endl;
+        cout << "6 - Iterated local search (Hill Climbing w/default parameters)" << endl;
+        cout << "7 - Plots" << endl;
+        cout << "8 - Change number of establishments" << endl;
         cout << "0 - Exit" << endl;
         cout << "Option: ";
         std::getline(std::cin, option);
@@ -170,7 +171,7 @@ void ASAE::menu() {
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
-        bool correct = parseInput(0,7,option);
+        bool correct = parseInput(0,8,option);
         if(correct){
             switch (std::stoi(option)) {
 
@@ -190,9 +191,12 @@ void ASAE::menu() {
                     genetic();
                     break;
                 case 6:
-                    plots();
+                    iteratedLocalSearch();
                     break;
                 case 7:
+                    plots();
+                    break;
+                case 8:
                     change_number_of_establishments();
                     break;
                 case 0:
@@ -260,7 +264,7 @@ void ASAE::hill_climbing() {
     print_logs() ? logs = true : logs = false;
 
     // Run hill climbing
-    vector<list<int>> solution = (graph.*(&Graph::hillClimbing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
+    vector<list<int>> solution = (graph.*(&Graph::hillClimbing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs, vector<list<int>>());
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
     if(logs) {graph.evolutionGraph(graph.getIterations(), "Hill Climbing");std::string opt; std::getline(std::cin, opt);};
@@ -409,6 +413,24 @@ void ASAE::genetic() {
 
     // Run genetic algorithm
     vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate), crossover_funcs[std::stoi(crossover_func)-1] , mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
+    printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
+
+    if(logs) {graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);};
+}
+
+void ASAE::iteratedLocalSearch() {
+    bool logs = false;
+
+    string iteration_number;
+    cout << "Number of iterations: ";
+    std::getline(std::cin, iteration_number);
+    while(!isAllDigits(iteration_number)){
+        cout << "Invalid number of iterations. Try again: ";
+        std::getline(std::cin, iteration_number);
+    }
+    cout << endl;
+    // Run iterated local search algorithm
+    vector<list<int>> solution = graph.iteratedLocalSearch(std::stoi(iteration_number), mutation_funcs[mutation_funcs.size()-1], evaluation_funcs[evaluation_funcs.size()-1]);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
     if(logs) {graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);};
@@ -700,7 +722,7 @@ void ASAE::compare_algorithms(){
     int num_iterations = 500;
 
     cout << "Hill Climbing" << endl;
-    (graph.*(&Graph::hillClimbing))(num_iterations,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
+    (graph.*(&Graph::hillClimbing))(num_iterations,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false, vector<list<int>>());
     vector<int> hill_climbing_solution = graph.getIterations();
 
     cout << endl << "Simulated Annealing" << endl;

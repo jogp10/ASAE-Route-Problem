@@ -721,10 +721,11 @@ bool Graph::check_solution(vector<list<int>> solution) {
 }
 
 
-vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log) {
+vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log, const vector<list<int>> initial_solution) {
     startTimer();
 
-    vector<list<int>> best_solution = this->generate_closest_solution();
+    vector<list<int>> best_solution;
+    initial_solution.empty() ? best_solution = this->generate_closest_solution() : best_solution = initial_solution;
     int best_score = (this->*evaluation_func)(best_solution);
 
     cout << "Initial Score: " << best_score << endl;
@@ -1048,6 +1049,31 @@ pair<vector<list<int>>, int> Graph::get_greatest_fit(vector<vector<list<int>>> p
     return make_pair(best_solution, best_score);
 }
 
+std::vector<std::list<int>> Graph::iteratedLocalSearch(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &)) {
+    startTimer();
+    auto st = start_time, ot = start_time;
+
+    vector<list<int>> solution = generate_closest_solution(false);
+
+    for(int i=0; i<iteration_number; i++) {
+        cout << "Iteration " << i << endl;
+        vector<list<int>> new_solution = hillClimbing(1000, mutation_func, evaluation_func, false, solution);
+        if (evaluate_solution_2(new_solution) > evaluate_solution_2(solution)) {
+            solution = new_solution;
+            last_solution = solution;
+            updateTimer(i);
+            ot = optimal_time;
+        }
+        cout << endl;
+    }
+
+    endTimer();
+    auto et = end_time;
+    start_time = st;
+    optimal_time = ot;
+    return solution;
+}
+
 
 std::vector<std::list<int>> Graph::generate_a_star_solution(bool log) {
     vector<list<int>> solution(nrVehicles, list<int>(1, 0));
@@ -1148,7 +1174,7 @@ void Graph::startTimer() { start_time = std::chrono::high_resolution_clock::now(
 void Graph::endTimer() { end_time = std::chrono::high_resolution_clock::now(); }
 
 void Graph::updateTimer(int i) {
-    iterations_optimal = i;
+    iterations_optimal = i+1;
     optimal_time = std::chrono::high_resolution_clock::now();
 }
 
