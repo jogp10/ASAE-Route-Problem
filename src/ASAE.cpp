@@ -131,11 +131,11 @@ void ASAE::readEstablishments(const int &n)
 }
 
 
-ASAE::ASAE()
+ASAE::ASAE(int maxEstablishments)
 {
     max_establishments = numberOfLines(distancesFile);
 
-    int number_of_establishments = 1001;
+    int number_of_establishments = maxEstablishments == -1 ? max_establishments : maxEstablishments;
 
     this->graph = Graph(number_of_establishments, true, {0, 0, 0, 9, 0}, {0, 0, 0, 8, 0});
 
@@ -261,7 +261,7 @@ void ASAE::hill_climbing() {
     vector<list<int>> solution = (graph.*(&Graph::hillClimbing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) {graph.evolutionGraph(graph.getIterations(), "Hill Climbing");std::string opt; std::getline(std::cin, opt);};
+    if(logs) graph.evolutionGraph(graph.getIterations(), "Hill Climbing");std::string opt; std::getline(std::cin, opt);
 }
 
 
@@ -316,7 +316,7 @@ void ASAE::simulated_annealing() {
     vector<list<int>> solution = (graph.*(&Graph::simulatedAnnealing))(std::stoi(iteration_number), 0.999, mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) {graph.evolutionGraph(graph.getIterations(), "Simulated Annealing");std::string opt; std::getline(std::cin, opt);};
+    if(logs) graph.evolutionGraph(graph.getIterations(), "Simulated Annealing");std::string opt; std::getline(std::cin, opt);
 }
 
 
@@ -334,7 +334,7 @@ void ASAE::tabu_search() {
             if(std::stoi(answer) == 1){
                 iteration_number = "1000";
                 mutation_func = "5";
-                evaluation_func = "1";
+                evaluation_func = "2";
                 tabu_size = "20";
                 neighborhood_size = "4";
                 break;
@@ -360,7 +360,7 @@ void ASAE::tabu_search() {
     vector<list<int>> solution = (graph.*(&Graph::tabuSearch))(std::stoi(iteration_number), std::stoi(tabu_size), std::stoi(neighborhood_size), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) {graph.evolutionGraph(graph.getIterations(), "Tabu Search");std::string opt; std::getline(std::cin, opt);};
+    if(logs) graph.evolutionGraph(graph.getIterations(), "Tabu Search");std::string opt; std::getline(std::cin, opt);
 }
 
 
@@ -408,7 +408,7 @@ void ASAE::genetic() {
     vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate), (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) {graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);};
+    if(logs) graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);
 }
 
 
@@ -433,11 +433,11 @@ bool ASAE::isAllDigits(const std::string &str){
 
     // Iterates each character in a std::string and checks if it's an integer or not
     if(str.empty()) return false;
-    for(char c: str){
-        if (!isdigit(c)){
+    for (char c: str)
+        if (!isdigit(c)) {
             return false;
         }
-    }
+
     return true;
 }
 
@@ -503,7 +503,7 @@ bool ASAE::ask_parameters(string &iteration_number, string &mutation_func, strin
     while (true){
         cout << endl << "Evaluation function:" << endl;
         cout << "1 - Sum of the visited Establishments" << endl;
-        cout << "2 - Add Minimizing the number of parish transfers" << endl;
+        cout << "2 - Also Minimize the number of parish transfers" << endl;
         cout << "0 - Back" << endl;
         getline(cin, evaluation_func);
         // Check for CTRL + Z or CTRL + D input to close the program
@@ -700,6 +700,7 @@ void ASAE::plots() {
         cout << "1 - Greedy Algorithm" << endl;
         cout << "2 - Random Algorithm" << endl;
         cout << "3 - Compare Algorithms" << endl;
+        cout << "4 - Plot specific vehicle from last solution found" << endl;
         cout << "0 - Back to Main Menu" << endl;
 
         std::getline(std::cin, option);
@@ -709,7 +710,8 @@ void ASAE::plots() {
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
-        bool correct = parseInput(0,3,option);
+        bool correct = parseInput(0,4,option);
+        int vehicle = 0;
         if(correct){
             switch (std::stoi(option)) {
                 case 1:
@@ -720,6 +722,10 @@ void ASAE::plots() {
                     break;
                 case 3:
                     compare_algorithms();
+                    break;
+                case 4:
+                    vehicle = askVehicleToPlot();
+                    graph.plot_vehicle_from_solution(graph.getLastSolution(),vehicle);
                     break;
                 case 0:
                     return;
@@ -733,12 +739,35 @@ void ASAE::plots() {
     }
 }
 
+void ASAE::setMaxEstablishments(const int &n) { max_establishments = n; }
+
+int ASAE::getEstablishments(const int &n) const { return max_establishments; }
+
+int ASAE::askVehicleToPlot() {
+    string option;
+    cout << "Which vehicle do you want to plot?" << endl;
+    cout << "Insert a number from 0 to " << graph.getMaxVehicles()-1 << endl;
+    cout << "Or -1 to plot all vehicles" << endl;
+
+    std::getline(std::cin, option);
+    // Check for CTRL + Z or CTRL + D input to close the program
+    if (std::cin.eof()) {
+        std::cout << "Come back any time soon!" << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
+        exit(EXIT_SUCCESS); // Closes the terminal window
+    }
+    bool correct = parseInput(0, graph.getMaxVehicles(), option);
+    return std::stoi(option);
+}
+
 
 void ASAE::printEndAlgorithm(const vector<list<int>>& s, int number_of_iterations, int iterations_to_reach_optimal, float total_time, float time_to_reach_optimal) {
     cout << "\nThe best solution found is: " << endl;
     Graph::printSolution(s);
 
     cout << endl;
+
+    cout << "Number of establishments inspected: " << graph.evaluate_solution_1(s) << endl;
 
     cout << "Total operation time (from all vehicles): " << Time::toString({0, (int) graph.totalOperationTime(s), 0, 0, 0}) << endl;
     cout << "Total travel time: " << Time::toString({0, (int) graph.totalTravelTime(s), 0, 0, 0}) << endl;

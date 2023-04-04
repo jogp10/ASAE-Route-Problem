@@ -37,7 +37,7 @@ class Graph {
         float longitude;
 
         int inspection_time;    // in minutes
-        int inspection_utility;
+        float inspection_utility;
         std::vector<int> opening_hours; // std::vector<int>(24, 0/1) 0 = closed, 1 = open
 
         float getLatitude() const;
@@ -63,6 +63,8 @@ class Graph {
     std::chrono::time_point<std::chrono::system_clock> start_time;
     std::chrono::time_point<std::chrono::system_clock> end_time;
     std::chrono::time_point<std::chrono::system_clock> optimal_time;
+
+    std::vector<std::list<int>> last_solution;
 
 
 private:
@@ -174,6 +176,14 @@ public:
      * @param solution
      */
     void printDetailedSolution(const std::vector<std::list<int>>& solution);
+
+    /**
+     * Get path of a vehicle
+     * @param vehicle
+     * @param solution
+     * @return
+     */
+    std::list<int> getVehiclePath(int vehicle, const std::vector<std::list<int>>& solution);
 
     /**
      * Get total travel time of a solution
@@ -333,7 +343,7 @@ public:
      * @param element
      * @return
      */
-    bool queueContainsElem(std::queue<int> queue, int element);
+    static bool queueContainsElem(std::queue<int> queue, int element);
 
 
     /**
@@ -360,7 +370,7 @@ public:
     /**
      * Plot graph of initial solution
      */
-    void plot_initial_solution(std::vector<std::list<int>> solution);
+    void plot_initial_solution(const std::vector<std::list<int>>& solution);
 
     /**
      * Generate a random population
@@ -430,7 +440,7 @@ public:
      * Get number of iteration, where was found the last optimal solution
      * @return
      */
-    int getIterationsOptimal();
+    int getIterationsOptimal() const;
 
     /**
      * Get runtime
@@ -459,6 +469,12 @@ public:
      * @param iteration of newer best solution
      */
     void updateTimer(int i);
+
+    void plot_vehicle_from_solution(std::vector<std::list<int>> vector1, int i);
+
+    std::vector<std::list<int>> getLastSolution();
+
+    int getMaxVehicles();
 };
 
 #endif /* GRAPH_H_ */

@@ -93,7 +93,7 @@ float Time::toSeconds() {
 }
 
 std::string Time::toString(Time t) {
-    std::string time = "";
+    std::string time;
     t.addTime(0, 0, 0, 0, 0);
     if (t.days > 0) {
         time += std::to_string(t.days) + "d ";
@@ -110,7 +110,7 @@ std::string Time::toString(Time t) {
     if (t.milliseconds > 0) {
         time += std::to_string(t.milliseconds) + "ms ";
     }
-    if (time != "") {
+    if (!time.empty()) {
         return time;
     }
     return "0ms";
