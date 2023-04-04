@@ -1161,7 +1161,7 @@ void Graph::compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
     using namespace matplot;
 
         figure_handle f = figure(true);
-        Geoplot_draw s(*this);
+        Geoplot_draw s(*this,f->current_axes());
 
         s.compare_algorithms(std::move(sol1), std::move(sol2),std::move(sol3),std::move(sol4),num_iterations);
 }

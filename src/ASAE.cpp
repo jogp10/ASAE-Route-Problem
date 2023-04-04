@@ -743,13 +743,13 @@ void ASAE::compare_algorithms(){
 void ASAE::plots() {
     string option;
     while(true){
-        cout << "Plot of Initial Solution using:" << endl;
-        cout << "1 - Greedy Algorithm" << endl;
-        cout << "2 - Random Algorithm" << endl;
+        cout << "----------Plots---------" << endl;
+        cout << "1 - Initial Solution using Greedy Algorithm" << endl;
+        cout << "2 - Initial Solution using Closest Insertion Algorithm" << endl;
         cout << "3 - Compare Algorithms" << endl;
         cout << "4 - Plot specific vehicle from last solution found" << endl;
         cout << "0 - Back to Main Menu" << endl;
-
+        cout << "Option:" << endl;
         std::getline(std::cin, option);
         // Check for CTRL + Z or CTRL + D input to close the program
         if (std::cin.eof()) {
@@ -763,21 +763,31 @@ void ASAE::plots() {
             switch (std::stoi(option)) {
                 case 1:
                     graph.plot_initial_solution(graph.generate_closest_solution(false), "Greedy Solution");
+                    std::getline(std::cin, option);
                     break;
                 case 2:
                     graph.plot_initial_solution(graph.generate_random_solution(false), "Random Solution");
+                    std::getline(std::cin, option);
                     break;
                 case 3:
                     compare_algorithms();
                     break;
                 case 4:
-                    vehicle = askVehicleToPlot();
-                    graph.plot_vehicle_from_solution(graph.getLastSolution(),vehicle);
+
+                    if(graph.getLastSolution().empty()){
+                        cout << "No solution in memory. Please run an algorithm first." << endl;
+
+                    }
+                    else{
+                        vehicle = askVehicleToPlot();
+                        graph.plot_vehicle_from_solution(graph.getLastSolution(),vehicle);
+                        std::getline(std::cin, option);
+                    }
                     break;
                 case 0:
                     return;
             }
-            std::getline(std::cin, option);
+
         }
         else{
             cout << endl;
@@ -801,7 +811,8 @@ int ASAE::askVehicleToPlot() {
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
-        bool correct = parseInput(0, graph.getMaxVehicles(), option);
+        if(option == "-1") return -1;
+        bool correct = parseInput(-1, graph.getMaxVehicles(), option);
         if (correct) {
             return std::stoi(option);
         } else {
