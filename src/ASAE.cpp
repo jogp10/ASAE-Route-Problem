@@ -384,7 +384,7 @@ void ASAE::genetic() {
                 evaluation_func = "2";
                 population_size = "20";
                 tournament_size = "5";
-                mutation_rate = "10";
+                mutation_rate = "90";
                 crossover_func = "1";
                 custom = false;
                 break;
@@ -815,7 +815,7 @@ void ASAE::change_number_of_establishments() {
             break;
         } else {
             cout << endl;
-            cout << "Invalid number of establishments. Insert a number from 10 to 1001" << endl;
+            cout << "Invalid number of establishments. Insert a number from 10 to 1000" << endl;
             cout << endl;
         }
     }

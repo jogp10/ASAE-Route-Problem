@@ -80,17 +80,19 @@ int Graph::evaluate_solution_2(const vector<std::list<int>> &solution) {
     for(int i=0; i<solution.size(); i++) {
         auto before = next(solution[i].begin(), 1);
         auto it = next(before, 1);
-        for(int j=2; j<solution.size()-1; j++) {
+        for(int j=2; j<solution[i].size()-1; j++) {
             if (!nodes[*it].parish.empty() and nodes[*before].parish != nodes[*it].parish) {
                 number_of_exchanges += 1;
             }
+            before = it;
+            it = next(it, 1);
         }
     }
 
     int size_solution = 0;
     for (const auto & i : solution) size_solution += i.size() - 2;
-
-    return 100*size_solution + (100 - number_of_exchanges/size_solution);
+    if (size_solution == 0) return 0;
+    return 100*size_solution + (100 - ((float) number_of_exchanges/size_solution)*100);
 }
 
 
@@ -394,7 +396,7 @@ vector<list<int>> Graph::mutation_solution_1(const vector<list<int>> &solution) 
     int vehicle2 = engine() % nrVehicles;
     int node = (engine() % (new_solution[vehicle].size() - 2) + 1);
     int node2 = (engine() % (new_solution[vehicle2].size() - 2) + 1);
-    while(vehicle == vehicle2 && node ==node2){
+    while(vehicle == vehicle2 && node ==node2 && solution[vehicle].size() > 3){
         node2 = (engine() % (new_solution[vehicle2].size() - 2) + 1);
     }
 
@@ -601,7 +603,11 @@ vector<list<int>> Graph::fillSolution(const vector<list<int>> &child) {
 
 
 pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(const vector<list<int>> &father_solution, const vector<list<int>> &mother_solution) {
-    int midpoint = engine() % (nrVehicles - 2) + 1;
+    if(nrVehicles < 2) {
+        return make_pair(father_solution, mother_solution);
+    }
+
+    int midpoint = engine() % nrVehicles + 1;
     vector<list<int>> child1(father_solution.begin(), father_solution.begin()+midpoint), child2(mother_solution.begin(), mother_solution.begin()+midpoint);
 
     child1.insert(child1.end(), mother_solution.begin()+midpoint, mother_solution.end());
@@ -645,6 +651,10 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_1(const ve
 
 
 pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(const vector<list<int>> &father_solution, const vector<list<int>> &mother_solution) {
+    if(nrVehicles < 3) {
+        return make_pair(father_solution, mother_solution);
+    }
+
     int midpoint1 = nrVehicles/3;
     int midpoint2 = 2*nrVehicles/3;
 
@@ -933,8 +943,9 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
 
 vector<vector<list<int>>> Graph::generatePopulation(int population_size) {
     vector<vector<list<int>>> population;
+    auto n = this->generate_closest_solution();
     for (int i = 0; i < population_size; i++) {
-        population.push_back(this->generate_random_solution());
+        population.push_back(mutation_solution_6(n));
     }
     return population;
 }
