@@ -125,7 +125,7 @@ void ASAE::readEstablishments(const int &n)
                 break;
             }
         }
-    
+
         file.close();
     }
 }
@@ -163,7 +163,6 @@ void ASAE::menu() {
         cout << "6 - Plots" << endl;
         cout << "0 - Exit" << endl;
         cout << "Option: ";
-
         std::getline(std::cin, option);
         // Check for CTRL + Z or CTRL + D input to close the program
         if (std::cin.eof()) {
@@ -251,8 +250,8 @@ void ASAE::hill_climbing() {
     }
     else{
         iteration_number = "1000";
-        mutation_func = "5";
-        evaluation_func = "1";
+        mutation_func = "6";
+        evaluation_func = "2";
     }
 
     print_logs() ? logs = true : logs = false;
@@ -306,8 +305,8 @@ void ASAE::simulated_annealing() {
     }
     else{
         iteration_number = "1000";
-        mutation_func = "5";
-        evaluation_func = "1";
+        mutation_func = "6";
+        evaluation_func = "2";
     }
 
     print_logs() ? logs = true : logs = false;
@@ -333,7 +332,7 @@ void ASAE::tabu_search() {
         if(correct){
             if(std::stoi(answer) == 1){
                 iteration_number = "1000";
-                mutation_func = "5";
+                mutation_func = "6";
                 evaluation_func = "2";
                 tabu_size = "20";
                 neighborhood_size = "4";
@@ -366,7 +365,7 @@ void ASAE::tabu_search() {
 
 void ASAE::genetic() {
     bool logs = false, custom = false;
-    string iteration_number, mutation_func, evaluation_func, population_size, tournament_size, mutation_rate;
+    string iteration_number, mutation_func, evaluation_func, population_size, tournament_size, mutation_rate, crossover_func;
     // Use recommended parameters
     while(true){
         cout << "1 - Use recommended parameters " << endl;
@@ -378,11 +377,12 @@ void ASAE::genetic() {
         if(correct){
             if(std::stoi(answer) == 1){
                 iteration_number = "1000";
-                mutation_func = "5";
-                evaluation_func = "1";
+                mutation_func = "6";
+                evaluation_func = "2";
                 population_size = "20";
                 tournament_size = "5";
                 mutation_rate = "10";
+                crossover_func = "1";
                 custom = false;
                 break;
             }
@@ -398,14 +398,14 @@ void ASAE::genetic() {
     if (custom){
         // Ask for parameters
         if(!ask_parameters(iteration_number, mutation_func, evaluation_func)) return;
-        ask_genetic_parameters(population_size, tournament_size, mutation_rate);
+        ask_genetic_parameters(population_size, tournament_size, mutation_rate, crossover_func);
     }
 
     print_logs() ? logs = true : logs = false;
 
 
     // Run genetic algorithm
-    vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate), (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
+    vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate), crossover_funcs[std::stoi(crossover_func)-1] , mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
     if(logs) graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);
@@ -564,7 +564,7 @@ bool ASAE::print_logs() {
 }
 
 
-void ASAE::ask_genetic_parameters(string &population_size, string &tournament_size, string &mutation_rate){
+void ASAE::ask_genetic_parameters(string &population_size, string &tournament_size, string &mutation_rate, string &crossover_func){
 
     while(true){
         cout << "What is the size of the population?" << endl;
@@ -621,6 +621,26 @@ void ASAE::ask_genetic_parameters(string &population_size, string &tournament_si
         } else {
             cout << endl;
             cout << "Invalid mutation rate. Insert a number from 0% to 100%" << endl;
+            cout << endl;
+        }
+    }
+    while(true) {
+        cout << "What is the crossover function?" << endl;
+        cout << "1 - One point crossover" << endl;
+        cout << "2 - Two point crossover" << endl;
+        std::getline(std::cin, crossover_func);
+        // Check for CTRL + Z or CTRL + D input to close the program
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(1, 2, crossover_func);
+        if (correct) {
+            break;
+        } else {
+            cout << endl;
+            cout << "Invalid crossover function." << endl;
             cout << endl;
         }
     }
@@ -745,19 +765,28 @@ int ASAE::getEstablishments(const int &n) const { return max_establishments; }
 
 int ASAE::askVehicleToPlot() {
     string option;
-    cout << "Which vehicle do you want to plot?" << endl;
-    cout << "Insert a number from 0 to " << graph.getMaxVehicles()-1 << endl;
-    cout << "Or -1 to plot all vehicles" << endl;
+    while(true) {
+        cout << "Which vehicle do you want to plot?" << endl;
+        cout << "Insert a number from 0 to " << graph.getMaxVehicles() - 1 << endl;
+        cout << "Or -1 to plot all vehicles" << endl;
 
-    std::getline(std::cin, option);
-    // Check for CTRL + Z or CTRL + D input to close the program
-    if (std::cin.eof()) {
-        std::cout << "Come back any time soon!" << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
-        exit(EXIT_SUCCESS); // Closes the terminal window
+        std::getline(std::cin, option);
+        // Check for CTRL + Z or CTRL + D input to close the program
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(0, graph.getMaxVehicles(), option);
+        if (correct) {
+            return std::stoi(option);
+        } else {
+            cout << endl;
+            cout << "Invalid option. Insert a number from 0 to " << graph.getMaxVehicles() - 1 << endl;
+            cout << "Or -1 to plot all vehicles" << endl;
+            cout << endl;
+        }
     }
-    bool correct = parseInput(0, graph.getMaxVehicles(), option);
-    return std::stoi(option);
 }
 
 

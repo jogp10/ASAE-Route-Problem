@@ -692,64 +692,6 @@ pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_2(const ve
 }
 
 
-pair<vector<list<int>>, vector<list<int>>> Graph::crossover_solutions_3(const vector<list<int>> &father_solution, const vector<list<int>> &mother_solution) {
-    int under5percentile = nrVehicles*0.05;
-    int under10percentile = nrVehicles*0.1;
-
-    auto father_ordered = father_solution;
-    auto mother_ordered = mother_solution;
-
-    sort(father_ordered.begin(), father_ordered.end(), [](const list<int> &a, const list<int> &b) {
-        return a.size() < b.size();
-    });
-
-    sort(mother_ordered.begin(), mother_ordered.end(), [](const list<int> &a, const list<int> &b) {
-        return a.size() < b.size();
-    });
-
-    vector<list<int>> child1(100), child2(100);
-
-    auto it = child1.begin();
-    auto it2 = child2.begin();
-
-    for(int i = 0; i < under5percentile; i++) {
-        *it = father_ordered[i];
-        it++;
-        *it2 = mother_ordered[i];
-        it2++;
-    }
-
-    for(int i = under5percentile; i < under10percentile; i++) {
-        *it = mother_ordered[i];
-        it++;
-        *it2 = father_ordered[i];
-        it2++;
-    }
-
-    // remove possible repeated nodes
-    set<int> used_establishments1;
-
-    for(auto van: child1) {
-        auto it = van.begin();
-        while(it != van.end()) {
-            int previous_size = used_establishments1.size();
-            used_establishments1.insert(*it);
-
-            if(previous_size == used_establishments1.size()) {
-                it = van.erase(it);
-                continue;
-            }
-            it++;
-        }
-    }
-
-    fillSolution(child1);
-    fillSolution(child2);
-
-    return make_pair(child1, child2);
-}
-
-
 bool Graph::check_solution(vector<list<int>> solution) {
     // check if hours of path don't exceed 8 hours
     for (auto &t: times) t = departure_time;
@@ -1218,6 +1160,8 @@ void Graph::plot_vehicle_from_solution(std::vector<std::list<int>> vector1, int 
 std::vector<std::list<int>> Graph::getLastSolution() { return last_solution; }
 
 int Graph::getMaxVehicles() { return nrVehicles; }
+
+void Graph::setNumberOfEstablishments(int numberOfEstablishments) { n = numberOfEstablishments; }
 
 float Graph::Node::getLatitude() const { return latitude; }
 
