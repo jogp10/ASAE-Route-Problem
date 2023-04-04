@@ -1,8 +1,3 @@
-//
-// Created by ricar on 3/16/2023.
-//
-
-#include <set>
 #include <utility>
 #include <string>
 #include "geoplot_draw.h"
@@ -27,7 +22,7 @@ void Geoplot_draw::setup_axes() {
 
 }
 
-void Geoplot_draw::draw_all_vehicles(const vector<list<int>>& solution, string title) {
+void Geoplot_draw::draw_all_vehicles(const vector<list<int>>& solution, const string& title) {
     auto lats = std::vector<double>();
     auto longs = std::vector<double>();
     auto addresses = std::vector<std::string>();
@@ -130,7 +125,7 @@ void Geoplot_draw::draw_one_vehicle(const list<int>& vehicle_path) {
 
 }
 
-void Geoplot_draw::evolution_graph(vector<int> iterations,string title) {
+void Geoplot_draw::evolution_graph(vector<int> iterations,const string& title) {
 
     double max = *max_element(iterations.begin(), iterations.end());
     double min = *min_element(iterations.begin(), iterations.end());
@@ -155,7 +150,7 @@ void Geoplot_draw::compare_algorithms(std::vector<int> sol1, std::vector<int> so
 
     auto ax1 = nexttile();
 
-    vector<vector<int>> data = {sol4, sol1, sol2, sol3};
+    vector<vector<int>> data = {sol4, std::move(sol1), std::move(sol2), sol3};
 
     //min of all
     double min = *min_element(sol4.begin(), sol4.end()) + 3;

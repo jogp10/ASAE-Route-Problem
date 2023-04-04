@@ -83,7 +83,7 @@ public:
      * Convert time to seconds
      * @return
      */
-    float toSeconds();
+    float toSeconds() const;
 
     /**
      * Convert time to string

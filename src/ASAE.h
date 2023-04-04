@@ -45,10 +45,6 @@ class ASAE
      */
     static bool hasSubstring(const string &s);
 
-    void setMaxEstablishments(const int &n);
-
-    int getEstablishments(const int &n) const;
-
 public:
     /**
      * ASAE Constructor

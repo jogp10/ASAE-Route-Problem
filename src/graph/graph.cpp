@@ -77,10 +77,10 @@ int Graph::evaluate_solution_1(const vector<list<int>>& solution) {
 
 int Graph::evaluate_solution_2(const vector<std::list<int>> &solution) {
     int number_of_exchanges = 0;
-    for(int i=0; i<solution.size(); i++) {
-        auto before = next(solution[i].begin(), 1);
+    for(const auto & i : solution) {
+        auto before = next(i.begin(), 1);
         auto it = next(before, 1);
-        for(int j=2; j<solution[i].size()-1; j++) {
+        for(int j=2; j<i.size()-1; j++) {
             if (!nodes[*it].parish.empty() and nodes[*before].parish != nodes[*it].parish) {
                 number_of_exchanges += 1;
             }
@@ -213,7 +213,7 @@ std::list<int> Graph::getVehiclePath(int vehicle, const vector<std::list<int>> &
     if (vehicle < solution.size()) {
         return solution[vehicle];
     }
-    return std::list<int>();
+    return {};
 }
 
 
@@ -721,7 +721,7 @@ bool Graph::check_solution(vector<list<int>> solution) {
 }
 
 
-vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log, const vector<list<int>> initial_solution) {
+vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &), bool log, const vector<list<int>>& initial_solution) {
     startTimer();
 
     vector<list<int>> best_solution;
@@ -852,6 +852,7 @@ vector<list<int>> Graph::tabuSearch(int iteration_number, int tabu_size, int nei
 vector<vector<list<int>>> Graph::getNeighbours(const vector<list<int>>& solution, int neighborhood_size, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&)) {
     vector<vector<list<int>>> array;
 
+    array.reserve(neighborhood_size);
     for(int i = 0; i < neighborhood_size; i++) {
         array.push_back((this->*mutation_func)(solution));
     }
@@ -945,6 +946,8 @@ vector<list<int>> Graph::geneticAlgorithm(int iteration_number, int population_s
 vector<vector<list<int>>> Graph::generatePopulation(int population_size) {
     vector<vector<list<int>>> population;
     auto n = this->generate_closest_solution();
+
+    population.reserve(population_size);
     for (int i = 0; i < population_size; i++) {
         population.push_back(mutation_solution_6(n));
     }
@@ -984,6 +987,7 @@ vector<list<int>> Graph::rouletteSelection(vector<vector<list<int>>> population,
     vector<list<int>> best_solution = population[0];
     vector<int> scores;
 
+    scores.reserve(population.size());
     for (auto &solution: population) {
         scores.push_back((this->*evalFunction)(solution));
     }
@@ -996,6 +1000,7 @@ vector<list<int>> Graph::rouletteSelection(vector<vector<list<int>>> population,
 
     vector<double> probabilities;
 
+    probabilities.reserve(scores.size());
     for (auto &score: scores) {
         probabilities.push_back((double) score / total_score);
     }
@@ -1196,7 +1201,7 @@ void Graph::plot_vehicle_from_solution(std::vector<std::list<int>> vector1, int 
 
 std::vector<std::list<int>> Graph::getLastSolution() { return last_solution; }
 
-int Graph::getMaxVehicles() { return nrVehicles; }
+int Graph::getMaxVehicles() const { return nrVehicles; }
 
 int Graph::get_Current_Establishments() const {
     return n;

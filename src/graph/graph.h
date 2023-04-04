@@ -184,7 +184,7 @@ public:
      * @param solution
      * @return
      */
-    std::list<int> getVehiclePath(int vehicle, const std::vector<std::list<int>>& solution);
+    static std::list<int> getVehiclePath(int vehicle, const std::vector<std::list<int>>& solution);
 
     /**
      * Get total travel time of a solution
@@ -306,7 +306,7 @@ public:
      * @param log
      * @return
      */
-    std::vector<std::list<int>> hillClimbing(int iteration_number, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false, const std::vector<std::list<int>> initial_solution= std::vector<std::list<int>>());
+    std::vector<std::list<int>> hillClimbing(int iteration_number, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false, const std::vector<std::list<int>>& initial_solution= std::vector<std::list<int>>());
 
     /**
      * Simulated annealing algorithm
@@ -473,7 +473,7 @@ public:
 
     std::vector<std::list<int>> getLastSolution();
 
-    int getMaxVehicles();
+    int getMaxVehicles() const;
 
     int get_Current_Establishments() const;
 };

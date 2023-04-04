@@ -267,7 +267,7 @@ void ASAE::hill_climbing() {
     vector<list<int>> solution = (graph.*(&Graph::hillClimbing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs, vector<list<int>>());
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) {graph.evolutionGraph(graph.getIterations(), "Hill Climbing");std::string opt; std::getline(std::cin, opt);};
+    if(logs) graph.evolutionGraph(graph.getIterations(), "Hill Climbing");std::string opt; std::getline(std::cin, opt);
 }
 
 
@@ -322,7 +322,7 @@ void ASAE::simulated_annealing() {
     vector<list<int>> solution = (graph.*(&Graph::simulatedAnnealing))(std::stoi(iteration_number), 0.999, mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) {graph.evolutionGraph(graph.getIterations(), "Simulated Annealing");std::string opt; std::getline(std::cin, opt);};
+    if(logs) graph.evolutionGraph(graph.getIterations(), "Simulated Annealing");std::string opt; std::getline(std::cin, opt);
 }
 
 
@@ -366,7 +366,7 @@ void ASAE::tabu_search() {
     vector<list<int>> solution = (graph.*(&Graph::tabuSearch))(std::stoi(iteration_number), std::stoi(tabu_size), std::stoi(neighborhood_size), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) {graph.evolutionGraph(graph.getIterations(), "Tabu Search");std::string opt; std::getline(std::cin, opt);};
+    if(logs) graph.evolutionGraph(graph.getIterations(), "Tabu Search");std::string opt; std::getline(std::cin, opt);
 }
 
 
@@ -415,12 +415,10 @@ void ASAE::genetic() {
     vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate), crossover_funcs[std::stoi(crossover_func)-1] , mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) {graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);};
+    if(logs) graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);
 }
 
 void ASAE::iteratedLocalSearch() {
-    bool logs = false;
-
     string iteration_number;
     cout << "Number of iterations: ";
     std::getline(std::cin, iteration_number);
@@ -433,7 +431,7 @@ void ASAE::iteratedLocalSearch() {
     vector<list<int>> solution = graph.iteratedLocalSearch(std::stoi(iteration_number), mutation_funcs[mutation_funcs.size()-1], evaluation_funcs[evaluation_funcs.size()-1]);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) {graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);};
+    graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);
 }
 
 
@@ -760,7 +758,7 @@ void ASAE::plots() {
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
         bool correct = parseInput(0,4,option);
-        int vehicle = 0;
+        int vehicle;
         if(correct){
             switch (std::stoi(option)) {
                 case 1:
@@ -788,9 +786,6 @@ void ASAE::plots() {
     }
 }
 
-void ASAE::setMaxEstablishments(const int &n) { max_establishments = n; }
-
-int ASAE::getEstablishments(const int &n) const { return max_establishments; }
 
 int ASAE::askVehicleToPlot() {
     string option;

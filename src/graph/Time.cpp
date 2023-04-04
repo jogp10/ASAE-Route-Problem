@@ -88,7 +88,7 @@ void Time::toNextHour() {
     this->milliseconds = 0;
 }
 
-float Time::toSeconds() {
+float Time::toSeconds() const {
     return (float) this->milliseconds / 1000 + this->seconds + this->minutes * 60 + this->hours * 3600 + this->days * 86400;
 }
 
