@@ -45,7 +45,10 @@ class Graph {
         const std::string &getAddress() const;
     };
 
-    int n;              // Graph size (vertices are numbered from 1 to n)
+    int n;
+
+private:
+    // Graph size (vertices are numbered from 1 to n)
     bool hasDir;        // false: undirected; true: directed
     std::vector<Node> nodes; // The std::list of nodes being represented
 
@@ -475,6 +478,8 @@ public:
     std::vector<std::list<int>> getLastSolution();
 
     int getMaxVehicles();
+
+    int get_Current_Establishments() const;
 };
 
 #endif /* GRAPH_H_ */

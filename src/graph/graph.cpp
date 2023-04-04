@@ -69,7 +69,7 @@ void Graph::setNode(int index, string district, string county, string parish, st
 int Graph::evaluate_solution_1(const vector<list<int>>& solution) {
     int bestSolution = 0;
     for (const auto &i: solution)
-        bestSolution +=  i.size();
+        bestSolution +=  i.size() - 2;
 
     return bestSolution;
 }
@@ -88,7 +88,7 @@ int Graph::evaluate_solution_2(const vector<std::list<int>> &solution) {
     }
 
     int size_solution = 0;
-    for (const auto & i : solution) size_solution += i.size();
+    for (const auto & i : solution) size_solution += i.size() - 2;
 
     return 100*size_solution + (100 - number_of_exchanges/size_solution);
 }
@@ -1176,7 +1176,7 @@ void Graph::compare_algorithms(std::vector<int> sol1, std::vector<int> sol2,
                                std::vector<int> sol3, std::vector<int> sol4, int num_iterations) {
     using namespace matplot;
 
-        figure_handle f = figure();
+        figure_handle f = figure(true);
         Geoplot_draw s(*this);
 
         s.compare_algorithms(std::move(sol1), std::move(sol2),std::move(sol3),std::move(sol4),num_iterations);
@@ -1218,6 +1218,10 @@ void Graph::plot_vehicle_from_solution(std::vector<std::list<int>> vector1, int 
 std::vector<std::list<int>> Graph::getLastSolution() { return last_solution; }
 
 int Graph::getMaxVehicles() { return nrVehicles; }
+
+int Graph::get_Current_Establishments() const {
+    return n;
+}
 
 float Graph::Node::getLatitude() const { return latitude; }
 

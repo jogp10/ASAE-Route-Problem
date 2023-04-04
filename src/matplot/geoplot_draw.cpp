@@ -129,10 +129,10 @@ void Geoplot_draw::draw_one_vehicle(const list<int>& vehicle_path) {
 
 void Geoplot_draw::evolution_graph(vector<int> iterations,string title) {
 
-    double max = *max_element(iterations.begin(), iterations.end()) + 10;
-    double min = *min_element(iterations.begin(), iterations.end()) - 10;
+    double max = *max_element(iterations.begin(), iterations.end());
+    double min = *min_element(iterations.begin(), iterations.end());
     plot(iterations);
-    yrange(this->ax_,{min,max});
+    yrange(this->ax_,{min - 10,max + 10});
     this->ax_->title("Initial Score: " + num2str(iterations[0]) + "       Final Score: " + num2str( (int) round(max)));
 
     this->ax_->xlabel("Number of Iterations");
@@ -148,10 +148,6 @@ void Geoplot_draw::compare_algorithms(std::vector<int> sol1, std::vector<int> so
 
     using namespace matplot;
 
-    for(int i = 0; i < sol1.size(); i++){
-        cout << sol1[i] << " " << sol2[i] << " " << sol3[i] << " " << sol4[i] << endl;
-    }
-
     tiledlayout(1, 1);
 
     auto ax1 = nexttile();
@@ -160,19 +156,25 @@ void Geoplot_draw::compare_algorithms(std::vector<int> sol1, std::vector<int> so
 
 
     //min of all
-    double min = *min_element(sol4.begin(), sol4.end());
+    double min = *min_element(sol4.begin(), sol4.end()) + 3;
 
+    double max_tabu = *max_element(sol3.begin(), sol3.end());
+
+    double ex = (max_tabu - min) / 12;
+
+    min = min - ex;
 
     std::vector<std::string> new_colors = {"#FF0000", "#FF8800", "#0000FF",
                                           "#00BB00"};
     colororder(new_colors);
 
     auto p = plot(ax1, data);
-
+    grid(on);
+    gca()->minor_grid(true);
     ax1->title( "Algorithm Comparison");
-    auto t = text(ax1, num_iterations-(num_iterations*0.3), min+30, "Hill Climbing")->color("#FF8800").font_size(11).font("Calibri");
-    auto t2 = text(ax1, num_iterations-(num_iterations*0.3), min+20, "Simulated Annealing")->color( "#0000FF").font_size(11).font("Calibri");
-    auto t3 = text(ax1, num_iterations-(num_iterations*0.3), min+10, "Tabu Search")->color("#00BB00").font_size(11).font("Calibri");
+    auto t = text(ax1, num_iterations-(num_iterations*0.3), min+3*ex, "Hill Climbing")->color("#FF8800").font_size(11).font("Calibri");
+    auto t2 = text(ax1, num_iterations-(num_iterations*0.3), min+2*ex, "Simulated Annealing")->color( "#0000FF").font_size(11).font("Calibri");
+    auto t3 = text(ax1, num_iterations-(num_iterations*0.3), min+ex, "Tabu Search")->color("#00BB00").font_size(11).font("Calibri");
     auto t4 = text(ax1, num_iterations-(num_iterations*0.3), min, "Genetic Algorithm")->color("#FF0000").font_size(11).font("Calibri");
 
     show();

@@ -154,13 +154,13 @@ void ASAE::menu() {
 
     while (true) {
 
-
         cout << "1 - Show all establishments" << endl;
         cout << "2 - Hill climbing" << endl;
         cout << "3 - Simulated annealing" << endl;
         cout << "4 - Tabu" << endl;
         cout << "5 - Genetic" << endl;
         cout << "6 - Plots" << endl;
+        cout << "7 - Change number of establishments" << endl;
         cout << "0 - Exit" << endl;
         cout << "Option: ";
 
@@ -171,7 +171,7 @@ void ASAE::menu() {
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
             exit(EXIT_SUCCESS); // Closes the terminal window
         }
-        bool correct = parseInput(0,6,option);
+        bool correct = parseInput(0,7,option);
         if(correct){
             switch (std::stoi(option)) {
 
@@ -192,6 +192,9 @@ void ASAE::menu() {
                     break;
                 case 6:
                     plots();
+                    break;
+                case 7:
+                    change_number_of_establishments();
                     break;
                 case 0:
                     cout << "Come back any time soon!" << endl;
@@ -261,7 +264,7 @@ void ASAE::hill_climbing() {
     vector<list<int>> solution = (graph.*(&Graph::hillClimbing))(std::stoi(iteration_number), mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) graph.evolutionGraph(graph.getIterations(), "Hill Climbing");std::string opt; std::getline(std::cin, opt);
+    if(logs) {graph.evolutionGraph(graph.getIterations(), "Hill Climbing");std::string opt; std::getline(std::cin, opt);};
 }
 
 
@@ -316,7 +319,7 @@ void ASAE::simulated_annealing() {
     vector<list<int>> solution = (graph.*(&Graph::simulatedAnnealing))(std::stoi(iteration_number), 0.999, mutation_funcs[std::stoi(mutation_func)-1], evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) graph.evolutionGraph(graph.getIterations(), "Simulated Annealing");std::string opt; std::getline(std::cin, opt);
+    if(logs) {graph.evolutionGraph(graph.getIterations(), "Simulated Annealing");std::string opt; std::getline(std::cin, opt);};
 }
 
 
@@ -360,7 +363,7 @@ void ASAE::tabu_search() {
     vector<list<int>> solution = (graph.*(&Graph::tabuSearch))(std::stoi(iteration_number), std::stoi(tabu_size), std::stoi(neighborhood_size), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) graph.evolutionGraph(graph.getIterations(), "Tabu Search");std::string opt; std::getline(std::cin, opt);
+    if(logs) {graph.evolutionGraph(graph.getIterations(), "Tabu Search");std::string opt; std::getline(std::cin, opt);};
 }
 
 
@@ -408,7 +411,7 @@ void ASAE::genetic() {
     vector<list<int>> solution = (graph.*(&Graph::geneticAlgorithm))(std::stoi(iteration_number), std::stoi(population_size), std::stoi(tournament_size), std::stoi(mutation_rate), (&Graph::crossover_solutions_1), mutation_funcs[std::stoi(mutation_func)-1] , evaluation_funcs[std::stoi(evaluation_func)-1], logs);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    if(logs) graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);
+    if(logs) {graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);};
 }
 
 
@@ -675,16 +678,20 @@ bool ASAE::ask_tabu_parameters(string &tabu_size, string &neighborhood_size) {
 
 void ASAE::compare_algorithms(){
     int num_iterations = 500;
+
+    cout << "Hill Climbing" << endl;
     (graph.*(&Graph::hillClimbing))(num_iterations,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
     vector<int> hill_climbing_solution = graph.getIterations();
 
+    cout << endl << "Simulated Annealing" << endl;
     (graph.*(&Graph::simulatedAnnealing))(num_iterations,0.999,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
     vector<int> simulated_annealing_solution = graph.getIterations();
 
+    cout << endl << "Tabu Search" << endl;
     (graph.*(&Graph::tabuSearch))(num_iterations,20,4,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
     vector<int> tabu_search_solution = graph.getIterations();
 
-
+    cout << endl << "Genetic Algorithm" << endl;
     (graph.*(&Graph::geneticAlgorithm))(num_iterations,20,6,10,&Graph::crossover_solutions_1, &Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
     vector<int> genetic_solution = graph.getIterations();
 
@@ -758,6 +765,32 @@ int ASAE::askVehicleToPlot() {
     }
     bool correct = parseInput(0, graph.getMaxVehicles(), option);
     return std::stoi(option);
+}
+
+void ASAE::change_number_of_establishments() {
+    string option;
+    while (true){
+        cout << "Current number of establishments: " << graph.get_Current_Establishments() - 1 << endl;
+        cout << "Insert the number of establishments to be inspected" << endl;
+        cout << "Insert a number from 10 to 1000" << endl;
+        std::getline(std::cin, option);
+        // Check for CTRL + Z or CTRL + D input to close the program
+        if (std::cin.eof()) {
+            std::cout << "Come back any time soon!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Waits for 1 second before closing the window
+            exit(EXIT_SUCCESS); // Closes the terminal window
+        }
+        bool correct = parseInput(10, 1000, option);
+        if (correct) {
+            *this = ASAE(std::stoi(option) + 1);
+            break;
+        } else {
+            cout << endl;
+            cout << "Invalid number of establishments. Insert a number from 10 to 1001" << endl;
+            cout << endl;
+        }
+    }
+
 }
 
 
