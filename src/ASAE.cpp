@@ -720,19 +720,19 @@ void ASAE::compare_algorithms(){
     int num_iterations = 500;
 
     cout << "Hill Climbing" << endl;
-    (graph.*(&Graph::hillClimbing))(num_iterations,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false, vector<list<int>>());
+    (graph.*(&Graph::hillClimbing))(num_iterations,&Graph::mutation_solution_6, &Graph::evaluate_solution_2,false, vector<list<int>>());
     vector<int> hill_climbing_solution = graph.getIterations();
 
     cout << endl << "Simulated Annealing" << endl;
-    (graph.*(&Graph::simulatedAnnealing))(num_iterations,0.999,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
+    (graph.*(&Graph::simulatedAnnealing))(num_iterations,0.999,&Graph::mutation_solution_6, &Graph::evaluate_solution_2,false);
     vector<int> simulated_annealing_solution = graph.getIterations();
 
     cout << endl << "Tabu Search" << endl;
-    (graph.*(&Graph::tabuSearch))(num_iterations,20,4,&Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
+    (graph.*(&Graph::tabuSearch))(num_iterations,20,4,&Graph::mutation_solution_6, &Graph::evaluate_solution_2,false);
     vector<int> tabu_search_solution = graph.getIterations();
 
     cout << endl << "Genetic Algorithm" << endl;
-    (graph.*(&Graph::geneticAlgorithm))(num_iterations,20,6,10,&Graph::crossover_solutions_1, &Graph::mutation_solution_5, &Graph::evaluate_solution_1,false);
+    (graph.*(&Graph::geneticAlgorithm))(num_iterations,20,9,90,&Graph::crossover_solutions_1, &Graph::mutation_solution_6, &Graph::evaluate_solution_2,false);
     vector<int> genetic_solution = graph.getIterations();
 
     graph.compare_algorithms(hill_climbing_solution,simulated_annealing_solution,tabu_search_solution,genetic_solution, num_iterations);
