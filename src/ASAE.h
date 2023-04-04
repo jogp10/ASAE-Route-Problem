@@ -112,6 +112,8 @@ public:
     int askVehicleToPlot();
 
     void change_number_of_establishments();
+
+    void iteratedLocalSearch();
 };
 
 #endif // ASAE_H

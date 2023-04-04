@@ -305,7 +305,7 @@ public:
      * @param log
      * @return
      */
-    std::vector<std::list<int>> hillClimbing(int iteration_number, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
+    std::vector<std::list<int>> hillClimbing(int iteration_number, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false, const std::vector<std::list<int>> initial_solution= std::vector<std::list<int>>());
 
     /**
      * Simulated annealing algorithm
@@ -337,7 +337,6 @@ public:
      */
     static bool queueContainsElem(std::queue<int> queue, int element);
 
-
     /**
      * Genetic algorithm
      * @param iteration_number
@@ -351,6 +350,13 @@ public:
      * @return
      */
     std::vector<std::list<int>> geneticAlgorithm(int iteration_number, int population_size, int tournament_size, int mutation_probability, std::pair<std::vector<std::list<int>>, std::vector<std::list<int>>> (Graph::*crossover_func)(const std::vector<std::list<int>>&, const std::vector<std::list<int>>&), std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&), bool log=false);
+
+    /**
+     * Iterated local search algorithm with Hill Climbing (default parameters)
+     * @param iteration_number
+     * @return
+     */
+    std::vector<std::list<int>> iteratedLocalSearch(int iteration_number, std::vector<std::list<int>> (Graph::*mutation_func)(const std::vector<std::list<int>>&), int (Graph::*evaluation_func)(const std::vector<std::list<int>>&));
 
     /**
      * Check if a solution is valid
