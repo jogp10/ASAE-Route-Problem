@@ -431,7 +431,7 @@ void ASAE::iteratedLocalSearch() {
     vector<list<int>> solution = graph.iteratedLocalSearch(std::stoi(iteration_number), mutation_funcs[mutation_funcs.size()-1], evaluation_funcs[evaluation_funcs.size()-1]);
     printEndAlgorithm(solution, std::stoi(iteration_number), graph.getIterationsOptimal(), graph.getRuntime(), graph.getRuntimeOptimal());
 
-    graph.evolutionGraph(graph.getIterations(), "Genetic Algorithm");std::string opt; std::getline(std::cin, opt);
+    graph.evolutionGraph(graph.getIterations(), "Iterated Local Search");std::string opt; std::getline(std::cin, opt);
 }
 
 
