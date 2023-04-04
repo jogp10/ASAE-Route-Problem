@@ -153,34 +153,37 @@ void Geoplot_draw::compare_algorithms(std::vector<int> sol1, std::vector<int> so
 
     tiledlayout(1, 1);
 
-    auto ax1 = nexttile();
+    ax_ = nexttile();
 
     vector<vector<int>> data = {sol4, sol1, sol2, sol3};
 
-    //min of all
-    double min = *min_element(sol4.begin(), sol4.end()) + 3;
+
+    double min = *min_element(sol4.begin(), sol4.end());
 
     double max_tabu = *max_element(sol3.begin(), sol3.end());
 
     double ex = (max_tabu - min) / 12;
 
-    min = min - ex;
+
+
+    min -= ex / 4;
 
     std::vector<std::string> new_colors = {"#FF0000", "#FF8800", "#0000FF",
                                           "#00BB00"};
     colororder(new_colors);
 
-    auto p = plot(ax1, data);
+    auto p = plot(ax_, data);
     grid(on);
     gca()->minor_grid(true);
-    ax1->title( "Algorithm Comparison");
-    ax1->xlabel("Number of Iterations");
-    ax1->ylabel("Score");
-    auto t = text(ax1, num_iterations-(num_iterations*0.3), min+3*ex, "Hill Climbing")->color("#FF8800").font_size(11).font("Calibri");
-    auto t2 = text(ax1, num_iterations-(num_iterations*0.3), min+2*ex, "Simulated Annealing")->color( "#0000FF").font_size(11).font("Calibri");
-    auto t3 = text(ax1, num_iterations-(num_iterations*0.3), min+ex, "Tabu Search")->color("#00BB00").font_size(11).font("Calibri");
-    auto t4 = text(ax1, num_iterations-(num_iterations*0.3), min, "Genetic Algorithm")->color("#FF0000").font_size(11).font("Calibri");
-
+    this->ax_->title( "Algorithm Comparison");
+    this->ax_->xlabel("Number of Iterations");
+    this->ax_->ylabel("Score");
+    //this->ax_->font("Calibri");
+    text(ax_, num_iterations-(num_iterations*0.3), min+3*ex, "Hill Climbing")->color("#FF8800").font_size(11).font("Calibri");
+    text(ax_, num_iterations-(num_iterations*0.3), min+2*ex, "Simulated Annealing")->color( "#0000FF").font_size(11).font("Calibri");
+    text(ax_, num_iterations-(num_iterations*0.3), min+ex, "Tabu Search")->color("#00BB00").font_size(11).font("Calibri");
+    text(ax_, num_iterations-(num_iterations*0.3), min, "Genetic Algorithm")->color("#FF0000").font_size(11).font("Calibri");
+    ax_->draw();
     show();
 
 }
