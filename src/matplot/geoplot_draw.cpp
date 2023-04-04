@@ -157,7 +157,6 @@ void Geoplot_draw::compare_algorithms(std::vector<int> sol1, std::vector<int> so
 
     vector<vector<int>> data = {sol4, sol1, sol2, sol3};
 
-
     //min of all
     double min = *min_element(sol4.begin(), sol4.end()) + 3;
 
@@ -175,6 +174,8 @@ void Geoplot_draw::compare_algorithms(std::vector<int> sol1, std::vector<int> so
     grid(on);
     gca()->minor_grid(true);
     ax1->title( "Algorithm Comparison");
+    ax1->xlabel("Number of Iterations");
+    ax1->ylabel("Score");
     auto t = text(ax1, num_iterations-(num_iterations*0.3), min+3*ex, "Hill Climbing")->color("#FF8800").font_size(11).font("Calibri");
     auto t2 = text(ax1, num_iterations-(num_iterations*0.3), min+2*ex, "Simulated Annealing")->color( "#0000FF").font_size(11).font("Calibri");
     auto t3 = text(ax1, num_iterations-(num_iterations*0.3), min+ex, "Tabu Search")->color("#00BB00").font_size(11).font("Calibri");
