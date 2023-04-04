@@ -163,10 +163,9 @@ void Geoplot_draw::compare_algorithms(std::vector<int> sol1, std::vector<int> so
     double min = *min_element(sol4.begin(), sol4.end());
 
 
-    std::vector<std::string> newcolors = {"red","black","blue", "magenta"};
-    std::vector<std::string> newcolors2 = {"#FF0000", "#FF8800", "#0000FF",
+    std::vector<std::string> new_colors = {"#FF0000", "#FF8800", "#0000FF",
                                           "#00BB00"};
-    colororder(newcolors2);
+    colororder(new_colors);
 
     auto p = plot(ax1, data);
 
