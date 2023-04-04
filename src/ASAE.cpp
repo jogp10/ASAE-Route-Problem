@@ -330,7 +330,7 @@ void ASAE::tabu_search() {
     bool logs = false, custom = false;
     string iteration_number, mutation_func, evaluation_func, tabu_size, neighborhood_size;
     while(true){
-        cout << "1 - Use recommended parameters " << endl;
+        cout << "\n1 - Use recommended parameters " << endl;
         cout << "2 - Use custom parameters " << endl;
         cout << "Option: ";
         string answer;
@@ -561,7 +561,7 @@ bool ASAE::print_logs() {
     string print_logs;
 
     while (true){
-        cout << "Do you want to print detailed information?" << endl;
+        cout << "\nDo you want to print detailed information?" << endl;
         cout << "1 - Yes" << endl;
         cout << "2 - No" << endl;
         cout << "Option: ";

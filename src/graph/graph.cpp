@@ -730,7 +730,7 @@ vector<list<int>> Graph::hillClimbing(const int iteration_number, vector<list<in
 
     cout << "Initial Score: " << best_score << endl;
 
-    iterations = {};
+    if(initial_solution.empty()) iterations = {};
 
     for(int i=0; i<iteration_number; i++) {
         vector<list<int>> neighbour_solution = (this->*mutation_func)(best_solution);
@@ -1055,6 +1055,7 @@ pair<vector<list<int>>, int> Graph::get_greatest_fit(vector<vector<list<int>>> p
 }
 
 std::vector<std::list<int>> Graph::iteratedLocalSearch(int iteration_number, vector<list<int>> (Graph::*mutation_func)(const vector<list<int>>&), int (Graph::*evaluation_func)(const vector<list<int>> &)) {
+    iterations = {};
     startTimer();
     auto st = start_time, ot = start_time;
 
